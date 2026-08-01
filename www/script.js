@@ -5,7 +5,7 @@ console.log('%c⚡ BUZZ RATE ⚡', 'font-size:48px;font-weight:900;color:#BFFF00
 console.log('%cВ сыщика решил поиграть?', 'font-size:16px;color:#4ade80;font-family:monospace;');
 console.log('%c       БЛЯ, ладно вот подсказки:', 'font-size:22px;color:#00ff41;font-family:monospace;text-shadow:0 0 8px #00ff41;');
 console.log('%cПопробуй код-конами на клавиатуре...и посмотри обзор', 'font-size:13px;color:#00e676;font-family:monospace;');
-console.log('%cИли кликни на кнопку #### 5 раз быстро.', 'font-size:13px;color:#00e676;font-family:monospace;');
+console.log('%cИли поиграйся с темой.', 'font-size:13px;color:#00e676;font-family:monospace;');
 console.log('%c[Debug]%c session src: тут был я', 'color:#555;', 'color:#555;');
 
 (function() {
@@ -75,10 +75,52 @@ setTimeout(checkForUpdates, 2000);
 // ==========================================
 const drinks = [
   // --- MONSTER (скопируй 22 раза, у тебя уже 1 оригинал) ---
-  { brand: "Monster Energy", key: "monster", flavor: "Вкус, 500 мл", rating: 8, img: "images/image_2.webp", caffeine: "160 мг", sugar: "54 г", cal: "223 ккал", ph: "3.5", video: "7361838290757873979" },
+  { brand: "Monster Energy - Nitro", key: "monster", flavor: "500 мл", rating: 8, img: "images/image_2.webp", caffeine: "160 мг", sugar: "54 г", cal: "223 ккал", ph: "3.5", video: "7361838290757873979" },
 
-  { brand: "Monster The Doctor - VR46", key: "monster", flavor: "Вкус, 500 мл", rating: 8, img: "images/vr-46.webp", caffeine: "160 мг", sugar: "52 г", cal: "219 ккал", ph: "3", video: "" },
+  { brand: "Monster Energy - Ultra blue", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra blue.webp", caffeine: "150 мг", sugar: "0 г", cal: "11 ккал", ph: "3.4", video: "" },
+
+  { brand: "Monster Energy - Ultra black", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra-black.webp", caffeine: "150 мг", sugar: "0 г", cal: "15 ккал", ph: "3.6", video: "" },
+
+  { brand: "Monster Energy - Juiced Viking", key: "monster", flavor: "500 мл", rating: 8, img: "images/monster_viking.webp", caffeine: "160 мг", sugar: "54 г", cal: "215 ккал", ph: "3.7", video: "" },
+ { brand: "Monster Energy - Rio Punsh", key: "monster", flavor: "500 мл", rating: 8, img: "images/Rio-punsh.webp", caffeine: "150 мг", sugar: "35 г", cal: "152 ккал", ph: "3.8", video: "" },
+
+ { brand: "Monster Energy - Ultra Gold (lando Norris)", key: "monster", flavor: "500 мл", rating: 8, img: "images/lando_noris.webp", caffeine: "160 мг", sugar: "0 г", cal: "10 ккал", ph: "3.3", video: "" },
+
+ { brand: "Monster Energy - Nitro Cosmic Peach", key: "monster", flavor: "500 мл", rating: 8, img: "images/Nitro_Cosmic_Peach.webp", caffeine: "160 мг", sugar: "53 г", cal: "200 ккал", ph: "3.5", video: "" },
+
+ { brand: "Monster Energy - Juiced Riper", key: "monster", flavor: "500 мл", rating: 8, img: "images/Juiced-Riper.webp", caffeine: "160 мг", sugar: "45 г", cal: "175 ккал", ph: "3.5", video: "" },
+
+ { brand: "Monster Energy - Mixxd Punsh", key: "monster", flavor: "500 мл", rating: 8, img: "images/Mixxd-Punsh.webp", caffeine: "160 мг", sugar: "45 г", cal: "190 ккал", ph: "3.7", video: "" },
+
+ { brand: "Monster Energy - Ultra Rosa ", key: "monster", flavor: "500 мл", rating: 8, img: "images/Ultra-Rosa.webp", caffeine: "150 мг", sugar: "0 г", cal: "11 ккал", ph: "3.5", video: "" },
+
+ { brand: "Monster Energy - Rehab Green Tea ", key: "monster", flavor: "500 мл", rating: 8, img: "images/Rehab-Green-Tea.webp", caffeine: "160 мг", sugar: "9.5 г", cal: "50 ккал", ph: "4.6", video: "" },
+
+ { brand: "Monster Energy - Rehab Tea + Lemonade ", key: "monster", flavor: "500 мл", rating: 8, img: "images/Tea + Lemonade.webp", caffeine: "160 мг", sugar: "9.5 г", cal: "55 ккал", ph: "4.4", video: "" },
+
+ { brand: "Monster Energy - Rehab Tea + Peach ", key: "monster", flavor: "500 мл", rating: 9, img: "images/Rehab-Tea-+ Peach.webp", caffeine: "160 мг", sugar: "12 г", cal: "59 ккал", ph: "4.4", video: "" },
+
+ { brand: "Monster Energy - Ultra Sunrise", key: "monster", flavor: "473 мл", rating: 8, img: "images/Ultra-Sunrise.webp", caffeine: "155 мг", sugar: "0 г", cal: "10 ккал", ph: "3.3", video: "" },
+
+ { brand: "Monster Energy - Reserve White Pineapple Flavour ", key: "monster", flavor: "500 мл", rating: 8, img: "images/Reserve-White-Pineapple-Flavour.webp", caffeine: "160 мг", sugar: "30 г", cal: "135 ккал", ph: "3.6", video: "" },
+
+ { brand: "Monster Energy - Reserve Peaches n' Crème ", key: "monster", flavor: "473 мл", rating: 8, img: "images/Reserve-Peaches-n-Crème.webp", caffeine: "175 мг", sugar: "28 г", cal: "120 ккал", ph: "3.7", video: "" },
+
+ { brand: "Monster Energy - Ultra Fantasy Ruby Red ", key: "monster", flavor: "500 мл", rating: 8, img: "images/Ultra-Fantasy-Ruby-Red.webp", caffeine: "160 мг", sugar: "0 г", cal: "14 ккал", ph: "3.4", video: "" },
+
+ { brand: "Monster Energy - Ultra Peachy Keen", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra-peach-keen.webp", caffeine: "150 мг", sugar: "0 г", cal: "11 ккал", ph: "3.2", video: "" },
+
+ { brand: "Monster Energy - Ultra Blue Hawaiian ", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra-blue-hawaiian.webp", caffeine: "150 мг", sugar: "0 г", cal: "10 ккал", ph: "3.5", video: "" },
+
+ { brand: "Monster Energy - M3 Extra Strength ", key: "monster", flavor: "150 мл", rating: 8, img: "images/m3-extra-strength.webp", caffeine: "140 мг", sugar: "10 г", cal: "65 ккал", ph: "3.7", video: "" },
+
+ { brand: "Monster Energy - Ultra Vice Guava", key: "monster", flavor: "473 мл", rating: 9, img: "images/ultra-vice-guava.webp", caffeine: "150 мг", sugar: "0 г", cal: "10 ккал", ph: "3.5", video: "" },
+
+ { brand: "Monster Energy - Ultra Violet", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra-violet.webp", caffeine: "150 мг", sugar: "0 г", cal: "13 ккал", ph: "3.6", video: "" },
+
+ { brand: "Monster Energy - The Doctor VR46", key: "monster", flavor: "500 мл", rating: 8, img: "images/vr-46.webp", caffeine: "160 мг", sugar: "52 г", cal: "219 ккал", ph: "3", video: "" },
   
+ { brand: "Monster Energy - Juiced Juce", key: "monster", flavor: "500 мл", rating: 8, img: "images/juced-juce.webp", caffeine: "160 мг", sugar: "49 г", cal: "211 ккал", ph: "3.4", video: "" },
   // --- HELL (скопируй 11 раз, у тебя 1 оригинал) ---
   { brand: "Hell Energy", key: "hell", flavor: "Original, 250 мл", rating: 10, img: "images/image_77-removebg-preview.png", caffeine: "80 мг", sugar: "27 г", cal: "115 ккал", ph: "3.1", video: "7361838290757873979", badge: "hit" },
 
@@ -116,6 +158,13 @@ const bInit = {
   battery:'Ba', nonstop:'N', rockstar:'Rs', c4:'C4'
 };
 
+// ДОБАВИТЬ ЭТО:
+const bNames = {
+  monster:'Monster Energy', redbull:'Red Bull', hell:'Hell Energy',
+  burn:'Burn', battery:'Battery', nonstop:'Non Stop',
+  rockstar:'Rockstar', c4:'C4'
+};
+
 // ==========================================
 // 3. ЛОГИКА ИЗБРАННОГО
 // ==========================================
@@ -151,11 +200,11 @@ function createCard(drink) {
     <div class="card-content">
       <h3 class="card-brand">${drink.brand}</h3><p class="card-flavor">${drink.flavor}</p>
       <div class="card-rating"><div class="stars"></div><div class="rating-counter" data-target="${drink.rating}"></div></div>
-      <div class="card-stats">
-        <div class="stat"><div class="stat-value">${drink.caffeine}</div><div class="stat-label">Кофеин</div></div>
-        <div class="stat"><div class="stat-value">${drink.sugar}</div><div class="stat-label">Сахар</div></div>
-        <div class="stat"><div class="stat-value">${drink.cal}</div><div class="stat-label">Калории</div></div>
-        <div class="stat"><div class="stat-value">${drink.ph}</div><div class="stat-label">pH</div></div>
+            <div class="card-stats">
+        <div class="stat" style="background:rgba(0, 229, 255, 0.15); border-color:rgba(0, 229, 255, 0.7); box-shadow: 0 0 12px rgba(0, 229, 255, 0.25)"><div class="stat-value">${drink.caffeine}</div><div class="stat-label">Кофеин</div></div>
+        <div class="stat" style="background:rgba(255, 64, 129, 0.15); border-color:rgba(255, 64, 129, 0.7); box-shadow: 0 0 12px rgba(255, 64, 129, 0.25)"><div class="stat-value">${drink.sugar}</div><div class="stat-label">Сахар</div></div>
+        <div class="stat" style="background:rgba(255, 171, 0, 0.15); border-color:rgba(255, 171, 0, 0.7); box-shadow: 0 0 12px rgba(255, 171, 0, 0.25)"><div class="stat-value">${drink.cal}</div><div class="stat-label">Калории</div></div>
+        <div class="stat" style="background:rgba(179, 136, 255, 0.15); border-color:rgba(179, 136, 255, 0.7); box-shadow: 0 0 12px rgba(179, 136, 255, 0.25)"><div class="stat-value">${drink.ph}</div><div class="stat-label">pH</div></div>
       </div>
       <button class="card-btn" data-open-video><span>Смотреть обзор</span><i class="fa-solid fa-arrow-right"></i></button>
     </div>
@@ -186,26 +235,6 @@ function initCardEffects() {
     const cnt = card.querySelector('.rating-counter');
     if(cnt && !cnt.querySelector('.counter-body')) buildCounter(cnt);
   });
-
-  // 3D Тилт (ТОЛЬКО ДЛЯ САЙТА, В ПРИЛОЖЕНИИ ОТКЛЮЧЕН)
-  if (!document.body.classList.contains('is-native-app')) {
-    const MAX_TILT=12, SCALE=1.04, PERS=800;
-    document.querySelectorAll('.energy-card').forEach(card => {
-      const gl = card.querySelector('.card-glare');
-      card.addEventListener('mousemove', e => { 
-        const r = card.getBoundingClientRect(); 
-        const x = (e.clientX - r.left)/r.width - 0.5; 
-        const y = (e.clientY - r.top)/r.height - 0.5; 
-        card.style.transition = 'transform 0.08s ease-out'; 
-        card.style.transform = `perspective(${PERS}px) rotateX(${-y*MAX_TILT*2}deg) rotateY(${x*MAX_TILT*2}deg) scale3d(${SCALE},${SCALE},${SCALE})`; 
-        if(gl){ gl.style.setProperty('--glare-x', (x+0.5)*100+'%'); gl.style.setProperty('--glare-y', (y+0.5)*100+'%'); } 
-      });
-      card.addEventListener('mouseleave', () => { 
-        card.style.transition = 'transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94)'; 
-        card.style.transform = `perspective(${PERS}px) rotateX(0) rotateY(0) scale3d(1,1,1)`; 
-      });
-    });
-  }
 
   // Обработка клика по сердечку
   document.querySelectorAll('.fav-btn').forEach(btn => {
@@ -259,12 +288,10 @@ function initCardEffects() {
           observer.unobserve(card);
           return; 
         }
-        // ЕСЛИ САЙТ - КРАСИВЫЕ АНИМАЦИИ
-        setTimeout(() => { 
-          card.classList.add('visible'); 
-          const c = card.querySelector('.rating-counter'); 
-          if(c) requestAnimationFrame(() => requestAnimationFrame(() => rollCounter(c))); 
-        }, index * 50); 
+          // ЕСЛИ САЙТ - БЫСТРАЯ ЗАГРУЗКА
+        card.classList.add('visible'); 
+        const c = card.querySelector('.rating-counter'); 
+        if(c) requestAnimationFrame(() => requestAnimationFrame(() => rollCounter(c))); 
         observer.unobserve(card); 
       } 
     }); 
@@ -301,8 +328,36 @@ function rollCounter(el) {
   drums.forEach(drum => { drum.style.transform = `translateY(-${(parseInt(drum.dataset.digit) + 10) * h}px)`; }); 
 }
 
+
 // Запуск
 renderCards();
+
+// ОДИН СЛУШАТЕЛЬ ДЛЯ ВСЕХ КАРТОЧЕК (Вместо 60 отдельных)
+if (!document.body.classList.contains('is-native-app')) {
+  const MAX_TILT=12, SCALE=1.04, PERS=800;
+  let rafTilt = false, activeTiltCard = null;
+  grid.addEventListener('mousemove', e => {
+    if (rafTilt) return; rafTilt = true;
+    requestAnimationFrame(() => {
+      const card = e.target.closest('.energy-card');
+      if (card !== activeTiltCard) {
+        if (activeTiltCard) { activeTiltCard.style.transform = `perspective(${PERS}px) rotateX(0) rotateY(0) scale3d(1,1,1)`; }
+        activeTiltCard = card;
+      }
+      if (!card) { rafTilt = false; return; }
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left)/r.width - 0.5;
+      const y = (e.clientY - r.top)/r.height - 0.5;
+      card.style.transform = `perspective(${PERS}px) rotateX(${-y*MAX_TILT*2}deg) rotateY(${x*MAX_TILT*2}deg) scale3d(${SCALE},${SCALE},${SCALE})`;
+      const gl = card.querySelector('.card-glare');
+      if(gl){ gl.style.setProperty('--glare-x', (x+0.5)*100+'%'); gl.style.setProperty('--glare-y', (y+0.5)*100+'%'); }
+      rafTilt = false;
+    });
+  });
+  grid.addEventListener('mouseleave', () => {
+    if (activeTiltCard) { activeTiltCard.style.transform = `perspective(${PERS}px) rotateX(0) rotateY(0) scale3d(1,1,1)`; activeTiltCard = null; }
+  });
+}
 
 // ==========================================
 // 6. ТИПЕРАЙТЕР И ТЕМА
@@ -372,11 +427,61 @@ function createMatrixRain() {
 const canvas = document.getElementById('particleCanvas');
 const ctx = canvas.getContext('2d');
 let particles = [];
-function resizeCanvas() { canvas.width = canvas.parentElement.offsetWidth; canvas.height = canvas.parentElement.offsetHeight; }
-resizeCanvas(); window.addEventListener('resize', resizeCanvas);
-class Particle { constructor() { this.reset(); } reset() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.vx = (Math.random() - 0.5) * 0.5; this.vy = (Math.random() - 0.5) * 0.5; this.r = Math.random() * 2 + 1; } update() { this.x += this.vx; this.y += this.vy; if (this.x < 0 || this.x > canvas.width) this.vx *= -1; if (this.y < 0 || this.y > canvas.height) this.vy *= -1; } draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2); ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--particle-color'); ctx.fill(); } }
+let particleColor = getComputedStyle(document.body).getPropertyValue('--particle-color').trim();
+
+function resizeCanvas() { 
+  // Защита: если размер родителя 0 (браузер еще не загрузился), берем размер окна
+  canvas.width = canvas.parentElement.offsetWidth || window.innerWidth; 
+  canvas.height = canvas.parentElement.offsetHeight || window.innerHeight; 
+}
+resizeCanvas(); 
+window.addEventListener('resize', resizeCanvas);
+
+class Particle { 
+  constructor() { this.reset(); } 
+  reset() { 
+    // Разбрасываем точки СТРОГО ПО БОКАМ (по 15% ширины экрана)
+    if (Math.random() < 0.5) {
+      this.x = Math.random() * (canvas.width * 0.15); // Левая сторона
+    } else {
+      this.x = canvas.width - Math.random() * (canvas.width * 0.15); // Правая сторона
+    }
+    this.y = Math.random() * canvas.height; 
+    this.vx = (Math.random() - 0.5) * 0.3; // Чуть замедлил, чтобы не мерцали резко
+    this.vy = (Math.random() - 0.5) * 0.4; 
+    this.r = Math.random() * 2 + 0.5; 
+  } 
+  update() { 
+    this.x += this.vx; 
+    this.y += this.vy; 
+    // Если точка улетела за левый или правый край — переспауним её на бок
+    if (this.x < 0 || this.x > canvas.width) this.reset(); 
+    if (this.y < 0 || this.y > canvas.height) this.vy *= -1; 
+  } 
+  draw() { 
+    ctx.beginPath(); 
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2); 
+    ctx.fillStyle = particleColor; 
+    ctx.fill(); 
+  } 
+}
+
+// Увеличил до 40 — теперь их много, но они не мешают по центру
 for(let i=0; i<40; i++) particles.push(new Particle());
-function animateParticles() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animateParticles); }
+
+let isAnimating = true;
+const obsParticles = new IntersectionObserver(entries => { 
+  isAnimating = entries[0].isIntersecting; 
+  if(isAnimating) animateParticles(); 
+}, { threshold: 0.1 });
+obsParticles.observe(canvas.parentElement);
+
+function animateParticles() { 
+  if(!isAnimating) return;
+  ctx.clearRect(0, 0, canvas.width, canvas.height); 
+  particles.forEach(p => { p.update(); p.draw(); }); 
+  requestAnimationFrame(animateParticles); 
+}
 animateParticles();
 
 // ==========================================
@@ -394,7 +499,7 @@ function generateBrandDropdown() {
   let html = `<div class="brand-option active" data-brand="all"><div class="brand-dot" style="background:var(--accent)"></div>Все марки<div class="brand-count">${drinks.length}</div></div>`;
   
   for (const key in counts) {
-    const name = drinks.find(d => d.key === key).brand;
+        const name = bNames[key] || key;
     html += `<div class="brand-option" data-brand="${key}"><div class="brand-dot" style="background:${bColors[key] || '#888'}"></div>${name}<div class="brand-count">${counts[key]}</div></div>`;
   }
   dropdown.innerHTML = html;
@@ -492,7 +597,17 @@ let progressInterval, currentVideoId;
 
 function openVideoModal(card) {
   const b = card.dataset.brand, vid = card.dataset.video, bn = card.querySelector('.card-brand').textContent, fl = card.querySelector('.card-flavor').textContent, rt = card.dataset.rating;
-  currentVideoId = vid; const col = bColors[b]||'#00e676';
+    currentVideoId = vid; const col = bColors[b]||'#00e676';
+  
+  // ДОБАВИТЬ ЭТУ ПРОВЕРКУ:
+  if (!vid) {
+    const old = modalVideoWrap.querySelector('iframe, .no-video-msg'); if(old) old.remove();
+    modalPlaceholder.style.display = 'none';
+    modalVideoWrap.insertAdjacentHTML('beforeend', `<div class="no-video-msg" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--muted);gap:15px;position:absolute;inset:0;z-index:2;background:#000;"><i class="fa-solid fa-video-slash" style="font-size:48px;opacity:0.3;"></i><p style="margin:0;font-family:'Oswald',sans-serif;font-size:18px;letter-spacing:1px;">ОБЗОР ПОКА НЕТ</p><span style="font-size:13px;">Скоро добавим</span></div>`);
+    modal.classList.add('open'); document.body.style.overflow = 'hidden';
+    return;
+  }
+
   modalDot.style.background = col; modalDot.textContent = bInit[b]||b[0]; modalLabel.textContent = bn; modalFlavor.textContent = fl; modalRatingText.innerHTML = `Рейтинг: <strong>${rt}/10</strong>`; modalProgress.style.background = col; modalInner.style.setProperty('--modal-glow', col.replace(')', ',0.15)').replace('rgb','rgba'));
   const old = modalVideoWrap.querySelector('iframe'); if(old) old.remove();
   modalPlaceholder.style.display = 'flex'; modalProgress.style.width = '0%';
@@ -512,7 +627,17 @@ function openVideoModal(card) {
 function closeVideoModal() { 
   modal.classList.remove('open'); document.body.style.overflow = ''; 
   clearInterval(progressInterval); 
-  setTimeout(() => { const f = modalVideoWrap.querySelector('iframe'); if(f) f.remove(); modalPlaceholder.style.display = 'flex'; modalProgress.style.width = '0%'; currentVideoId = null; }, 500); 
+  // Очищаем текст, чтобы от рикролла ничего не осталось
+  modalLabel.textContent = ''; 
+  modalFlavor.textContent = '';
+  modalRatingText.innerHTML = '';
+    setTimeout(() => {  
+    modalVideoWrap.innerHTML = ''; // Очищаем всё (и видео, и заглушки)
+    modalVideoWrap.appendChild(modalPlaceholder); // Возвращаем спиннер
+    modalPlaceholder.style.display = 'flex'; 
+    modalProgress.style.width = '0%'; 
+    currentVideoId = null; 
+  }, 500);  
 }
 
 modalClose.addEventListener('click', closeVideoModal);
@@ -717,7 +842,7 @@ function initMapFilter() {
   html += `<div class="brand-option" data-brand="fav"><div class="brand-dot" style="background:#ff3b5c"></div>Избранное<div class="brand-count">${favs.length}</div></div>`;
   
   for (const key in brandCounts) {
-    const name = drinks.find(d => d.key === key)?.brand || key;
+        const name = bNames[key] || key;
     html += `<div class="brand-option" data-brand="${key}"><div class="brand-dot" style="background:${bColors[key] || '#888'}"></div>${name}<div class="brand-count">${brandCounts[key]}</div></div>`;
   }
   dropdown.innerHTML = html;
@@ -1035,7 +1160,10 @@ function openRickrollModal() {
       }, 500); 
     });
 
-    modalVideoWrap.appendChild(video);
+        modalVideoWrap.appendChild(video);
+    
+    // Принудительный запуск для мобильных браузеров
+    video.play().catch(() => {});
   }, 500);
 }
 
@@ -1049,7 +1177,7 @@ function openRickrollModal() {
     }
   }
 
-  var footerTiktok = document.querySelector('.btn-tiktok');
+    var footerTiktok = document.querySelector('.btn-tiktok');
   if (footerTiktok) footerTiktok.addEventListener('click', hijackClick, true);
 
   var mobTiktok = document.querySelector('.tiktok-mob');
@@ -1058,9 +1186,14 @@ function openRickrollModal() {
   var modalTiktok = document.getElementById('modalTiktokBtn');
   if (modalTiktok) modalTiktok.addEventListener('click', hijackClick, true);
 
-  var reviewBtns = document.querySelectorAll('[data-open-video]');
-  for (var i = 0; i < reviewBtns.length; i++) {
-    reviewBtns[i].addEventListener('click', hijackClick, true);
+  // Слушаем клики по всей сетке карточек (работает даже для новых)
+  var cardsGrid = document.getElementById('cardsGrid');
+  if (cardsGrid) {
+    cardsGrid.addEventListener('click', function(e) {
+      if (e.target.closest('[data-open-video]')) {
+        hijackClick(e);
+      }
+    }, true);
   }
 })();
 // ==========================================
@@ -1178,6 +1311,12 @@ function openRickrollModal() {
         btn.style.pointerEvents = 'none';
         btn.style.opacity = '0.4';
       }
+            // Обновляем десктопную кнопку
+      var desktopKeyBtn = document.getElementById('openKeyModalDesktop');
+      if (desktopKeyBtn) {
+        desktopKeyBtn.classList.add('activated');
+        desktopKeyBtn.innerHTML = '<i class="fa-solid fa-key"></i> Код активирован';
+      }
       showToast('Ключ активирован!', 'fa-solid fa-trophy');
     } else {
       keyError.textContent = 'Неверный код';
@@ -1213,17 +1352,6 @@ function openRickrollModal() {
       if (ki) ki.style.display = '';
       if (kh) kh.textContent = 'Секретный ключ';
       setTimeout(function() { keyInput.focus(); }, 300);
-    });
-  }
-
-  // Когда ключ активирован — обновляем и десктопную кнопку
-  var origSubmit = document.getElementById('submitKey');
-  if (origSubmit) {
-    origSubmit.addEventListener('click', function() {
-      if (localStorage.getItem('buzz_key_activated') && desktopKeyBtn) {
-        desktopKeyBtn.classList.add('activated');
-        desktopKeyBtn.innerHTML = '<i class="fa-solid fa-key"></i> Код активирован';
-      }
     });
   }
 })();
