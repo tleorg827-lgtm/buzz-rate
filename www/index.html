@@ -91,11 +91,11 @@
 </div>
 
 <button class="theme-toggle" id="themeToggle" aria-label="Сменить тему"><i class="fa-solid fa-moon"></i></button>
-
+<button class="sound-toggle" id="soundToggle" aria-label="Выключить звук"><i class="fa-solid fa-volume-high"></i></button>
 <div style="padding: 40px 20px 0;">
   <div class="container">
     <div class="text-part"><span id="typewriter" class="cursor"></span></div>
-    <div class="image-part" id="userPhoto"><img src="images/урод_1.jpg" alt="Фото Влада"></div>
+    <div class="image-part" id="userPhoto"><img src="images/урод_1.jpg" alt="Фото Сударя"></div>
   </div>
 </div>
 
@@ -360,6 +360,33 @@
 <button id="compareFloatBtn" style="position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) scale(0); background: var(--accent); color: #000; border: none; padding: 12px 25px; border-radius: 50px; font-family: 'Oswald', sans-serif; font-weight: bold; font-size: 16px; z-index: 9999; cursor: pointer; box-shadow: 0 0 20px rgba(191,255,0,0.4); transition: transform 0.3s ease;">
   <i class="fa-solid fa-code-compare"></i> Сравнить (0/2)
 </button>
+<!-- МОДАЛКА: ТЕРМИНАЛ (ПОЛНОЭКРАННЫЙ) -->
+<div id="terminalOverlay" class="terminal-overlay">
+  <div class="custom-modal-inner terminal-window">
+    <div class="terminal-header">
+      <span>BUZZ_RATE://TERMINAL_V.2.0</span>
+      <button class="custom-modal-close" id="closeTerminal"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="terminal-body" id="terminalOutput">
+      <div style="color: var(--accent);">Инициализация протокола... <span style="color:#fff;">OK</span></div>
+      <div>Введите <span style="color:#fbbf24;">help</span> для списка команд.</div>
+    </div>
+    <div class="terminal-input-wrap">
+      <span style="color: var(--accent); margin-right: 8px; font-family: monospace;">>&nbsp;</span>
+      <input type="text" id="terminalInput" autocomplete="off" spellcheck="false">
+    </div>
+  </div>
+</div>
+
+<!-- МОДАЛКА: ДОСЬЕ АГЕНТА -->
+<div id="profileModal" class="custom-modal">
+  <div class="custom-modal-inner profile-window">
+    <button class="custom-modal-close" id="closeProfile"><i class="fa-solid fa-xmark"></i></button>
+    <div class="profile-stamp">СЕКРЕТНО</div>
+    <h2 style="color: var(--accent); font-family: 'Oswald'; text-align: center; margin-bottom: 25px; letter-spacing: 2px; border-bottom: 1px solid #333; padding-bottom: 15px;">ДОСЬЕ АГЕНТА</h2>
+    <div id="profileContent"></div>
+  </div>
+</div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="script.js"></script>
 </body>

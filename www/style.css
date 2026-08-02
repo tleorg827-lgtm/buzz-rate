@@ -133,7 +133,17 @@ body {
 .card-glare { position: absolute; inset: 0; border-radius: var(--radius); pointer-events: none; z-index: 10; opacity: 0; transition: opacity 0.3s ease; background: radial-gradient(circle at var(--glare-x, 50%) var(--glare-y, 50%), rgba(255,255,255,0.12) 0%, transparent 60%); }
 .energy-card:hover .card-glare { opacity: 1; }
 
-.card-image { position: relative; width: 100%; height: 260px; overflow: hidden; border-radius: var(--radius) var(--radius) 0 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.2); }
+.card-image { 
+  position: relative; 
+  width: 100%; 
+  aspect-ratio: 3 / 5; /* Идеальная пропорция банки, без прыжков */
+  overflow: hidden; 
+  border-radius: var(--radius) var(--radius) 0 0; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  background: rgba(0,0,0,0.2); 
+}
 .card-image img { height: 220px; width: auto; max-width: 90%; object-fit: contain; filter: drop-shadow(0 10px 30px rgba(0,0,0,0.5)); transition: transform 0.5s ease; transform: translateY(8px) scale(0.95); }
 .energy-card:hover .card-image img { transform: translateY(-4px) scale(1.02); }
 .card-image::before { content: ''; position: absolute; width: 140px; height: 140px; border-radius: 50%; background: var(--can-glow); filter: blur(50px); opacity: 0.5; transition: opacity 0.4s ease; z-index: 0; }
@@ -944,6 +954,14 @@ nav a:hover {
   .btn-suggest {
     width: 100%;
     justify-content: center;
+  }
+    /* Кнопка звука на мобилках: подстраиваем под кнопку темы */
+  .sound-toggle {
+    top: 10px !important;
+    right: 55px !important; /* Встает ровно слева от луны */
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 13px !important;
   }
 }
 /*Окно стили*/
@@ -2196,4 +2214,293 @@ body.overload-mode .energy-card.visible {
   color: #00e5ff !important;
   background: rgba(0, 229, 255, 0.08);
   box-shadow: 0 0 15px rgba(0, 229, 255, 0.15);
+}
+
+/* ==========================================
+   АДАПТИВ ДЛЯ НОВЫХ ФИЧЕК (ТЕЛЕФОНЫ)
+   ========================================== */
+@media (max-width: 768px) {
+  
+  /* 1. МОДАЛКИ (КАЛЬКУЛЯТОР И СРАВНЕНИЕ) */
+  .custom-modal-inner {
+    padding: 20px !important;
+    border-radius: 16px !important;
+  }
+  .custom-modal-inner h2 {
+    font-size: 20px !important;
+    margin-bottom: 15px !important;
+    letter-spacing: 1px !important;
+  }
+  .custom-modal-close {
+    top: 10px !important;
+    right: 10px !important;
+  }
+
+  /* 2. ПОИСК В КАЛЬКУЛЯТОРЕ */
+  .calc-dropdown {
+    max-height: 150px;
+  }
+  .calc-option {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  /* 3. СРАВНЕНИЕ (УМЕНЬШАЕМ ШРИФТЫ, ЧТОБЫ ВЛЕЗЛО В 2 КОЛОНКИ) */
+  #compareContent {
+    gap: 15px !important;
+  }
+  .compare-col h3 {
+    font-size: 14px !important;
+    margin-bottom: 10px !important;
+  }
+  .compare-stat-val {
+    font-size: 14px !important;
+  }
+  .compare-stat-label {
+    font-size: 9px !important;
+  }
+  .compare-bar-bg {
+    height: 4px !important;
+  }
+
+  /* Если экран УЖЕ совсем маленький (например iPhone SE) - сравнение в 1 колонку */
+  @media (max-width: 400px) {
+    #compareContent {
+      grid-template-columns: 1fr !important;
+      gap: 20px !important;
+    }
+  }
+
+  /* 4. КНОПКИ НА КАРТОЧКЕ (СЕРДЕЧКО И СРАВНЕНИЕ) */
+  .cmp-btn {
+    top: 10px !important;
+    right: 10px !important;
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 11px !important;
+  }
+  /* Сдвигаем сердечко чуть левее, чтобы они не слиплись */
+  .fav-btn {
+    top: 10px !important;
+    right: 46px !important;
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 12px !important;
+  }
+
+  /* 5. КНОПКА "ВЫБРАТЬ ЗА МЕНЯ" */
+  #randomBtn {
+    width: 100%;
+    justify-content: center;
+    margin-top: 5px;
+  }
+
+  /* 6. ПЛАВАЮЩАЯ КНОПКА СРАВНЕНИЯ ВНИЗУ */
+  #compareFloatBtn {
+    font-size: 13px !important;
+    padding: 10px 20px !important;
+    bottom: 20px !important;
+  }
+
+  /* 7. СЕКЦИЯ "СКОРО" (ВЗЛОМ) */
+  .hack-progress-wrap {
+    width: 90%;
+  }
+  .hack-status {
+    font-size: 8px !important;
+    padding: 0 5px;
+    text-align: center;
+  }
+  
+  /* 8. ТОСТЫ С ДОСТИЖЕНИЯМИ */
+  .achievement-toast {
+    flex-direction: column !important;
+    text-align: center;
+    gap: 8px !important;
+    padding: 15px !important;
+  }
+}
+
+/* ==========================================
+   ТЕРМИНАЛ И ДОСЬЕ
+   ========================================== */
+.terminal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background: #000;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.terminal-overlay.active {
+  display: flex;
+  animation: crtOn 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@keyframes crtOn {
+  0% { transform: scaleY(0.005) scaleX(0.3); filter: brightness(30); }
+  20% { transform: scaleY(0.005) scaleX(1); filter: brightness(10); }
+  40% { transform: scaleY(1) scaleX(0.8); filter: brightness(2); opacity: 1; }
+  100% { transform: scaleY(1) scaleX(1); filter: brightness(1); opacity: 1; }
+}
+
+.terminal-window {
+  max-width: 600px !important;
+  width: 100%;
+  background: #0a0a0a !important;
+  border: 1px solid #333 !important;
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  height: 60vh;
+  max-height: 500px;
+}
+.terminal-overlay .terminal-window {
+  max-width: 100% !important;
+  width: 100%;
+  height: 100vh;
+  max-height: 100vh;
+  border-radius: 0 !important;
+  border: none !important;
+}
+.terminal-header {
+  background: #111;
+  padding: 10px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #333;
+  font-family: monospace;
+  color: #888;
+  font-size: 12px;
+}
+.terminal-body {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  font-family: monospace;
+  font-size: 14px;
+  color: #ccc;
+  line-height: 1.5;
+}
+.terminal-body div { margin-bottom: 5px; }
+.terminal-input-wrap {
+  display: flex;
+  align-items: center;
+  background: #111;
+  border-top: 1px solid #333;
+  padding: 10px 15px;
+}
+#terminalInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-family: monospace;
+  font-size: 14px;
+  outline: none;
+  caret-color: var(--accent);
+}
+/* ==========================================
+   ПОЛНОЭКРАННЫЙ ТЕРМИНАЛ И НОВЫЕ РАНГИ
+   ========================================== */
+/* Делаем ник кликабельным */
+.correct-name {
+  cursor: pointer;
+  user-select: none;
+}
+
+.terminal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background: #000;
+  display: none;
+  flex-direction: column;
+}
+.terminal-overlay.active {
+  display: flex;
+  /* Эффект включения старого ЭЛТ телевизора */
+  animation: crtOn 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@keyframes crtOn {
+  0% { transform: scaleY(0.005) scaleX(0.3); filter: brightness(30); }
+  20% { transform: scaleY(0.005) scaleX(1); filter: brightness(10); }
+  40% { transform: scaleY(1) scaleX(0.8); filter: brightness(2); opacity: 1; }
+  100% { transform: scaleY(1) scaleX(1); filter: brightness(1); opacity: 1; }
+}
+
+.terminal-overlay .terminal-window {
+  max-width: 100% !important;
+  width: 100%;
+  height: 100vh;
+  max-height: 100vh;
+  border-radius: 0 !important;
+  border: none !important;
+}
+
+/* Цвета для новых рангов */
+.rank-legend { color: #c084fc !important; text-shadow: 0 0 10px rgba(192,132,252,0.5); }
+.rank-maniac { color: #ff3b5c !important; text-shadow: 0 0 10px rgba(255,59,92,0.5); }
+.rank-agent { color: #fbbf24 !important; text-shadow: 0 0 10px rgba(251,191,36,0.5); }
+.rank-intern { color: #00e5ff !important; text-shadow: 0 0 10px rgba(0,229,255,0.5); }
+.rank-newbie { color: #888 !important; }
+
+/* ==========================================
+   ЦВЕТА РАНГОВ ДОСТИЖЕНИЙ
+   ========================================== */
+.tier-bronze i, .tier-bronze span { color: #cd7f32 !important; }
+.tier-silver i, .tier-silver span { color: #C0C0C0 !important; }
+.tier-gold i, .tier-gold span { color: #fbbf24 !important; }
+.tier-diamond i, .tier-diamond span { color: #b9f2ff !important; text-shadow: 0 0 10px rgba(185,242,255,0.5); }
+.tier-purple i, .tier-purple span { color: #c084fc !important; text-shadow: 0 0 10px rgba(192,132,252,0.5); }
+
+/* Обновляем рамку под цвет */
+.tier-bronze.unlocked { border-color: rgba(205, 127, 50, 0.3); background: rgba(205, 127, 50, 0.05); }
+.tier-silver.unlocked { border-color: rgba(192, 192, 192, 0.3); background: rgba(192, 192, 192, 0.05); }
+.tier-gold.unlocked { border-color: rgba(251, 191, 36, 0.3); background: rgba(251, 191, 36, 0.05); }
+.tier-diamond.unlocked { border-color: rgba(185, 242, 255, 0.3); background: rgba(185, 242, 255, 0.05); }
+.tier-purple.unlocked { border-color: rgba(192, 132, 252, 0.3); background: rgba(192, 132, 252, 0.05); }
+
+/* ==========================================
+   КНОПКА ВЫКЛЮЧЕНИЯ ЗВУКА
+   ========================================== */
+.sound-toggle {
+  position: fixed;
+  top: 20px;
+  right: 75px; /* Сдвигаем левее, чтобы не залезать на луну */
+  z-index: 10001;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  color: var(--fg);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+.sound-toggle:hover {
+  transform: scale(1.1);
+  background: var(--accent);
+  color: #000;
+}
+.sound-toggle.muted {
+  color: #555; /* Тусклый, когда звук выключен */
+}
+.sound-toggle.muted i::after {
+  content: '';
+  position: absolute;
+  width: 2px;
+  height: 20px;
+  background: #ff3b5c;
+  transform: rotate(45deg);
 }

@@ -1,13 +1,25 @@
 // ==========================================
-// 0. ЗВУКОВОЙ ДИЗАЙН (СИНТЕЗАТОР 0 КБ)
+// 0. ЗВУКОВОЙ ДИЗАЙН (СИНТЕЗАТОР V.2)
 // ==========================================
 const AudioSys = (function() {
   let ctx;
+  let isMuted = false;
+
+  if (localStorage.getItem('buzz_sound_off') === 'true') isMuted = true;
+
   function getCtx() {
     if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
     return ctx;
   }
+  
+  function toggleMute() {
+    isMuted = !isMuted;
+    localStorage.setItem('buzz_sound_off', isMuted);
+    return isMuted;
+  }
+
   function play(type) {
+    if (isMuted) return;
     try {
       const c = getCtx();
       const osc = c.createOscillator();
@@ -16,37 +28,42 @@ const AudioSys = (function() {
       gain.connect(c.destination);
 
       if (type === 'click') {
-        osc.type = 'sine'; osc.frequency.value = 800;
-        gain.gain.setValueAtTime(0.08, c.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.08);
-        osc.start(c.currentTime); osc.stop(c.currentTime + 0.08);
+        osc.type = 'square'; 
+        osc.frequency.value = 1000; 
+        gain.gain.setValueAtTime(0.12, c.currentTime); // Было 0.04
+        gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.05);
+        osc.start(c.currentTime); osc.stop(c.currentTime + 0.05);
       } else if (type === 'open') {
-        osc.type = 'sine'; osc.frequency.value = 300; osc.frequency.linearRampToValueAtTime(600, c.currentTime + 0.15);
-        gain.gain.setValueAtTime(0.06, c.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.2);
-        osc.start(c.currentTime); osc.stop(c.currentTime + 0.2);
+        osc.type = 'sine';
+        osc.frequency.value = 400; osc.frequency.linearRampToValueAtTime(800, c.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.10, c.currentTime); // Было 0.04
+        gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.15);
+        osc.start(c.currentTime); osc.stop(c.currentTime + 0.15);
       } else if (type === 'error') {
-        osc.type = 'square'; osc.frequency.value = 150;
-        gain.gain.setValueAtTime(0.06, c.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.3);
-        osc.start(c.currentTime); osc.stop(c.currentTime + 0.3);
+        osc.type = 'sawtooth'; 
+        osc.frequency.value = 150;
+        gain.gain.setValueAtTime(0.15, c.currentTime); // Было 0.05
+        gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.25);
+        osc.start(c.currentTime); osc.stop(c.currentTime + 0.25);
       } else if (type === 'achievement') {
         osc.type = 'sine';
         osc.frequency.setValueAtTime(523, c.currentTime);
         osc.frequency.setValueAtTime(659, c.currentTime + 0.1);
         osc.frequency.setValueAtTime(784, c.currentTime + 0.2);
-        gain.gain.setValueAtTime(0.08, c.currentTime);
+        gain.gain.setValueAtTime(0.15, c.currentTime); // Было 0.06
         gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.4);
         osc.start(c.currentTime); osc.stop(c.currentTime + 0.4);
       }
     } catch(e) {}
   }
-  return { play };
+  
+  return { play, toggleMute, isMuted: () => isMuted };
 })();
 
-// Глобальный звук для всех кнопок и ссылок
+// УМНАЯ СЛУШАТЕЛЬ: не берем в расчет кнопки видео, скролла и переходы по ссылкам
 document.addEventListener('click', function(e) {
-  if (e.target.closest('button') || e.target.closest('a') || e.target.closest('.filter-btn') || e.target.closest('.fav-btn')) {
+  const target = e.target.closest('button, .filter-btn, .fav-btn, .cmp-btn, .calc-option, .mobile-link-btn');
+  if (target && !target.closest('.modal-bottom-actions') && !target.closest('.scroll-top-btn') && !target.getAttribute('href')) {
     AudioSys.play('click');
   }
 });
@@ -56,11 +73,12 @@ document.addEventListener('click', function(e) {
 // 0.5 СИСТЕМА ДОСТИЖЕНИЙ
 // ==========================================
 const achievements = {
-  fav3: { name: 'Любитель энергетиков', icon: 'fa-heart', text: 'Добавил 3 напитка в избранное' },
-  caffeine: { name: 'Сердце-мотор', icon: 'fa-heart-crack', text: 'Превысил суточную норму кофеина' },
-  matrix: { name: 'Проснулся', icon: 'fa-terminal', text: 'Нашел режим Матрицы' },
-  key: { name: 'Мастер взлома', icon: 'fa-key', text: 'Ввел секретный ключ' },
-  random: { name: 'Фатализм', icon: 'fa-dice', text: 'Доверился выбору системы' }
+  random: { name: 'Фатализм', icon: 'fa-dice', text: 'Доверился выбору системы', tier: 'bronze' },
+  fav3: { name: 'Любитель энергетиков', icon: 'fa-heart', text: 'Добавил 3 напитка в избранное', tier: 'silver' },
+  matrix: { name: 'Проснулся', icon: 'fa-terminal', text: 'Нашел режим Матрицы', tier: 'gold' },
+  caffeine: { name: 'Сердце-мотор', icon: 'fa-heart-crack', text: 'Превысил суточную норму кофеина', tier: 'diamond' },
+  key: { name: 'Мастер взлома', icon: 'fa-key', text: 'Ввел секретный ключ', tier: 'purple' },
+   godmode: { name: 'Режим Бога', icon: 'fa-crown', text: 'Активировал скрытые привилегии', tier: 'purple' }
 };
 
 function unlockAchievement(id) {
@@ -1579,6 +1597,10 @@ function openRickrollModal() {
       calcStatus.textContent = 'ОПАСНОСТЬ: ПРЕВЫШЕН ДОПУСТИМЫЙ ЛИМИТ'; calcStatus.style.color = '#ff3b5c';
             unlockAchievement('caffeine');
     }
+        // Сохраняем рекорд дозы кофеина
+    if (total > parseInt(localStorage.getItem('buzz_max_caffeine') || 0)) {
+      localStorage.setItem('buzz_max_caffeine', total);
+    }
   }
 
   function closeCalcModal() {
@@ -1854,3 +1876,345 @@ document.querySelectorAll('.coming-card').forEach(card => {
     }
   });
 });
+
+// ==========================================
+// 16. ТЕРМИНАЛ И ДОСЬЕ АГЕНТА V.6.2 (ФИНАЛ)
+// ==========================================
+(function() {
+  const termOverlay = document.getElementById('terminalOverlay');
+  const termOutput = document.getElementById('terminalOutput');
+  const termInput = document.getElementById('terminalInput');
+  const profModal = document.getElementById('profileModal');
+  const profContent = document.getElementById('profileContent');
+
+  let secretSeq = 0;
+  let isRootAccess = false; 
+  let godModeActive = false; 
+  let realMaxCaff = 0; 
+  let resetPending = false; 
+
+  function attachTerminalListener() {
+    const nicknameEl = document.querySelector('.correct-name');
+    if (nicknameEl) {
+      nicknameEl.addEventListener('dblclick', function(e) {
+        e.stopPropagation();
+        termOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        if (typeof AudioSys !== 'undefined') AudioSys.play('open');
+        setTimeout(() => termInput.focus(), 600);
+      });
+    } else {
+      setTimeout(attachTerminalListener, 150);
+    }
+  }
+  attachTerminalListener();
+
+  function closeTerm() { 
+    termOverlay.classList.remove('active'); 
+    document.body.style.overflow = ''; 
+    secretSeq = 0; 
+    isRootAccess = false; 
+    godModeActive = false;
+    resetPending = false;
+  }
+  document.getElementById('closeTerminal').addEventListener('click', closeTerm);
+
+  function closeProf() { profModal.classList.remove('open'); document.body.style.overflow = ''; }
+  document.getElementById('closeProfile').addEventListener('click', closeProf);
+  profModal.addEventListener('click', e => { if(e.target === profModal) closeProf(); });
+  document.addEventListener('keydown', e => { 
+    if(e.key === 'Escape' && profModal.classList.contains('open')) closeProf(); 
+    if(e.key === 'Escape' && termOverlay.classList.contains('active')) closeTerm();
+  });
+
+  termInput.addEventListener('keydown', function(e) {
+    if (e.key !== 'Enter') return;
+    const cmd = termInput.value.trim().toLowerCase();
+    termInput.value = '';
+    
+    termOutput.innerHTML += `<div style="color:var(--accent);">> ${cmd}</div>`;
+    
+    let response = '';
+    const args = cmd.split(' ');
+    const command = args[0];
+
+    // === 1. СИСТЕМА СБРОСА (Y/N) ===
+    if (resetPending) {
+      if (command === 'y' || command === 'yes') {
+        resetPending = false;
+        response = `Очистка базы данных...<br><span style="color:#00ff41;">[УСПЕШНО]</span><br>Статус: 0<br>Вы свободны. До свидания.`;
+        setTimeout(() => { localStorage.clear(); location.reload(); }, 2000);
+      } 
+      else if (command === 'n' || command === 'no') {
+        resetPending = false;
+        response = `Операция отменена.<br><span style="color:#fbbf24;">Мы всегда вам рады. Приходите еще.</span>`;
+      } 
+      else {
+        response = `<span style="color:#ff3b5c;">ОШИБКА: Неверный ввод. Введите Y или N.</span>`;
+      }
+    }
+
+    // === 2. СКРЫТЫЙ ПАРОЛЬ: my -> name -> vox ===
+    else if (command === 'my' && secretSeq === 0) { secretSeq++; response = "..."; }
+    else if (command === 'name' && secretSeq === 1) { secretSeq++; response = "..?"; }
+    else if (command === 'vox' && secretSeq === 2) {
+      secretSeq = 0; isRootAccess = true;
+      response = `<span style="color:#c084fc;">ПАРОЛЬ ПРИНЯТ. УРОВЕНЬ ДОПУСКА: ROOT.</span><br>Выберите действие:<br>  <span style="color:#fbbf24;">1</span> - Выдать секретное достижение<br>  <span style="color:#fbbf24;">2</span> - Вкл/Выкл РЕЖИМ БОГА`;
+    }
+    else if (secretSeq > 0 && !isRootAccess && command !== 'my' && command !== 'name' && command !== 'vox') { secretSeq = 0; }
+
+    // === 3. ДЕЙСТВИЯ ПОСЛЕ ПАРОЛЯ ===
+    else if (isRootAccess && command === '1') {
+      unlockAchievement('godmode');
+      response = `<span style="color:#fbbf24;">Достижение "Режим Бога" разблокировано в системе.</span>`;
+    }
+    else if (isRootAccess && command === '2') {
+      if (!godModeActive) {
+        godModeActive = true;
+        realMaxCaff = parseInt(localStorage.getItem('buzz_max_caffeine') || 0);
+        response = `<span style="color:#c084fc;">ИНИЦИАЛИЗАЦИЯ РЕЖИМА БОГА...</span><br>Ограничения сняты. Рекорд кофеина: 9999 мг.<br>Введите "2" еще раз для деактивации.`;
+        localStorage.setItem('buzz_max_caffeine', '9999');
+        for (let key in achievements) { localStorage.setItem('ach_' + key, 'true'); }
+        if (typeof AudioSys !== 'undefined') AudioSys.play('achievement');
+      } else {
+        godModeActive = false;
+        response = `<span style="color:#888;">РЕЖИМ БОГА ДЕАКТИВИРОВАН.</span><br>Реальные данные восстановлены.`;
+        localStorage.setItem('buzz_max_caffeine', realMaxCaff);
+        if (typeof AudioSys !== 'undefined') AudioSys.play('click');
+      }
+    }
+
+    // === 4. КОМАНДА СБРОСА ===
+    else if (command === 'reset') {
+      resetPending = true;
+      response = `<span style="color:#ff3b5c; font-weight:bold;">- ПРЕДУПРЕЖДЕНИЕ - ОШИБКА -</span><br>Вы уверены? Все ваши данные будут стерты навсегда.<br>Если да, то теперь вы свободны. До свидания.<br><br>Введите <span style="color:#fbbf24;">Y</span> для подтверждения или <span style="color:#fbbf24;">N</span> для отмены.`;
+      if (typeof AudioSys !== 'undefined') AudioSys.play('error');
+    }
+
+    // === 5. ОСТАЛЬНЫЕ КОМАНДЫ ===
+    else if (command === 'help') {
+      response = `Доступные команды:<br>
+      <span style="color:#fbbf24;">help</span> - Список команд<br>
+      <span style="color:#fbbf24;">ls</span> - Объекты в базе<br>
+      <span style="color:#fbbf24;">scan [марка]</span> - Сканирование базы<br>
+      <span style="color:#fbbf24;">analyze [марка]</span> - Детальный анализ состава<br>
+      <span style="color:#fbbf24;">track [марка]</span> - Найти магазин на карте<br>
+      <span style="color:#fbbf24;">hack [марка]</span> - Взлом рецептуры<br>
+      <span style="color:#fbbf24;">buy [напиток]</span> - Попытка покупки<br>
+      <span style="color:#fbbf24;">whoami</span> - Информация об агенте<br>
+      <span style="color:#fbbf24;">whois chief</span> - Досье на шефа<br>
+      <span style="color:#fbbf24;">date</span> - Время сервера<br>
+      <span style="color:#fbbf24;">coffee</span> - Рандомный напиток<br>
+      <span style="color:#fbbf24;">sudo drink</span> - Попытка апгрейда<br>
+      <span style="color:#fbbf24;">cat classified.txt</span> - Секретный файл<br>
+      <span style="color:#fbbf24;">top secret</span> - Расшифровать данные<br>
+      <span style="color:#fbbf24;">ping</span> - Пинговать Сервер<br>
+      <span style="color:#ff3b5c;">reset</span> - СБРОС ДАННЫХ (ОПАСНО)<br>
+      <span style="color:#fbbf24;">status</span> - Досье агента<br>
+      <span style="color:#fbbf24;">clear</span> - Очистить экран<br>
+      <span style="color:#fbbf24;">exit</span> - Отключиться`;
+    } 
+    else if (command === 'analyze') {
+      const brand = args[1];
+      if (!brand) { response = `<span style="color:#ff3b5c;">ОШИБКА: Укажите марку (пример: analyze hell).</span>`; }
+      else {
+        const target = drinks.find(d => d.key === brand);
+        if (!target) { response = `<span style="color:#ff3b5c;">ОШИБКА: База данных не содержит марку "${brand}".</span>`; }
+        else {
+          response = `АНАЛИЗ ОБЪЕКТА: <span style="color:${bColors[brand] || '#fff'}; font-weight:bold;">${target.brand}</span><br>` +
+          `-----------------------------------<br>` +
+          `Объем:       ${target.flavor}<br>` +
+          `Кофеин:      <span style="color:#00e5ff;">${target.caffeine}</span><br>` +
+          `Сахар:       <span style="color:#ff4081;">${target.sugar}</span><br>` +
+          `Калории:     <span style="color:#ffab00;">${target.cal}</span><br>` +
+          `Кислотность: <span style="color:#b388ff;">${target.ph}</span> pH<br>` +
+          `-----------------------------------<br>` +
+          `<span style="color:#888;">Статус ядра: Стабильно.</span>`;
+        }
+      }
+    }
+    else if (command === 'whois' && args[1] === 'chief') {
+      response = `ЗАПРОС К ЦЕНТРАЛЬНОЙ БАЗЕ ДАННЫХ...<br>` +
+      `-----------------------------------<br>` +
+      `Позывной:     <span style="color:#fbbf24;">Varna 23 live</span><br>` +
+      `Локация:      Варна, Болгария [ЗАСЕКРЕЧЕНО]<br>` +
+      `Специализация: Дегустация и критика синтетических стимуляторов<br>` +
+      `Угроза:       <span style="color:#ff3b5c;">ВЫСОКАЯ</span> (для печени противника)<br>` +
+      `Статус:       Ожидает поставку...<br>` +
+      `-----------------------------------<br>` +
+      `<span style="color:#888;">[Конец файла]</span>`;
+    }
+    else if (command === 'hack') {
+      const brand = args[1];
+      const secrets = {
+        monster: "Слезы разработчиков Red Bull и экстракт таурина.",
+        hell: "Чистое зло, экстракт перца чили и гордость Венгрии.",
+        redbull: "Вода, сахар, кофеин и маркетинговый бюджет в 10 миллиардов.",
+        burn: "Подозрительный сироп 'Вишня', который не содержит настоящей вишни.",
+        battery: "Финский фокус-покус: дешевый кофеин в дорогой банке.",
+        c4: "Сыворотка для качков, замаскированная под энергетик."
+      };
+      if (!brand || !secrets[brand]) { response = `<span style="color:#ff3b5c;">ОШИБКА: Цель не найдена или защищена.</span>`; if (typeof AudioSys !== 'undefined') AudioSys.play('error'); }
+      else { response = `Взлом ядра ${brand.toUpperCase()}... <span style="color:#00ff41;">[УСПЕШНО]</span><br>Секретный ингредиент: ${secrets[brand]}`; }
+    }
+    else if (command === 'track') {
+      const brand = args[1];
+      if (!brand) { response = `<span style="color:#ff3b5c;">ОШИБКА: Укажите марку для трекинга (пример: track monster).</span>`; }
+      else {
+        const foundLocations = mapLocations.filter(loc => loc.inventory.includes(brand));
+        if (foundLocations.length === 0) {
+          response = `Трекинг ${brand.toUpperCase()}: <span style="color:#ff3b5c;">Сигнал потерян.</span> Марка не найдена в доступных точках.`;
+        } else {
+          let locNames = foundLocations.map(l => `- ${l.name}`).join('<br>');
+          response = `Трекинг ${brand.toUpperCase()}... <span style="color:#00ff41;">[СИГНАЛ НАЙДЕН]</span><br>Обнаружено в точках:<br>${locNames}`;
+        }
+      }
+    }
+    else if (command === 'buy') {
+      const item = args.slice(1).join(' ');
+      if (!item) { response = `<span style="color:#ff3b5c;">ОШИБКА: Что купить?</span>`; }
+      else { response = `Попытка покупки "${item}"...<br><span style="color:#ff3b5c;">ОШИБКА: Карта отклонена. Иди пей воду.</span>`; if (typeof AudioSys !== 'undefined') AudioSys.play('error'); }
+    }
+    else if (command === 'sudo' && args[1] === 'drink') {
+      response = `Вы попытались выпить консоль...<br>Кофеин: <span style="color:#ff3b5c;">+9999 мг</span><br>Статус: Сервер переваривает...<br><span style="color:#888;">[ОШИБКА: ПЕЧЕНЬ НЕ НАЙДЕНА]</span>`;
+      if (typeof AudioSys !== 'undefined') AudioSys.play('error');
+    }
+    else if (command === 'cat' && args[1] === 'classified.txt') {
+      response = `РАСШИФРОВКА ФАЙЛА...<br>--- СЕКРЕТНО ---<br>Протокол "Зелёный Бык":<br>Если смешать Hell Energy и Red Bull, получится просто грязная вода с двойной дозой таурина.<br>Не пытайтесь повторить это дома. Мы уже пытались.<br>--- КОНЕЦ ФАЙЛА ---`;
+    }
+    else if (command === 'ls') { response = `Обнаружено ${drinks.length} объектов в сети.`; } 
+    else if (command === 'scan') {
+      const brand = args[1];
+      if (!brand) { response = `<span style="color:#ff3b5c;">ОШИБКА: Укажите марку.</span>`; }
+      else {
+        const count = drinks.filter(d => d.key === brand).length;
+        if (count === 0) response = `Скан "${brand}": Объекты не найдены.`;
+        else response = `Скан "${brand}": Найдено ${count} объектов.`;
+      }
+    } 
+    else if (command === 'whoami') {
+      const id = Math.floor(Math.random() * 9000 + 1000);
+      response = `AGENT_ID: #${id}<br>STATUS: Активен<br>УРОВЕНЬ ДОПУСКА: Секретный`;
+    }
+    else if (command === 'date') { response = `Текущее время сервера: ${new Date().toLocaleString('ru-RU')}`; }
+    else if (command === 'coffee') {
+      const rd = drinks[Math.floor(Math.random() * drinks.length)];
+      response = `Рекомендация ИИ: <span style="color:#fbbf24;">${rd.brand}</span> (${rd.flavor}). Выпей, пока не затормозил.`;
+    }
+    else if (command === 'top' && args[1] === 'secret') {
+      response = `РАСШИФРОВКА...<br>СОВЕРШЕННО СЕКРЕТНО:<br>"Шеф любит ${drinks[Math.floor(Math.random() * drinks.length)].key}"<br><span style="color:#ff3b5c;">ВНИМАНИЕ: ЗА ВАМИ СЛЕДЯТ.</span>`;
+      if (typeof AudioSys !== 'undefined') AudioSys.play('error');
+    }
+    else if (command === 'ping' && !args[1]) {
+      response = `Ответ от Большого брата: <span style="color:#fbbf24;">"Занимайся своими делами,пей свой энергетик и не трогай сервер."</span>`;
+    }
+    else if (command === 'sudo' && args[1] === 'delete' && args[2] === 'system32') {
+      response = `<span style="color:#ff3b5c;">ОШИБКА: А тебе не кажется, что это глупая идея?</span>`;
+      if (typeof AudioSys !== 'undefined') AudioSys.play('error');
+    }
+    else if (command === 'status') {
+      closeTerm(); renderProfile(); 
+      setTimeout(() => { profModal.classList.add('open'); document.body.style.overflow = 'hidden'; }, 300); 
+      return; 
+    } 
+    else if (command === 'clear') { termOutput.innerHTML = ''; return; } 
+    else if (command === 'exit') { closeTerm(); return; } 
+    else if (cmd === '') { return; } 
+    else {
+      response = `<span style="color:#ff3b5c;">Команда '${command}' не распознана. Введите help.</span>`;
+      if (typeof AudioSys !== 'undefined') AudioSys.play('error');
+    }
+
+    termOutput.innerHTML += `<div>${response}</div>`;
+    termOutput.scrollTop = termOutput.scrollHeight;
+  });
+
+  // Логика Досье (без изменений)
+  function renderProfile() {
+    const visits = JSON.parse(localStorage.getItem('buzzrate_visits') || '[]').length;
+    const favs = JSON.parse(localStorage.getItem('energy_favs') || '[]');
+    const maxCaff = parseInt(localStorage.getItem('buzz_max_caffeine') || 0);
+
+    const brandCounts = {};
+    favs.forEach(f => { const b = f.split('_')[0]; brandCounts[b] = (brandCounts[b] || 0) + 1; });
+    let topBrand = 'Нет данных'; let maxCount = 0;
+    for (let b in brandCounts) { if (brandCounts[b] > maxCount) { maxCount = brandCounts[b]; topBrand = bNames[b] || b; } }
+
+    let score = 0;
+    score += Math.min(visits * 2, 50); 
+    score += Math.min(favs.length * 5, 30); 
+    score += Math.min(Math.floor(maxCaff / 20), 20); 
+    let achCount = 0; for (let key in achievements) { if (localStorage.getItem('ach_' + key)) achCount++; }
+    score += achCount * 10; 
+
+    let rank, rankClass;
+    if (score >= 120) { rank = 'Легенда Базз Рейта'; rankClass = 'rank-legend'; }
+    else if (score >= 80) { rank = 'Кофеиновый маньяк'; rankClass = 'rank-maniac'; }
+    else if (score >= 50) { rank = 'Опытный агент'; rankClass = 'rank-agent'; }
+    else if (score >= 20) { rank = 'Стажер'; rankClass = 'rank-intern'; }
+    else { rank = 'Новичок'; rankClass = 'rank-newbie'; }
+
+    let achHtml = '';
+    for (let key in achievements) {
+      const isUnlocked = localStorage.getItem('ach_' + key);
+      const tierClass = isUnlocked ? ('unlocked tier-' + achievements[key].tier) : 'locked';
+      achHtml += `
+        <div class="profile-ach-item ${tierClass}">
+          <i class="fa-solid ${isUnlocked ? achievements[key].icon : 'fa-question'}"></i>
+          <span>${isUnlocked ? achievements[key].name : '???'}</span>
+        </div>
+      `;
+    }
+
+    profContent.innerHTML = `
+      <div class="profile-stat-row">
+        <span class="profile-stat-label">КЛАСС АГЕНТА</span>
+        <span class="profile-stat-val ${rankClass}">${rank} (${score} очков)</span>
+      </div>
+      <div class="profile-stat-row">
+        <span class="profile-stat-label">МИССИЙ (ВИЗИТОВ)</span>
+        <span class="profile-stat-val">${visits}</span>
+      </div>
+      <div class="profile-stat-row">
+        <span class="profile-stat-label">ЛЮБИМЫЙ БРЕНД</span>
+        <span class="profile-stat-val">${topBrand}</span>
+      </div>
+      <div class="profile-stat-row">
+        <span class="profile-stat-label">МАКС. ДОЗА КАФЕИНА</span>
+        <span class="profile-stat-val" style="color: ${maxCaff > 400 ? '#ff3b5c' : '#fff'}">${maxCaff} мг</span>
+      </div>
+      <div style="font-family:'Oswald'; color:#888; margin-top:25px; margin-bottom:10px; letter-spacing:1px;">ДОСТИЖЕНИЯ (${achCount}/6)</div>
+      <div class="profile-ach-grid">${achHtml}</div>
+    `;
+  }
+})();
+// ==========================================
+// РАБОТА КНОПКИ ВЫКЛЮЧЕНИЯ ЗВУКА
+// ==========================================
+const soundToggle = document.getElementById('soundToggle');
+
+if (soundToggle) {
+  // Проверяем состояние при загрузке (если звук был выключен ранее)
+  if (AudioSys.isMuted()) {
+    soundToggle.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+    soundToggle.setAttribute('aria-label', 'Включить звук');
+  }
+
+  // Обработка клика
+  soundToggle.addEventListener('click', function(e) {
+    // Останавливаем клик, чтобы кнопка не "пикнула"
+    e.stopPropagation(); 
+
+    // Переключаем звук в системе
+    const isNowMuted = AudioSys.toggleMute();
+
+    // Меняем иконку в зависимости от нового состояния
+    if (isNowMuted) {
+      this.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+      this.setAttribute('aria-label', 'Включить звук');
+    } else {
+      this.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+      this.setAttribute('aria-label', 'Выключить звук');
+    }
+  });
+}
