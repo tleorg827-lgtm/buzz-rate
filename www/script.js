@@ -3223,14 +3223,15 @@ if (document.readyState !== 'loading') {
 
 
 // ============================================================
-// FIX 3: FALLBACK ДЛЯ КАРТИНОК + ПРИНУДИТЕЛЬНАЯ ЗАГРУЗКА
-// Если картинка не загрузилась — показываем placeholder с первой буквой бренда
-// Также: перепроверяем загрузку через 1.5 сек (для мобилы с медленным интернетом)
+// FIX 3: FALLBACK ДЛЯ КАРТИНОК — ТОЛЬКО ПРИ РЕАЛЬНОЙ ОШИБКЕ
+// ВАЖНО: не запускаем fallback преждевременно. Ждём событие 'error' ИЛИ
+// через 5 секунд проверяем naturalWidth. Если картинка загрузилась — fallback не нужен.
 // ============================================================
 (function() {
-  function handleImgError(img) {
-    if (img.dataset.errorHandled) return;
-    img.dataset.errorHandled = '1';
+  function showPlaceholder(img) {
+    // Если уже есть placeholder — выходим
+    if (img.dataset.placeholderShown) return;
+    img.dataset.placeholderShown = '1';
     
     const card = img.closest('.energy-card');
     const brand = card ? (card.querySelector('.card-brand')?.textContent || 'B') : 'B';
@@ -3238,10 +3239,6 @@ if (document.readyState !== 'loading') {
     
     // Прячем битую картинку
     img.style.opacity = '0';
-    img.style.width = '80px';
-    img.style.height = '120px';
-    img.style.background = 'linear-gradient(135deg,#1a1a24,#0d0d12)';
-    img.style.borderRadius = '8px';
     
     // Создаём placeholder поверх
     if (!img.parentElement.querySelector('.img-placeholder')) {
@@ -3254,46 +3251,44 @@ if (document.readyState !== 'loading') {
     }
   }
   
-  // Слушаем ошибки всех img (capturing phase)
-  document.addEventListener('error', function(e) {
+  function hidePlaceholder(img) {
+    // Если картинка загрузилась — убираем placeholder и метку
+    if (img.dataset.placeholderShown) {
+      delete img.dataset.placeholderShown;
+      img.style.opacity = '';
+      const placeholder = img.parentElement?.querySelector('.img-placeholder');
+      if (placeholder) placeholder.remove();
+    }
+  }
+  
+  // ТОЛЬКО событие error — реальный сигнал, что картинка не загрузилась
+  function onError(e) {
+    const img = e.target;
+    if (img.tagName !== 'IMG') return;
+    if (img.dataset.placeholderShown) return;
+    // Небольшая задержка — вдруг браузер ещё пытается загрузить
+    setTimeout(() => {
+      if (img.complete && img.naturalWidth === 0) {
+        showPlaceholder(img);
+      }
+    }, 100);
+  }
+  
+  document.addEventListener('error', onError, true);
+  
+  // Когда картинка успешно загрузилась — убираем placeholder (если был)
+  document.addEventListener('load', function(e) {
     if (e.target.tagName === 'IMG') {
-      handleImgError(e.target);
+      hidePlaceholder(e.target);
     }
   }, true);
   
-  // Принудительная проверка через 1.5 сек
+  // Через 5 секунд — финальная проверка (для совсем медленного интернета)
   setTimeout(() => {
     document.querySelectorAll('img').forEach(img => {
-      if (img.complete && img.naturalWidth === 0 && !img.dataset.errorHandled) {
-        handleImgError(img);
+      if (img.complete && img.naturalWidth === 0 && !img.dataset.placeholderShown) {
+        showPlaceholder(img);
       }
     });
-  }, 1500);
-  
-  // Ещё раз через 3 сек (для совсем медленного интернета)
-  setTimeout(() => {
-    document.querySelectorAll('img').forEach(img => {
-      if (img.complete && img.naturalWidth === 0 && !img.dataset.errorHandled) {
-        handleImgError(img);
-      }
-    });
-  }, 3000);
-  
-  // Для динамически добавленных картинок (модалка, карточки)
-  const observer = new MutationObserver(mutations => {
-    mutations.forEach(m => {
-      m.addedNodes.forEach(node => {
-        if (node.nodeType !== 1) return;
-        const imgs = node.tagName === 'IMG' ? [node] : node.querySelectorAll('img');
-        imgs.forEach(img => {
-          img.addEventListener('error', () => handleImgError(img));
-          // Если уже загрузилось с ошибкой
-          if (img.complete && img.naturalWidth === 0) {
-            handleImgError(img);
-          }
-        });
-      });
-    });
-  });
-  observer.observe(document.body, { childList: true, subtree: true });
+  }, 5000);
 })();
