@@ -8,8 +8,26 @@ const AudioSys = (function() {
   if (localStorage.getItem('buzz_sound_off') === 'true') isMuted = true;
 
   function getCtx() {
-    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (!ctx) {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      // Прогреваем контекст тишиною, чтобы первый звук не задерживался
+      try {
+        const warmOsc = ctx.createOscillator();
+        const warmGain = ctx.createGain();
+        warmGain.gain.value = 0;
+        warmOsc.connect(warmGain);
+        warmGain.connect(ctx.destination);
+        warmOsc.start();
+        warmOsc.stop(ctx.currentTime + 0.01);
+      } catch(e) {}
+    }
+    if (ctx.state === 'suspended') ctx.resume();
     return ctx;
+  }
+  
+  function resume() {
+    if (!ctx) getCtx();
+    else if (ctx.state === 'suspended') ctx.resume();
   }
   
   function toggleMute() {
@@ -57,7 +75,7 @@ const AudioSys = (function() {
     } catch(e) {}
   }
   
-  return { play, toggleMute, isMuted: () => isMuted };
+    return { play, toggleMute, isMuted: () => isMuted, resume };
 })();
 
 // УМНАЯ СЛУШАТЕЛЬ: не берем в расчет кнопки видео, скролла и переходы по ссылкам
@@ -78,7 +96,8 @@ const achievements = {
   matrix: { name: 'Проснулся', icon: 'fa-terminal', text: 'Нашел режим Матрицы', tier: 'gold' },
   caffeine: { name: 'Сердце-мотор', icon: 'fa-heart-crack', text: 'Превысил суточную норму кофеина', tier: 'diamond' },
   key: { name: 'Мастер взлома', icon: 'fa-key', text: 'Ввел секретный ключ', tier: 'purple' },
-   godmode: { name: 'Режим Бога', icon: 'fa-crown', text: 'Активировал скрытые привилегии', tier: 'purple' }
+   godmode: { name: 'Режим Бога', icon: 'fa-crown', text: 'Активировал скрытые привилегии', tier: 'purple' },
+  mobile: { name: 'Мобильный снайпер', icon: 'fa-mobile-screen', text: 'Нашёл пасхалку только для телефона', tier: 'gold' }
 };
 
 function unlockAchievement(id) {
@@ -137,12 +156,13 @@ console.log('%c[Debug]%c session src: тут был я', 'color:#555;', 'color:#
     'font-size:13px;color:#ff3b5c;font-weight:bold;'
   );
 })();
-// Распознаем приложение и убираем частицы (Canvas), чтобы не тормозило
-if (window.Capacitor) {
+// Распознаём приложение или мобильный браузер — убираем частицы, чтобы не тормозило
+const _isMobileOrNative = window.Capacitor || matchMedia('(hover: none), (max-width: 768px)').matches;
+if (_isMobileOrNative) {
   document.body.classList.add('is-native-app');
   document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('particleCanvas');
-    if(canvas) canvas.remove(); // Полностью удаляем летящие точки в приложении
+    if(canvas) canvas.remove();
   });
 }
 // ==========================================
@@ -151,17 +171,22 @@ if (window.Capacitor) {
 const APP_VERSION = 1; // Когда будешь выпускать обновление, поменяй цифру на 2, потом на 3 и т.д.
 
 function checkForUpdates() {
-  // Тихонько спрашиваем сервер Netlify
+  // Кешируем проверку на 1 час, чтобы не дёргать сервер каждый визит
+  const CACHE_KEY = 'buzz_last_update_check';
+  const last = parseInt(localStorage.getItem(CACHE_KEY) || '0', 10);
+  if (Date.now() - last < 3600000) return; // 1 час
+  
+  localStorage.setItem(CACHE_KEY, String(Date.now()));
   fetch('https://tourmaline-medovik-3b7efd.netlify.app/version.json')
     .then(response => response.json())
     .then(data => {
-      // Если версия на сервере больше, чем у нас в телефоне
       if (data.version > APP_VERSION) {
-        document.getElementById('updateModal').style.display = 'flex';
+        const m = document.getElementById('updateModal');
+        if (m) m.style.display = 'flex';
       }
     })
     .catch(() => {
-      // Если нет интернета - просто ничего не делаем, молча работаем
+      // Если нет интернета - просто ничего не делаем
     });
 }
 
@@ -176,36 +201,36 @@ const drinks = [
   // --- MONSTER (скопируй 22 раза, у тебя уже 1 оригинал) ---
   { brand: "Monster Energy - Nitro", key: "monster", flavor: "500 мл", rating: 8, img: "images/image_2.webp", caffeine: "160 мг", sugar: "54 г", cal: "223 kcal", ph: "3.5", video: "7361838290757873979" },
 
-  { brand: "Monster Energy - Ultra blue", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra blue.webp", caffeine: "150 мг", sugar: "0 г", cal: "11 kcal", ph: "3.4", video: "" },
+  { brand: "Monster Energy - Ultra blue", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra-blue.webp", caffeine: "150 мг", sugar: "0 г", cal: "11 kcal", ph: "3.4", video: "" },
 
   { brand: "Monster Energy - Ultra black", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra-black.webp", caffeine: "150 мг", sugar: "0 г", cal: "15 kcal", ph: "3.6", video: "" },
 
   { brand: "Monster Energy - Juiced Viking", key: "monster", flavor: "500 мл", rating: 8, img: "images/monster_viking.webp", caffeine: "160 мг", sugar: "54 г", cal: "215 kcal", ph: "3.7", video: "" },
- { brand: "Monster Energy - Rio Punsh", key: "monster", flavor: "500 мл", rating: 8, img: "images/Rio-punsh.webp", caffeine: "150 мг", sugar: "35 г", cal: "152 kcal", ph: "3.8", video: "" },
+ { brand: "Monster Energy - Rio Punsh", key: "monster", flavor: "500 мл", rating: 8, img: "images/rio-punsh.webp", caffeine: "150 мг", sugar: "35 г", cal: "152 kcal", ph: "3.8", video: "" },
 
  { brand: "Monster Energy - Ultra Gold (lando Norris)", key: "monster", flavor: "500 мл", rating: 8, img: "images/lando_noris.webp", caffeine: "160 мг", sugar: "0 г", cal: "10 kcal", ph: "3.3", video: "" },
 
- { brand: "Monster Energy - Nitro Cosmic Peach", key: "monster", flavor: "500 мл", rating: 8, img: "images/Nitro_Cosmic_Peach.webp", caffeine: "160 мг", sugar: "53 г", cal: "200 kcal", ph: "3.5", video: "" },
+ { brand: "Monster Energy - Nitro Cosmic Peach", key: "monster", flavor: "500 мл", rating: 8, img: "images/nitro-cosmic-peach.webp", caffeine: "160 мг", sugar: "53 г", cal: "200 kcal", ph: "3.5", video: "" },
 
- { brand: "Monster Energy - Juiced Riper", key: "monster", flavor: "500 мл", rating: 8, img: "images/Juiced-Riper.webp", caffeine: "160 мг", sugar: "45 г", cal: "175 kcal", ph: "3.5", video: "" },
+ { brand: "Monster Energy - Juiced Riper", key: "monster", flavor: "500 мл", rating: 8, img: "images/juiced-riper.webp", caffeine: "160 мг", sugar: "45 г", cal: "175 kcal", ph: "3.5", video: "" },
 
- { brand: "Monster Energy - Mixxd Punsh", key: "monster", flavor: "500 мл", rating: 8, img: "images/Mixxd-Punsh.webp", caffeine: "160 мг", sugar: "45 г", cal: "190 kcal", ph: "3.7", video: "" },
+ { brand: "Monster Energy - Mixxd Punsh", key: "monster", flavor: "500 мл", rating: 8, img: "images/mixxd-punsh.webp", caffeine: "160 мг", sugar: "45 г", cal: "190 kcal", ph: "3.7", video: "" },
 
- { brand: "Monster Energy - Ultra Rosa ", key: "monster", flavor: "500 мл", rating: 8, img: "images/Ultra-Rosa.webp", caffeine: "150 мг", sugar: "0 г", cal: "11 kcal", ph: "3.5", video: "" },
+ { brand: "Monster Energy - Ultra Rosa ", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra-rosa.webp", caffeine: "150 мг", sugar: "0 г", cal: "11 kcal", ph: "3.5", video: "" },
 
- { brand: "Monster Energy - Rehab Green Tea ", key: "monster", flavor: "500 мл", rating: 8, img: "images/Rehab-Green-Tea.webp", caffeine: "160 мг", sugar: "9.5 г", cal: "50 kcal", ph: "4.6", video: "" },
+ { brand: "Monster Energy - Rehab Green Tea ", key: "monster", flavor: "500 мл", rating: 8, img: "images/rehab-green-tea.webp", caffeine: "160 мг", sugar: "9.5 г", cal: "50 kcal", ph: "4.6", video: "" },
 
- { brand: "Monster Energy - Rehab Tea + Lemonade ", key: "monster", flavor: "500 мл", rating: 8, img: "images/Tea + Lemonade.webp", caffeine: "160 мг", sugar: "9.5 г", cal: "55 kcal", ph: "4.4", video: "" },
+ { brand: "Monster Energy - Rehab Tea + Lemonade ", key: "monster", flavor: "500 мл", rating: 8, img: "images/tea-lemonade.webp", caffeine: "160 мг", sugar: "9.5 г", cal: "55 kcal", ph: "4.4", video: "" },
 
- { brand: "Monster Energy - Rehab Tea + Peach ", key: "monster", flavor: "500 мл", rating: 9, img: "images/Rehab-Tea-+ Peach.webp", caffeine: "160 мг", sugar: "12 г", cal: "59 kcal", ph: "4.4", video: "" },
+ { brand: "Monster Energy - Rehab Tea + Peach ", key: "monster", flavor: "500 мл", rating: 9, img: "images/rehab-tea-peach.webp", caffeine: "160 мг", sugar: "12 г", cal: "59 kcal", ph: "4.4", video: "" },
 
- { brand: "Monster Energy - Ultra Sunrise", key: "monster", flavor: "473 мл", rating: 8, img: "images/Ultra-Sunrise.webp", caffeine: "155 мг", sugar: "0 г", cal: "10 kcal", ph: "3.3", video: "" },
+ { brand: "Monster Energy - Ultra Sunrise", key: "monster", flavor: "473 мл", rating: 8, img: "images/ultra-sunrise.webp", caffeine: "155 мг", sugar: "0 г", cal: "10 kcal", ph: "3.3", video: "" },
 
- { brand: "Monster Energy - Reserve White Pineapple Flavour ", key: "monster", flavor: "500 мл", rating: 8, img: "images/Reserve-White-Pineapple-Flavour.webp", caffeine: "160 мг", sugar: "30 г", cal: "135 kcal", ph: "3.6", video: "" },
+ { brand: "Monster Energy - Reserve White Pineapple Flavour ", key: "monster", flavor: "500 мл", rating: 8, img: "images/reserve-white-pineapple.webp", caffeine: "160 мг", sugar: "30 г", cal: "135 kcal", ph: "3.6", video: "" },
 
- { brand: "Monster Energy - Reserve Peaches n' Crème ", key: "monster", flavor: "473 мл", rating: 8, img: "images/Reserve-Peaches-n-Crème.webp", caffeine: "175 мг", sugar: "28 г", cal: "120 kcal", ph: "3.7", video: "" },
+ { brand: "Monster Energy - Reserve Peaches n' Crème ", key: "monster", flavor: "473 мл", rating: 8, img: "images/reserve-peaches-creme.webp", caffeine: "175 мг", sugar: "28 г", cal: "120 kcal", ph: "3.7", video: "" },
 
- { brand: "Monster Energy - Ultra Fantasy Ruby Red ", key: "monster", flavor: "500 мл", rating: 8, img: "images/Ultra-Fantasy-Ruby-Red.webp", caffeine: "160 мг", sugar: "0 г", cal: "14 kcal", ph: "3.4", video: "" },
+ { brand: "Monster Energy - Ultra Fantasy Ruby Red ", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra-fantasy-ruby-red.webp", caffeine: "160 мг", sugar: "0 г", cal: "14 kcal", ph: "3.4", video: "" },
 
  { brand: "Monster Energy - Ultra Peachy Keen", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra-peach-keen.webp", caffeine: "150 мг", sugar: "0 г", cal: "11 kcal", ph: "3.2", video: "" },
 
@@ -226,19 +251,19 @@ const drinks = [
   // --- RED BULL (скопируй 5 раз, у тебя 1 оригинал) ---
   { brand: "Red Bull", key: "redbull", flavor: "250 мл", rating: 6, img: "images/image_3.webp", caffeine: "80 мг", sugar: "27 г", cal: "112 kcal", ph: "3.4", video: "7659734438976294166" },
 
-  { brand: "Red Bull - The Blue Edition", key: "redbull", flavor: "250 мл", rating: 6, img: "images/The-Blue-Edition.webp", caffeine: "80 мг", sugar: "26 г", cal: "110 kcal", ph: "3.3", video: "" },
+  { brand: "Red Bull - The Blue Edition", key: "redbull", flavor: "250 мл", rating: 6, img: "images/redbull-blue-edition.webp", caffeine: "80 мг", sugar: "26 г", cal: "110 kcal", ph: "3.3", video: "" },
 
-  { brand: "Red Bull - The Ice Edition", key: "redbull", flavor: "250 мл", rating: 6, img: "images/The-Ice-Edition.webp", caffeine: "80 мг", sugar: "26 г", cal: "110 kcal", ph: "3.3", video: "" },
+  { brand: "Red Bull - The Ice Edition", key: "redbull", flavor: "250 мл", rating: 6, img: "images/redbull-ice-edition.webp", caffeine: "80 мг", sugar: "26 г", cal: "110 kcal", ph: "3.3", video: "" },
 
-  { brand: "Red Bull - The Summer Edition", key: "redbull", flavor: "250 мл", rating: 6, img: "images/The-Summer-Edition.webp", caffeine: "80 мг", sugar: "26 г", cal: "110 kcal", ph: "3.3", video: "" },
+  { brand: "Red Bull - The Summer Edition", key: "redbull", flavor: "250 мл", rating: 6, img: "images/redbull-summer-edition.webp", caffeine: "80 мг", sugar: "26 г", cal: "110 kcal", ph: "3.3", video: "" },
 
-  { brand: "Red Bull - The White Edition", key: "redbull", flavor: "250 мл", rating: 6, img: "images/The-White-Edition.webp", caffeine: "80 мг", sugar: "27 г", cal: "112 kcal", ph: "3.3", video: "" },
+  { brand: "Red Bull - The White Edition", key: "redbull", flavor: "250 мл", rating: 6, img: "images/redbull-white-edition.webp", caffeine: "80 мг", sugar: "27 г", cal: "112 kcal", ph: "3.3", video: "" },
 
-  { brand: "Red Bull - The Winter Edition", key: "redbull", flavor: "250 мл", rating: 6, img: "images/The-Winter-Edition.webp", caffeine: "80 мг", sugar: "27 г", cal: "112 kcal", ph: "3.3", video: "" },
+  { brand: "Red Bull - The Winter Edition", key: "redbull", flavor: "250 мл", rating: 6, img: "images/redbull-winter-edition.webp", caffeine: "80 мг", sugar: "27 г", cal: "112 kcal", ph: "3.3", video: "" },
 
-  { brand: "Red Bull - The Pink Edition", key: "redbull", flavor: "250 мл", rating: 6, img: "images/The-Pink-Edition.webp", caffeine: "80 мг", sugar: "27 г", cal: "112 kcal", ph: "3.3", video: "" },
+  { brand: "Red Bull - The Pink Edition", key: "redbull", flavor: "250 мл", rating: 6, img: "images/redbull-pink-edition.webp", caffeine: "80 мг", sugar: "27 г", cal: "112 kcal", ph: "3.3", video: "" },
 
-  { brand: "Red Bull-Peach edition", key: "redbull", flavor: "Original, 250 мл", rating: 6, img: "images/Peach-red.webp", caffeine: "80 мг", sugar: "27.5 г", cal: "115 kcal", ph: "3.2", video: "7659734438976294166" },
+  { brand: "Red Bull-Peach edition", key: "redbull", flavor: "Original, 250 мл", rating: 6, img: "images/redbull-peach.webp", caffeine: "80 мг", sugar: "27.5 г", cal: "115 kcal", ph: "3.2", video: "7659734438976294166" },
 
   // --- BATTERY (скопируй 4 раза) ---
   { brand: "Battery", key: "battery", flavor: "Original, 330 мл", rating: 7, img: "", caffeine: "120 мг", sugar: "30 г", cal: "150 kcal", ph: "3.2", video: "7361838290757873979" },
@@ -296,6 +321,10 @@ function createCard(drink) {
   card.dataset.brand = drink.key;
   card.dataset.rating = drink.rating;
   card.dataset.video = drink.video;
+  card.dataset.drinkIndex = drinks.indexOf(drink);
+  // FIX 3: ключ избранного — по индексу (уникально для каждого напитка)
+  const favKey = 'drink_' + drinks.indexOf(drink);
+  const isFav = getFavs().includes(favKey);
   
   let imgHtml;
   if (drink.img) {
@@ -309,8 +338,8 @@ function createCard(drink) {
   card.innerHTML = `
     <div class="card-strip"></div><div class="card-glare"></div>
     ${drink.badge ? `<div class="card-badge"><i class="fa-solid fa-fire"></i> Хит</div>` : ''}
-    <button class="fav-btn ${getFavs().includes(drink.key + '_' + drink.flavor) ? 'active' : ''}" aria-label="В избранное">
-      <i class="fa-${getFavs().includes(drink.key + '_' + drink.flavor) ? 'solid' : 'regular'} fa-heart"></i>
+    <button class="fav-btn ${isFav ? 'active' : ''}" aria-label="В избранное">
+      <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
     </button>
     <div class="card-image">${imgHtml}</div>
     <div class="card-content">
@@ -353,26 +382,28 @@ function initCardEffects() {
     if(cnt && !cnt.querySelector('.counter-body')) buildCounter(cnt);
   });
 
-  // Обработка клика по сердечку
+  // Обработка клика по сердечку — FIX 3: используем drinkIndex как ID
   document.querySelectorAll('.fav-btn').forEach(btn => {
     const newBtn = btn.cloneNode(true);
     btn.parentNode.replaceChild(newBtn, btn);
     newBtn.addEventListener('click', e => {
       e.stopPropagation();
       const card = newBtn.closest('.energy-card');
-      const drinkId = card.dataset.brand + '_' + card.querySelector('.card-flavor').textContent;
+      const drinkIndex = parseInt(card.dataset.drinkIndex);
+      const drinkId = 'drink_' + drinkIndex;
       const name = card.querySelector('.card-brand').textContent;
       let favs = getFavs();
       if (favs.includes(drinkId)) {
         favs = favs.filter(f => f !== drinkId);
         newBtn.classList.remove('active');
         newBtn.querySelector('i').className = 'fa-regular fa-heart';
-        showToast(`Убрано из избранного`, 'fa-regular fa-heart');
+        showToast('Убрано из избранного', 'fa-regular fa-heart');
       } else {
         favs.push(drinkId);
         newBtn.classList.add('active');
         newBtn.querySelector('i').className = 'fa-solid fa-heart';
-        showToast(`${name} в избранном`, 'fa-solid fa-heart');
+        showToast(name + ' в избранном', 'fa-solid fa-heart');
+        if (favs.length >= 3) unlockAchievement('fav3');
       }
       saveFavs(favs);
     });
@@ -583,18 +614,25 @@ class Particle {
   } 
 }
 
-// Увеличил до 40 — теперь их много, но они не мешают по центру
-for(let i=0; i<40; i++) particles.push(new Particle());
+// FIX 3: Уменьшил до 15 частиц (было 40) — меньше нагрузка на CPU/GPU
+for(let i=0; i<15; i++) particles.push(new Particle());
 
 let isAnimating = true;
+let isPageVisible = true;
 const obsParticles = new IntersectionObserver(entries => { 
   isAnimating = entries[0].isIntersecting; 
-  if(isAnimating) animateParticles(); 
+  if(isAnimating && isPageVisible) animateParticles(); 
 }, { threshold: 0.1 });
 obsParticles.observe(canvas.parentElement);
 
+// FIX 3: Пауза при сворачивании вкладки
+document.addEventListener('visibilitychange', () => {
+  isPageVisible = !document.hidden;
+  if (isPageVisible && isAnimating) animateParticles();
+});
+
 function animateParticles() { 
-  if(!isAnimating) return;
+  if(!isAnimating || !isPageVisible) return;
   ctx.clearRect(0, 0, canvas.width, canvas.height); 
   particles.forEach(p => { p.update(); p.draw(); }); 
   requestAnimationFrame(animateParticles); 
@@ -757,7 +795,14 @@ function closeVideoModal() {
   }, 500);  
 }
 
-modalClose.addEventListener('click', closeVideoModal);
+// FIX 4: Усиленный обработчик — работает на всех устройствах
+function handleVideoClose(e) {
+  if (e) { e.preventDefault(); e.stopPropagation(); }
+  closeVideoModal();
+}
+modalClose.addEventListener('click', handleVideoClose);
+modalClose.addEventListener('pointerdown', handleVideoClose);
+modalClose.addEventListener('touchstart', handleVideoClose, { passive: false });
 modal.addEventListener('click', e => { if(e.target === modal) closeVideoModal(); });
 document.addEventListener('keydown', e => { if(e.key === 'Escape' && modal.classList.contains('open')) closeVideoModal(); });
 modalTiktokBtn.addEventListener('click', () => { 
@@ -882,103 +927,115 @@ const mapLocations = [
   }
 ];
 
-// Иконка синей метки
-const blueIcon = L.divIcon({
-  html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="30" height="45"><path fill="#1e6fff" d="M12 0C5.4 0 0 5.4 0 12c0 9 12 24 12 24s12-15 12-24c0-6.6-5.4-12-12-12zm0 16c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4z"/></svg>`,
-  iconSize: [30, 45], // Было 24, 36. Выровнял под размер SVG!
-  iconAnchor: [15, 45], 
-  popupAnchor: [0, -45], 
-  className: 'custom-marker' 
-});
+// ==========================================
+// КАРТА: Инициализация выполняется лениво (после загрузки Leaflet)
+// Все переменные объявлены через var на верхнем уровне, чтобы быть доступными
+// в обработчике themeToggle (matrix mode) и других местах.
+// ==========================================
+var blueIcon = null;
+var matrixMapIcon = null;
+var map = null;
+var markers = [];
+var secretMysteryMarker = null;
 
-// --- Иконка для Матрицы (светящаяся зеленая) ---
-const matrixMapIcon = L.divIcon({
-  html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="40" height="60"><path fill="#00ff41" d="M12 0C5.4 0 0 5.4 0 12c0 9 12 24 12 24s12-15 12-24c0-6.6-5.4-12-12-12zm0 16c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4z" filter="drop-shadow(0 0 10px #00ff41) drop-shadow(0 0 20px #00ff41)"/></svg>`,
-  iconSize: [40, 60], // Было 30, 45. Выровнял под размер SVG!
-  iconAnchor: [20, 60],
-  popupAnchor: [0, -60],
-  className: 'custom-marker'
-});
-
-// Инициализация карты
-const map = L.map('mapContainer', { zoomControl: false }).setView([43.2070, 27.9120], 13);
-L.control.zoom({ position: 'bottomright' }).addTo(map);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-  attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19
-}).addTo(map);
-
-// Создаем метки (Красивое чистое окошко)
-const markers = [];
-let secretMysteryMarker = null; // Сюда спрячем точку ???
-// --- ДОБАВИТЬ ЭТО: Запрещаем браузеру рисовать синие рамки ---
-document.addEventListener('selectstart', function(e) {
-  if (e.target.closest && e.target.closest('.leaflet-marker-icon')) {
-    e.preventDefault();
+function initMap() {
+  if (typeof L === 'undefined') {
+    console.warn('Leaflet (L) not loaded yet');
+    return;
   }
-}, true);
-mapLocations.forEach(loc => {
-  const marker = L.marker([loc.lat, loc.lng], { icon: blueIcon, locData: loc });
-  
-  // Если у точки есть свой HTML (как у маяка), используем его. Иначе — стандартный магазин
-  var popupContent = loc.popupHtml || `
-   <div class="store-popup">
-      <div class="store-popup-header"><i class="fa-solid fa-store"></i> ${loc.name}</div>
-      <a href="https://www.google.com/maps/dir/?api=1&destination=${loc.lat},${loc.lng}" target="_blank" class="route-btn">
-        <i class="fa-solid fa-diamond-turn-right"></i> Проложить маршрут
-      </a>
-   </div>
-  `;
-  marker.bindPopup(popupContent, { maxWidth: 300, minWidth: 250 });
-  
-  // ПРОВЕРЯЕМ: ЕСЛИ ЭТО МАЯК (id 6) - НЕ ДОБАВЛЯЕМ НА КАРТУ СРАЗУ
-  if (loc.id === 6) {
-    secretMysteryMarker = marker; // Просто сохраняем в память
-  } else {
-    marker.addTo(map); // Остальные магазины добавляем как обычно
-    markers.push(marker); // Кидаем в массив для фильтров
-  }
-});
+  if (map !== null) return; // уже инициализирована
+
+  // Иконка синей метки
+  blueIcon = L.divIcon({
+    html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="30" height="45"><path fill="#1e6fff" d="M12 0C5.4 0 0 5.4 0 12c0 9 12 24 12 24s12-15 12-24c0-6.6-5.4-12-12-12zm0 16c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4z"/></svg>`,
+    iconSize: [30, 45],
+    iconAnchor: [15, 45],
+    popupAnchor: [0, -45],
+    className: 'custom-marker'
+  });
+
+  // --- Иконка для Матрицы (светящаяся зеленая) ---
+  matrixMapIcon = L.divIcon({
+    html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="40" height="60"><path fill="#00ff41" d="M12 0C5.4 0 0 5.4 0 12c0 9 12 24 12 24s12-15 12-24c0-6.6-5.4-12-12-12zm0 16c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4z" filter="drop-shadow(0 0 10px #00ff41) drop-shadow(0 0 20px #00ff41)"/></svg>`,
+    iconSize: [40, 60],
+    iconAnchor: [20, 60],
+    popupAnchor: [0, -60],
+    className: 'custom-marker'
+  });
+
+  // Инициализация карты
+  map = L.map('mapContainer', { zoomControl: false }).setView([43.2070, 27.9120], 13);
+  L.control.zoom({ position: 'bottomright' }).addTo(map);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19
+  }).addTo(map);
+
+  // Создаем метки
+  document.addEventListener('selectstart', function(e) {
+    if (e.target.closest && e.target.closest('.leaflet-marker-icon')) {
+      e.preventDefault();
+    }
+  }, true);
+
+  mapLocations.forEach(loc => {
+    const marker = L.marker([loc.lat, loc.lng], { icon: blueIcon, locData: loc });
+    var popupContent = loc.popupHtml || `
+     <div class="store-popup">
+        <div class="store-popup-header"><i class="fa-solid fa-store"></i> ${loc.name}</div>
+        <a href="https://www.google.com/maps/dir/?api=1&destination=${loc.lat},${loc.lng}" target="_blank" rel="noopener" class="route-btn">
+          <i class="fa-solid fa-diamond-turn-right"></i> Проложить маршрут
+        </a>
+     </div>
+    `;
+    marker.bindPopup(popupContent, { maxWidth: 300, minWidth: 250 });
+
+    if (loc.id === 6) {
+      secretMysteryMarker = marker;
+    } else {
+      marker.addTo(map);
+      markers.push(marker);
+    }
+  });
+
+  initMapFilter();
+}
 
 // ==========================================
 // ЛОГИКА ФИЛЬТРА КАРТЫ
 // ==========================================
 function initMapFilter() {
   const dropdown = document.getElementById('mapBrandDropdown');
+  if (!dropdown) return;
   const favs = getFavs();
-  
-  // Узнаем, какие бренды вообще есть на карте
+
   const brandCounts = {};
   mapLocations.forEach(loc => {
     loc.inventory.forEach(key => {
       brandCounts[key] = (brandCounts[key] || 0) + 1;
     });
   });
-  
-  // Генерируем кнопки
+
   let html = `<div class="brand-option active" data-brand="all"><div class="brand-dot" style="background:var(--accent)"></div>Все магазины<div class="brand-count">${mapLocations.length}</div></div>`;
   html += `<div class="brand-option" data-brand="fav"><div class="brand-dot" style="background:#ff3b5c"></div>Избранное<div class="brand-count">${favs.length}</div></div>`;
-  
+
   for (const key in brandCounts) {
-        const name = bNames[key] || key;
+    const name = bNames[key] || key;
     html += `<div class="brand-option" data-brand="${key}"><div class="brand-dot" style="background:${bColors[key] || '#888'}"></div>${name}<div class="brand-count">${brandCounts[key]}</div></div>`;
   }
   dropdown.innerHTML = html;
 
-  // При нажатии на кнопку фильтра
   dropdown.querySelectorAll('.brand-option').forEach(opt => {
     opt.addEventListener('click', () => {
       dropdown.querySelectorAll('.brand-option').forEach(o => o.classList.remove('active'));
       opt.classList.add('active');
       const selectedBrand = opt.dataset.brand;
-      
+
       dropdown.classList.remove('open');
       document.getElementById('mapBrandToggle').classList.remove('open');
-      
-      const currentFavs = getFavs(); // Берем актуальное избранное
-      // Получаем только ключи брендов из избранного (например ["monster", "hell"])
-      const favBrands = currentFavs.map(f => f.split('_')[0]); 
 
-      // Показываем/скрываем точки
+      const currentFavs = getFavs();
+      const favBrands = currentFavs.map(f => f.split('_')[0]);
+
       markers.forEach(m => {
         const locData = m.options.locData;
         let show = false;
@@ -986,10 +1043,8 @@ function initMapFilter() {
         if (selectedBrand === 'all') {
           show = true;
         } else if (selectedBrand === 'fav') {
-          // Показываем точку, если хотя бы один бренд из магазина есть в избранном
           show = locData.inventory.some(brandKey => favBrands.includes(brandKey));
         } else {
-          // Показываем точку, если выбранный бренд есть в массиве inventory магазина
           show = locData.inventory.includes(selectedBrand);
         }
 
@@ -1003,17 +1058,20 @@ function initMapFilter() {
   });
 }
 
-// Тоггл меню
-document.getElementById('mapBrandToggle').addEventListener('click', (e) => {
-  e.stopPropagation();
-  document.getElementById('mapBrandDropdown').classList.toggle('open');
-  document.getElementById('mapBrandToggle').classList.toggle('open');
-});
-
-initMapFilter();
+// Тоггл меню (безопасный — даже если карта не загружена)
+const mapBrandToggle = document.getElementById('mapBrandToggle');
+if (mapBrandToggle) {
+  mapBrandToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    document.getElementById('mapBrandDropdown').classList.toggle('open');
+    mapBrandToggle.classList.toggle('open');
+  });
+}
 document.addEventListener('click', () => {
-  document.getElementById('mapBrandDropdown').classList.remove('open');
-  document.getElementById('mapBrandToggle').classList.remove('open');
+  const dd = document.getElementById('mapBrandDropdown');
+  const bt = document.getElementById('mapBrandToggle');
+  if (dd) dd.classList.remove('open');
+  if (bt) bt.classList.remove('open');
 });
 // ==========================================
 // ПАСХАЛКА: KONAMI CODE — РЕЖИМ ПЕРЕГРУЗКИ
@@ -1104,6 +1162,9 @@ document.addEventListener('click', () => {
     }
   }
 
+  // Экспортируем toggleOverload в глобал, чтобы мобильные пасхалки могли дёргать
+  window.toggleOverload = toggleOverload;
+
   document.addEventListener('keydown', function(e) {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
     if (e.code === konamiCode[konamiIndex]) {
@@ -1146,31 +1207,29 @@ themeToggle.addEventListener('click', function() {
       }
     }, 60);
 
-    /* МАГИЯ КАРТЫ: Матричный режим */
-    if (secretMysteryMarker) {
-      secretMysteryMarker.setIcon(matrixMapIcon);
-      secretMysteryMarker.setPopupContent(`
-        <div class="store-popup" style="text-align: center;">
-          <div class="store-popup-header" style="justify-content: center; border-bottom: 1px solid rgba(0,255,65,0.3); margin-bottom: 15px; padding-bottom: 10px;">
-           <span style="color: #023d11; font-family: 'Oswald', sans-serif; font-size: 28px; font-weight: 700; letter-spacing: 6px;">???</span>
-          </div>
-          <p style="color: #00ff41; margin: 0 0 15px 0; font-size: 15px; line-height: 1.5;">
-            Найди это место в реальности
-          </p>
-          <a href="https://www.google.com/maps/dir/?api=1&destination=43.1873338,27.9218344" target="_blank" class="route-btn" style="background: #00ff41; color: #000; font-weight: 700; text-shadow: none;">
-            <i class="fa-solid fa-diamond-turn-right"></i> Проложить маршрут
-          </a>
-        </div>
-      `);
-
-      secretMysteryMarker.addTo(map);
-      map.flyTo([43.1873338, 27.9218344], 16, { duration: 1.5 });
-      
-      setTimeout(function() {
-        secretMysteryMarker.openPopup();
-      }, 1600); 
+    /* МАГИЯ КАРТЫ: Матричный режим (с защитой от ошибок) */
+    if (typeof map !== 'undefined' && map && secretMysteryMarker) {
+      try {
+        secretMysteryMarker.setIcon(matrixMapIcon);
+        secretMysteryMarker.setPopupContent(
+          '<div class="store-popup" style="text-align: center;">' +
+            '<div class="store-popup-header" style="justify-content: center; border-bottom: 1px solid rgba(0,255,65,0.3); margin-bottom: 15px; padding-bottom: 10px;">' +
+              '<span style="color: #023d11; font-family: \'Oswald\', sans-serif; font-size: 28px; font-weight: 700; letter-spacing: 6px;">???</span>' +
+            '</div>' +
+            '<p style="color: #00ff41; margin: 0 0 15px 0; font-size: 15px; line-height: 1.5;">Найди это место в реальности</p>' +
+            '<a href="https://www.google.com/maps/dir/?api=1&destination=43.1873338,27.9218344" target="_blank" rel="noopener" class="route-btn" style="background: #00ff41; color: #000; font-weight: 700; text-shadow: none;">' +
+              '<i class="fa-solid fa-diamond-turn-right"></i> Проложить маршрут' +
+            '</a>' +
+          '</div>'
+        );
+        secretMysteryMarker.addTo(map);
+        map.flyTo([43.1873338, 27.9218344], 16, { duration: 1.5 });
+        setTimeout(function() { secretMysteryMarker.openPopup(); }, 1600);
+        if (markers && markers.length) {
+          markers.forEach(m => { try { map.removeLayer(m); } catch(e){} });
+        }
+      } catch(e) { console.warn('Map not ready for matrix mode', e); }
     }
-    markers.forEach(m => map.removeLayer(m));
     
     showToast('🟢 Wake up, Wake up!', 'fa-solid fa-terminal');
         unlockAchievement('matrix');
@@ -1611,8 +1670,27 @@ function openRickrollModal() {
   calcModal.addEventListener('click', e => { if(e.target === calcModal) closeCalcModal(); });
   document.addEventListener('keydown', e => { if(e.key === 'Escape' && calcModal.classList.contains('open')) closeCalcModal(); });
 
-  // Открываем калькулятор
+  // Открываем калькулятор — синхронизируем с CaffeineTracker
   window.openCalc = function() {
+    // Загружаем данные из CaffeineTracker (если они есть)
+    try {
+      // ВАЖНО: CaffeineTracker объявлен как const, НЕ через window.CaffeineTracker
+      if (typeof CaffeineTracker !== 'undefined' && typeof CaffeineTracker.getTodayData === 'function') {
+        const data = CaffeineTracker.getTodayData();
+        if (data && data.drinks && data.drinks.length > 0) {
+          // Перестраиваем calcItems из данных трекера
+          calcItems = data.drinks.map(d => ({ name: d.brand, mg: d.mg }));
+          // Принудительно перерисовываем
+          renderCalcList();
+          updateCalcBar();
+        } else {
+          // Если данных нет — очищаем калькулятор
+          calcItems = [];
+          renderCalcList();
+          updateCalcBar();
+        }
+      }
+    } catch(e) { console.warn('Calc sync error:', e); }
     calcModal.classList.add('open');
     document.body.style.overflow = 'hidden';
     setTimeout(() => calcSearch.focus(), 300);
@@ -2217,4 +2295,888 @@ if (soundToggle) {
       this.setAttribute('aria-label', 'Выключить звук');
     }
   });
+}
+
+// ============================================================
+// ПАТЧИ: новые возможности
+// ============================================================
+
+// === ЛЕНИВАЯ ЗАГРУЗКА LEAFLET ===
+(function() {
+  const mapSection = document.getElementById('mapSection');
+  if (!mapSection) return;
+
+  function loadLeaflet() {
+    if (window.L) { if (typeof initMap === 'function') initMap(); return; }
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    document.head.appendChild(link);
+
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    script.onload = () => { if (typeof initMap === 'function') initMap(); };
+    document.body.appendChild(script);
+  }
+
+  if (!('IntersectionObserver' in window)) {
+    loadLeaflet();
+    return;
+  }
+  const io = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      loadLeaflet();
+      io.disconnect();
+    }
+  }, { rootMargin: '300px' });
+  io.observe(mapSection);
+})();
+
+// === ВОССТАНОВЛЕНИЕ AudioContext НА ПЕРВОМ ЖЕСТЕ ===
+(function() {
+  function unlockAudio() {
+    if (window.AudioSys && typeof AudioSys.resume === 'function') {
+      AudioSys.resume();
+    }
+    document.removeEventListener('touchstart', unlockAudio);
+    document.removeEventListener('click', unlockAudio);
+  }
+  // На iOS Safari нужно подождать первого жеста пользователя
+  document.addEventListener('touchstart', unlockAudio, { once: true, passive: true });
+  document.addEventListener('click', unlockAudio, { once: true });
+  // Также пробуем разблокировать при загрузке на не-iOS
+  setTimeout(() => {
+    if (window.AudioSys && typeof AudioSys.resume === 'function') {
+      try { AudioSys.resume(); } catch(e) {}
+    }
+  }, 500);
+})();
+
+// === ОБРАБОТЧИК data-action (заменил inline onclick) ===
+document.addEventListener('click', function(e) {
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+  const action = el.dataset.action;
+  if (action === 'open-calc') {
+    e.preventDefault();
+    if (typeof openCalc === 'function') openCalc();
+  }
+});
+
+// === Кнопка "Позже" в модалке обновления ===
+(function() {
+  const later = document.getElementById('updateLater');
+  if (later) later.addEventListener('click', () => {
+    const m = document.getElementById('updateModal');
+    if (m) m.style.display = 'none';
+  });
+})();
+
+// ============================================================
+// МОБИЛЬНАЯ ПАСХАЛКА #1: ДОЛГИЙ ТАП ПО ЛОГО (3 сек)
+// ============================================================
+(function() {
+  const logo = document.querySelector('.header-logo');
+  if (!logo) return;
+
+  let timer;
+  let active = false;
+  let progress;
+
+  function start(e) {
+    if (e.cancelable) e.preventDefault();
+    active = true;
+    progress = document.createElement('div');
+    progress.style.cssText = 'position:absolute;bottom:-4px;left:0;height:2px;width:0;background:#BFFF00;transition:width 3s linear;box-shadow:0 0 8px #BFFF00;';
+    logo.style.position = 'relative';
+    logo.appendChild(progress);
+    requestAnimationFrame(() => { if (progress) progress.style.width = '100%'; });
+
+    timer = setTimeout(() => {
+      if (!active) return;
+      active = false;
+      if (progress) { progress.remove(); progress = null; }
+      unlockAchievement('mobile');
+      showToast('📱 Ты нашёл мобильную пасхалку! Тряхни телефон 3 раза — будет сюрприз...', 'fa-solid fa-mobile-screen');
+      if (typeof DeviceMotionEvent !== 'undefined' &&
+          typeof DeviceMotionEvent.requestPermission === 'function') {
+        DeviceMotionEvent.requestPermission().then(state => {
+          if (state === 'granted') initShakeListener();
+        }).catch(() => {});
+      } else {
+        initShakeListener();
+      }
+    }, 3000);
+  }
+
+  function cancel() {
+    active = false;
+    clearTimeout(timer);
+    if (progress) { progress.remove(); progress = null; }
+  }
+
+  logo.addEventListener('touchstart', start, { passive: false });
+  logo.addEventListener('touchend', cancel);
+  logo.addEventListener('touchmove', cancel);
+  logo.addEventListener('touchcancel', cancel);
+})();
+
+// ============================================================
+// МОБИЛЬНАЯ ПАСХАЛКА #2: ТРЯХНИ ТЕЛЕФОН 3 РАЗА → OVERLOAD
+// ============================================================
+let _shakeListenerInitialized = false;
+function initShakeListener() {
+  if (_shakeListenerInitialized) return;
+  _shakeListenerInitialized = true;
+
+  let lastShake = 0;
+  let shakeCount = 0;
+  let resetTimer;
+
+  window.addEventListener('devicemotion', function(e) {
+    const a = e.accelerationIncludingGravity;
+    if (!a) return;
+    const magnitude = Math.sqrt(
+      (a.x||0)*(a.x||0) + (a.y||0)*(a.y||0) + (a.z||0)*(a.z||0)
+    );
+    const now = Date.now();
+
+    if (magnitude > 18 && now - lastShake > 400) {
+      lastShake = now;
+      shakeCount++;
+      clearTimeout(resetTimer);
+      resetTimer = setTimeout(() => shakeCount = 0, 1500);
+
+      if (shakeCount >= 3) {
+        shakeCount = 0;
+        if (typeof window.toggleOverload === 'function') {
+          window.toggleOverload();
+          showToast('⚡ Тряхнул как надо!', 'fa-solid fa-bolt');
+        }
+      }
+    }
+  }, { passive: true });
+}
+
+// ============================================================
+// МОБИЛЬНАЯ ПАСХАЛКА #3: СВАЙП KONAMI (↑↑↓↓←→←→)
+// ============================================================
+(function() {
+  if (matchMedia('(hover: hover)').matches) return; // только тач-устройства
+
+  const pattern = ['up','up','down','down','left','right','left','right'];
+  let index = 0;
+  let resetTimer;
+  let startX, startY, startT;
+
+  document.addEventListener('touchstart', e => {
+    const t = e.touches[0];
+    startX = t.clientX; startY = t.clientY; startT = Date.now();
+  }, { passive: true });
+
+  document.addEventListener('touchend', e => {
+    if (startX == null) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - startX;
+    const dy = t.clientY - startY;
+    const dt = Date.now() - startT;
+
+    if (dt > 500) { startX = null; return; }
+
+    const absX = Math.abs(dx), absY = Math.abs(dy);
+    if (absX < 30 && absY < 30) { startX = null; return; }
+
+    let dir;
+    if (absX > absY) dir = dx > 0 ? 'right' : 'left';
+    else dir = dy > 0 ? 'down' : 'up';
+
+    if (dir === pattern[index]) {
+      index++;
+      clearTimeout(resetTimer);
+      resetTimer = setTimeout(() => index = 0, 2000);
+
+      if (index === pattern.length) {
+        index = 0;
+        if (typeof window.toggleOverload === 'function') {
+          window.toggleOverload();
+          showToast('🎮 Konami свайпами!', 'fa-solid fa-gamepad');
+          unlockAchievement('mobile');
+        }
+      }
+    } else {
+      index = (dir === pattern[0]) ? 1 : 0;
+    }
+    startX = null;
+  }, { passive: true });
+})();
+
+
+// ============================================================
+// ФИЧА 1: ПОИСК ПО НАЗВАНИЮ
+// ============================================================
+(function() {
+  const searchInput = document.getElementById('drinkSearch');
+  const clearBtn = document.getElementById('clearSearch');
+  if (!searchInput) return;
+
+  let currentFilter = 'all';
+  let currentBrand = 'all';
+
+  // Сохраняем оригинальную функцию applyFilters, если есть
+  const origApply = window.applyFilters;
+
+  function filterCards(query) {
+    const cards = document.querySelectorAll('#cardsGrid .energy-card');
+    let visibleCount = 0;
+    cards.forEach(card => {
+      const brand = (card.dataset.brand || '').toLowerCase();
+      const name = (card.querySelector('.card-brand')?.textContent || '').toLowerCase();
+      const flavor = (card.querySelector('.card-flavor')?.textContent || '').toLowerCase();
+      const matches = !query || brand.includes(query) || name.includes(query) || flavor.includes(query);
+      
+      if (matches) {
+        card.style.display = '';
+        visibleCount++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    // Показать "ничего не найдено"
+    let noResults = document.getElementById('searchNoResults');
+    if (visibleCount === 0) {
+      if (!noResults) {
+        noResults = document.createElement('div');
+        noResults.id = 'searchNoResults';
+        noResults.className = 'search-no-results';
+        noResults.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i><div>Ничего не найдено</div><div style="font-size:13px;margin-top:8px;">Попробуй изменить запрос</div>';
+        document.getElementById('cardsGrid').appendChild(noResults);
+      }
+    } else {
+      if (noResults) noResults.remove();
+    }
+
+    // Кнопка очистки
+    if (query) clearBtn.classList.add('visible');
+    else clearBtn.classList.remove('visible');
+  }
+
+  searchInput.addEventListener('input', (e) => {
+    filterCards(e.target.value.toLowerCase().trim());
+  });
+
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    filterCards('');
+    searchInput.focus();
+  });
+})();
+
+// ============================================================
+// ФИЧА 2: МОДАЛКА ДЕТАЛЕЙ НАПИТКА
+// ============================================================
+const DrinkDetails = (function() {
+  const modal = document.getElementById('drinkDetailsModal');
+  if (!modal) return { open: () => {} };
+
+  const img = document.getElementById('detailsImage');
+  const ratingEl = document.getElementById('detailsRating');
+  const brandEl = document.getElementById('detailsBrand');
+  const tagBrandEl = document.getElementById('detailsTagBrand');
+  const flavorEl = document.getElementById('detailsFlavor');
+  const statsGrid = document.getElementById('detailsStatsGrid');
+  const favBtn = document.getElementById('detailsFavBtn');
+  const compareBtn = document.getElementById('detailsCompareBtn');
+  const shareBtn = document.getElementById('detailsShareBtn');
+  const videoBtn = document.getElementById('detailsVideoBtn');
+  const drankBtn = document.getElementById('detailsDrankBtn');
+  const similarList = document.getElementById('similarList');
+  const historySection = document.getElementById('detailsHistory');
+  const historyList = document.getElementById('historyList');
+
+  let currentDrink = null;
+
+  function open(drink) {
+    if (!drink) return;
+    currentDrink = drink;
+    const drinkIndex = drinks.indexOf(drink);
+
+    // Заполняем基本信息
+    img.src = drink.img || '';
+    img.alt = drink.brand;
+    ratingEl.textContent = drink.rating + '/10';
+    brandEl.textContent = drink.brand;
+    flavorEl.textContent = drink.flavor || '';
+
+    // FIX 7: Метка бренда вместо точки
+    const brandName = bNames[drink.key] || drink.key;
+    const color = bColors[drink.key] || '#888';
+    if (tagBrandEl) {
+      tagBrandEl.textContent = brandName;
+      tagBrandEl.style.color = color;
+      tagBrandEl.style.borderColor = color + '60';
+    }
+
+    // FIX 2: Характеристики с цветовой кодировкой (как в карточках)
+    statsGrid.innerHTML = `
+      <div class="details-stat-box" data-type="caffeine"><label>Кофеин</label><span class="stat-value">${drink.caffeine || '—'}</span></div>
+      <div class="details-stat-box" data-type="sugar"><label>Сахар</label><span class="stat-value">${drink.sugar || '—'}</span></div>
+      <div class="details-stat-box" data-type="calories"><label>Калории</label><span class="stat-value">${drink.cal || '—'}</span></div>
+      <div class="details-stat-box" data-type="ph"><label>pH</label><span class="stat-value">${drink.ph || '—'}</span></div>
+    `;
+
+    // Кнопка видео
+    if (drink.video && drink.video.trim()) {
+      videoBtn.classList.remove('no-video');
+      videoBtn.onclick = () => {
+        closeModal();
+        if (typeof openVideoModal === 'function') openVideoModal(drink);
+        else if (typeof openModal === 'function') openModal(drink);
+      };
+    } else {
+      videoBtn.classList.add('no-video');
+    }
+
+    // FIX 3: Избранное с единным ID по индексу
+    const favKey = 'drink_' + drinkIndex;
+    const favs = getFavs();
+    const isFav = favs.includes(favKey);
+    favBtn.classList.toggle('active', isFav);
+    favBtn.innerHTML = isFav 
+      ? '<i class="fa-solid fa-heart"></i> В избранном'
+      : '<i class="fa-solid fa-heart"></i> В избранное';
+    favBtn.onclick = (e) => {
+      e.stopPropagation();
+      let curFavs = getFavs();
+      const nowFav = curFavs.includes(favKey);
+      if (nowFav) {
+        curFavs = curFavs.filter(f => f !== favKey);
+        showToast('Убрано из избранного', 'fa-regular fa-heart');
+      } else {
+        curFavs.push(favKey);
+        showToast(drink.brand + ' в избранном', 'fa-solid fa-heart');
+        if (curFavs.length >= 3) unlockAchievement('fav3');
+      }
+      saveFavs(curFavs);
+      const finalFav = curFavs.includes(favKey);
+      favBtn.classList.toggle('active', finalFav);
+      favBtn.innerHTML = finalFav
+        ? '<i class="fa-solid fa-heart"></i> В избранном'
+        : '<i class="fa-solid fa-heart"></i> В избранное';
+      // Обновить сердечко на карточке
+      const card = document.querySelector('.energy-card[data-drink-index="' + drinkIndex + '"]');
+      if (card) {
+        const cardFav = card.querySelector('.fav-btn');
+        if (cardFav) {
+          cardFav.classList.toggle('active', finalFav);
+          const cardFavIcon = cardFav.querySelector('i');
+          if (cardFavIcon) cardFavIcon.className = finalFav ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+        }
+      }
+    };
+
+    // Сравнить
+    compareBtn.onclick = (e) => {
+      e.stopPropagation();
+      if (typeof addToCompare === 'function') addToCompare(drink);
+      else if (typeof toggleCompare === 'function') toggleCompare(drink);
+      showToast('Добавлено в сравнение', 'fa-solid fa-code-compare');
+    };
+
+    // Поделиться
+    shareBtn.onclick = (e) => {
+      e.stopPropagation();
+      shareDrink(drink);
+    };
+
+    // FIX 6: Кнопка "Я выпил" — добавляет в трекер кофеина
+    if (drankBtn) {
+      drankBtn.classList.remove('active');
+      drankBtn.innerHTML = '<i class="fa-solid fa-mug-hot"></i> Я выпил';
+      drankBtn.onclick = (e) => {
+        e.stopPropagation();
+        if (CaffeineTracker) {
+          CaffeineTracker.add(drink);
+          drankBtn.classList.add('active');
+          drankBtn.innerHTML = '<i class="fa-solid fa-check"></i> Учтено';
+          showToast('+' + (parseInt((drink.caffeine || '').replace(/\D/g, '')) || 0) + ' мг кофеина', 'fa-solid fa-mug-hot');
+        }
+      };
+    }
+
+    // Похожие напитки
+    renderSimilar(drink);
+
+    // История просмотров (не добавляет кофеин!)
+    addToHistory(drink);
+    renderHistory();
+
+    // Открываем модалку
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    if (window.AudioSys) AudioSys.play('open');
+  }
+
+  function closeModal() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function shareDrink(drink) {
+    const url = window.location.origin + window.location.pathname + '#drink-' + drinks.indexOf(drink);
+    const text = `Смотри обзор на ${drink.brand} (${drink.flavor || ''}) — рейтинг ${drink.rating}/10 на Buzz Rate!`;
+    
+    if (navigator.share) {
+      navigator.share({ title: 'Buzz Rate', text: text, url: url }).catch(() => {});
+    } else {
+      // Фолбэк — копируем в буфер
+      const ta = document.createElement('textarea');
+      ta.value = text + ' ' + url;
+      document.body.appendChild(ta);
+      ta.select();
+      try { 
+        document.execCommand('copy');
+        showToast('Ссылка скопирована!', 'fa-solid fa-clipboard-check');
+      } catch(e) {}
+      ta.remove();
+    }
+  }
+
+  function renderSimilar(drink) {
+    // Алгоритм: совпадение по caffeine ±20мг + sugar ±10г
+    const targetCaff = parseInt((drink.caffeine || '').replace(/\D/g, '')) || 0;
+    const targetSugar = parseInt((drink.sugar || '').replace(/\D/g, '')) || 0;
+
+    const similar = drinks
+      .filter(d => d !== drink)
+      .map(d => {
+        const dCaff = parseInt((d.caffeine || '').replace(/\D/g, '')) || 0;
+        const dSugar = parseInt((d.sugar || '').replace(/\D/g, '')) || 0;
+        const diff = Math.abs(dCaff - targetCaff) + Math.abs(dSugar - targetSugar);
+        return { drink: d, diff: diff };
+      })
+      .sort((a, b) => a.diff - b.diff)
+      .slice(0, 6);
+
+    similarList.innerHTML = similar.map(item => `
+      <div class="similar-item" data-brand="${item.drink.brand}">
+        <img src="${item.drink.img || ''}" alt="${item.drink.brand}" loading="lazy">
+        <span>${item.drink.brand.substring(0, 18)}</span>
+      </div>
+    `).join('');
+
+    similarList.querySelectorAll('.similar-item').forEach((el, i) => {
+      el.onclick = () => open(similar[i].drink);
+    });
+  }
+
+  function addToHistory(drink) {
+    const KEY = 'buzz_view_history';
+    const history = JSON.parse(localStorage.getItem(KEY) || '[]');
+    // Удаляем дубликаты
+    const filtered = history.filter(item => item.brand !== drink.brand);
+    // Добавляем в начало
+    filtered.unshift({ brand: drink.brand, img: drink.img, key: drink.key });
+    // Ограничиваем 10 элементами
+    localStorage.setItem(KEY, JSON.stringify(filtered.slice(0, 10)));
+  }
+
+  function renderHistory() {
+    const KEY = 'buzz_view_history';
+    const history = JSON.parse(localStorage.getItem(KEY) || '[]');
+    if (history.length === 0) {
+      historySection.style.display = 'none';
+      return;
+    }
+    historySection.style.display = 'block';
+    historyList.innerHTML = history.slice(0, 8).map(item => `
+      <div class="history-item" data-brand="${item.brand}">
+        <img src="${item.img || ''}" alt="${item.brand}" loading="lazy">
+        <span>${item.brand.substring(0, 14)}</span>
+      </div>
+    `).join('');
+
+    historyList.querySelectorAll('.history-item').forEach(el => {
+      el.onclick = () => {
+        const drink = drinks.find(d => d.brand === el.dataset.brand);
+        if (drink) open(drink);
+      };
+    });
+  }
+
+  // FIX 1: Усиленный обработчик закрытия — работает на всех устройствах
+  function handleClose(e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    closeModal();
+  }
+  const closeBtn = document.getElementById('closeDetails');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', handleClose);
+    closeBtn.addEventListener('pointerdown', handleClose);
+    closeBtn.addEventListener('touchstart', handleClose, { passive: false });
+  }
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+  });
+
+  // Делаем функцию доступной глобально
+  window.openDrinkDetails = open;
+  return { open };
+})();
+
+// ============================================================
+// ФИЧА 3: ЗАГРУЗОЧНЫЙ ЭКРАН
+// ============================================================
+(function() {
+  const preloader = document.getElementById('preloader');
+  if (!preloader) return;
+
+  function hidePreloader() {
+    preloader.classList.add('hidden');
+    setTimeout(() => preloader.remove(), 700);
+  }
+
+  // Скрываем после полной загрузки страницы
+  if (document.readyState === 'complete') {
+    setTimeout(hidePreloader, 1200);
+  } else {
+    window.addEventListener('load', () => {
+      setTimeout(hidePreloader, 1200);
+    });
+    // Фолбэк — скрываем через 3 сек в любом случае
+    setTimeout(hidePreloader, 3000);
+  }
+})();
+
+// ============================================================
+// ФИЧА 4: КНОПКА "ПОДЕЛИТЬСЯ" (глобальная функция)
+// ============================================================
+window.shareDrink = function(drink) {
+  const url = window.location.origin + window.location.pathname + '#drink-' + drinks.indexOf(drink);
+  const text = `Смотри обзор на ${drink.brand} — рейтинг ${drink.rating}/10 на Buzz Rate!`;
+  
+  if (navigator.share) {
+    navigator.share({ title: 'Buzz Rate', text: text, url: url }).catch(() => {});
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = text + ' ' + url;
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand('copy');
+      showToast('Ссылка скопирована!', 'fa-solid fa-clipboard-check');
+    } catch(e) {}
+    ta.remove();
+  }
+};
+
+// ============================================================
+// ФИЧА 5: ТОП-10
+// ============================================================
+function renderTop10() {
+  const list = document.getElementById('top10List');
+  if (!list) return;
+
+  const top10 = [...drinks]
+    .sort((a, b) => b.rating - a.rating)
+    .slice(0, 10);
+
+  list.innerHTML = top10.map((drink, i) => `
+    <div class="top10-item rank-${i + 1}" data-brand="${drink.brand}">
+      <div class="top10-rank">${i + 1}</div>
+      <img class="top10-image" src="${drink.img || ''}" alt="${drink.brand}" loading="lazy">
+      <div class="top10-info">
+        <h4>${drink.brand}</h4>
+        <p>${drink.flavor || ''} • ${drink.caffeine || '—'}</p>
+      </div>
+      <div class="top10-rating">${drink.rating}<small>/10</small></div>
+    </div>
+  `).join('');
+
+  list.querySelectorAll('.top10-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const drink = drinks.find(d => d.brand === el.dataset.brand);
+      if (drink && window.openDrinkDetails) window.openDrinkDetails(drink);
+    });
+  });
+}
+
+// ============================================================
+// ФИЧА 6: СТАТИСТИКА ПО БРЕНДАМ
+// ============================================================
+function renderStats() {
+  const grid = document.getElementById('statsGrid');
+  if (!grid) return;
+
+  const brandStats = {};
+  drinks.forEach(d => {
+    if (!brandStats[d.key]) {
+      brandStats[d.key] = {
+        name: bNames[d.key] || d.key,
+        color: bColors[d.key] || '#888',
+        ratings: [],
+        caffeine: [],
+        sugar: [],
+        count: 0
+      };
+    }
+    brandStats[d.key].ratings.push(d.rating);
+    brandStats[d.key].caffeine.push(parseInt((d.caffeine || '').replace(/\D/g, '')) || 0);
+    brandStats[d.key].sugar.push(parseInt((d.sugar || '').replace(/\D/g, '')) || 0);
+    brandStats[d.key].count++;
+  });
+
+  const html = Object.values(brandStats).map(stat => {
+    const avgRating = (stat.ratings.reduce((a, b) => a + b, 0) / stat.ratings.length).toFixed(1);
+    const avgCaff = Math.round(stat.caffeine.reduce((a, b) => a + b, 0) / stat.caffeine.length);
+    const avgSugar = Math.round(stat.sugar.reduce((a, b) => a + b, 0) / stat.sugar.length);
+    const ratingPct = (avgRating / 10) * 100;
+
+    return `
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <div class="stat-brand-dot" style="background: ${stat.color}"></div>
+          <div class="stat-brand-name">${stat.name}</div>
+        </div>
+        <div class="stat-rows">
+          <div class="stat-row"><span>Средний рейтинг</span><span>${avgRating}/10</span></div>
+          <div class="stat-rating-bar"><div class="stat-rating-bar-fill" style="width: ${ratingPct}%; background: ${stat.color}"></div></div>
+          <div class="stat-row"><span>Средний кофеин</span><span>${avgCaff} мг</span></div>
+          <div class="stat-row"><span>Средний сахар</span><span>${avgSugar} г</span></div>
+          <div class="stat-row"><span>Вкусов в базе</span><span>${stat.count}</span></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  grid.innerHTML = html;
+}
+
+// ============================================================
+// ФИЧА 7: НАПИТОК ДНЯ
+// ============================================================
+function renderDailyDrink() {
+  const section = document.getElementById('dailyDrinkSection');
+  if (!section) return;
+
+  const KEY = 'buzz_daily_drink';
+  const today = new Date().toDateString();
+  const stored = JSON.parse(localStorage.getItem(KEY) || '{}');
+
+  let drinkIndex;
+  if (stored.date === today && drinks[stored.index]) {
+    drinkIndex = stored.index;
+  } else {
+    drinkIndex = Math.floor(Math.random() * drinks.length);
+    localStorage.setItem(KEY, JSON.stringify({ date: today, index: drinkIndex }));
+  }
+
+  const drink = drinks[drinkIndex];
+  if (!drink) return;
+
+  document.getElementById('ddImage').src = drink.img || '';
+  document.getElementById('ddBrand').textContent = drink.brand;
+  document.getElementById('ddFlavor').textContent = drink.flavor || '';
+  document.getElementById('ddCaffeine').textContent = drink.caffeine || '—';
+  document.getElementById('ddRating').textContent = drink.rating;
+
+  // Цвет карточки
+  const card = document.getElementById('dailyDrinkCard');
+  card.style.setProperty('--can-glow', (bColors[drink.key] || '#BFFF00') + '26');
+
+  document.getElementById('ddBtn').onclick = () => {
+    if (window.openDrinkDetails) window.openDrinkDetails(drink);
+  };
+}
+
+// ============================================================
+// ФИЧА 10: ТРЕКЕР СУТОЧНОЙ НОРМЫ КОФЕИНА
+// ============================================================
+const CaffeineTracker = (function() {
+  const KEY = 'buzz_caffeine_today';
+  const MAX_DAILY = 400; // мг
+
+  function getToday() { return new Date().toDateString(); }
+
+  function getTodayData() {
+    const data = JSON.parse(localStorage.getItem(KEY) || '{}');
+    if (data.date !== getToday()) return { date: getToday(), total: 0, drinks: [] };
+    return data;
+  }
+
+  function add(drink) {
+    const mg = parseInt((drink.caffeine || '').replace(/\D/g, '')) || 0;
+    if (mg === 0) return;
+    const data = getTodayData();
+    data.total += mg;
+    data.drinks.push({ brand: drink.brand, mg: mg, time: Date.now() });
+    localStorage.setItem(KEY, JSON.stringify(data));
+    updateWidget();
+    
+    if (data.total > MAX_DAILY && !localStorage.getItem('ach_caffeine')) {
+      unlockAchievement('caffeine');
+      showToast(`⚠️ Превышена суточная норма: ${data.total} мг / ${MAX_DAILY} мг`, 'fa-solid fa-triangle-exclamation');
+    }
+  }
+
+  function updateWidget() {
+    const widget = document.getElementById('caffeineWidget');
+    const bar = document.getElementById('cwBarFill');
+    const text = document.getElementById('cwText');
+    if (!widget || !bar || !text) return;
+
+    const data = getTodayData();
+    const pct = Math.min((data.total / MAX_DAILY) * 100, 100);
+    bar.style.width = pct + '%';
+    text.textContent = data.total + ' мг';
+
+    if (data.total > MAX_DAILY) {
+      widget.classList.add('over-limit');
+      bar.classList.add('over-limit');
+    } else {
+      widget.classList.remove('over-limit');
+      bar.classList.remove('over-limit');
+    }
+  }
+
+  // Клик по виджету открывает калькулятор
+  document.addEventListener('DOMContentLoaded', () => {
+    const widget = document.getElementById('caffeineWidget');
+    if (widget) {
+      widget.addEventListener('click', () => {
+        if (typeof openCalc === 'function') openCalc();
+      });
+    }
+    updateWidget();
+  });
+
+  function reset() {
+    const data = { date: getToday(), total: 0, drinks: [] };
+    localStorage.setItem(KEY, JSON.stringify(data));
+    updateWidget();
+    showToast('Счётчик кофеина сброшен', 'fa-solid fa-rotate-left');
+  }
+
+  // FIX 1: long-press на виджете убран (виджет удалён из HTML)
+  // Сброс кофеина теперь доступен через калькулятор (кнопка "Сбросить")
+  document.addEventListener('DOMContentLoaded', () => {
+    // Добавим кнопку сброса в калькулятор
+    const calcModal = document.getElementById('calcModal');
+    if (calcModal && !document.getElementById('calcResetBtn')) {
+      const resetBtn = document.createElement('button');
+      resetBtn.id = 'calcResetBtn';
+      resetBtn.innerHTML = '<i class="fa-solid fa-rotate-left"></i> Сбросить';
+      resetBtn.style.cssText = 'margin-top:15px;width:100%;padding:10px;background:rgba(255,59,92,0.1);border:1px solid rgba(255,59,92,0.3);color:#ff3b5c;border-radius:8px;cursor:pointer;font-family:Oswald;font-size:14px;letter-spacing:1px;';
+      resetBtn.onclick = () => {
+        if (confirm('Сбросить счётчик кофеина за сегодня?')) {
+          reset();
+        }
+      };
+      const meter = calcModal.querySelector('.calc-meter');
+      if (meter) meter.appendChild(resetBtn);
+    }
+  });
+
+  // ВНИМАНИЕ: getTodayData уже определена выше (с проверкой даты) — не дублируем
+  return { add, updateWidget, reset, getTodayData };
+})();
+
+// ВНИМАНИЕ: кофеин больше НЕ добавляется автоматически при просмотре деталей.
+// Пользователь должен явно нажать кнопку "Я выпил" в модалке.
+// (старый хук удалён — он работал некорректно)
+
+// ============================================================
+// ФИЧА 11: РУЛЕТКА — УБРАНА (по запросу пользователя, т.к. есть "Случайный напиток")
+// ============================================================
+// (блок удалён)
+
+// ============================================================
+// ФИЧА 15: ЗВУК ПРИ НАВЕДЕНИИ — ОТКЛЮЧЁН (по запросу пользователя)
+// ============================================================
+// (блок удалён — звук при наведении мышки на карточки больше не играет)
+
+// ============================================================
+// ============================================================
+// FIX 5: СКРЫТИЕ ШАПКИ ПРИ СКРОЛЛЕ ВНИЗ, ПОЯВЛЕНИЕ ПРИ СКРОЛЛЕ ВВЕРХ
+// ============================================================
+(function() {
+  const header = document.querySelector('header');
+  if (!header) return;
+  let lastScroll = 0;
+  let ticking = false;
+
+  function onScroll() {
+    const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+    
+    // В самом верху — всегда показываем
+    if (currentScroll < 80) {
+      header.classList.remove('header-hidden');
+      header.classList.remove('scrolling');
+      lastScroll = currentScroll;
+      ticking = false;
+      return;
+    }
+    
+    header.classList.add('scrolling');
+    
+    // Скролл вниз — прячем (с порогом 8px, чтобы дрожание не мешало)
+    if (currentScroll > lastScroll + 8 && currentScroll > 150) {
+      header.classList.add('header-hidden');
+    } 
+    // Скролл вверх — показываем
+    else if (currentScroll < lastScroll - 5) {
+      header.classList.remove('header-hidden');
+    }
+    lastScroll = currentScroll;
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  // Также следим за touchmove для мобильных
+  window.addEventListener('touchmove', onScroll, { passive: true });
+})();
+
+// ИНИЦИАЛИЗАЦИЯ НОВЫХ ФИЧ
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  renderTop10();
+  renderStats();
+  renderDailyDrink();
+  CaffeineTracker.updateWidget();
+
+  // Перехват кликов по карточкам — открываем детали, а не видео сразу
+  // (сохраняем видео-кнопку внутри карточки)
+  const cardsGrid = document.getElementById('cardsGrid');
+  if (cardsGrid) {
+    cardsGrid.addEventListener('click', (e) => {
+      // Если клик на кнопку "Смотреть обзор" или "Избранное" — не перехватываем
+      if (e.target.closest('[data-open-video], .fav-btn, .cmp-btn, .share-btn')) return;
+      const card = e.target.closest('.energy-card');
+      if (!card) return;
+      const idx = parseInt(card.dataset.drinkIndex);
+      const drink = drinks[idx];
+      if (drink && window.openDrinkDetails) {
+        e.preventDefault();
+        window.openDrinkDetails(drink);
+      }
+    });
+  }
+
+  // Проверяем hash в URL для шеринга (#drink-N)
+  if (location.hash.startsWith('#drink-')) {
+    const idx = parseInt(location.hash.replace('#drink-', ''));
+    if (!isNaN(idx) && drinks[idx] && window.openDrinkDetails) {
+      setTimeout(() => window.openDrinkDetails(drinks[idx]), 1500);
+    }
+  }
+});
+
+// Запускаем рендер сразу, если DOM уже готов
+if (document.readyState !== 'loading') {
+  setTimeout(() => {
+    renderTop10();
+    renderStats();
+    renderDailyDrink();
+  }, 100);
 }

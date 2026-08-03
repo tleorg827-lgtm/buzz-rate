@@ -2,52 +2,90 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Buzz Rate</title>
   <link rel="icon" href="data:,">
+
+  <!-- Preconnect для ускорения соединения с CDN -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="preconnect" href="https://unpkg.com">
+
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+
+<!-- ===== ЗАГРУЗОЧНЫЙ ЭКРАН ===== -->
+<div class="preloader" id="preloader">
+  <div class="preloader-logo">
+    <svg viewBox="0 0 400 400" class="preloader-svg">
+      <defs>
+        <filter id="preloaderGlow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="b1"/>
+          <feMerge><feMergeNode in="b1"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <g filter="url(#preloaderGlow)">
+        <g stroke="#BFFF00" stroke-width="4" fill="none">
+          <rect x="160" y="90" width="80" height="50" rx="4" ry="4"/>
+          <rect x="240" y="105" width="12" height="20" rx="2" ry="2" fill="#BFFF00" stroke="none"/>
+          <polygon class="preloader-bolt" points="195,95 208,116 200,116 212,140 198,119 206,119" fill="#BFFF00" stroke="none"/>
+        </g>
+        <text x="200" y="210" font-family="Arial" font-size="48" font-weight="900" fill="#BFFF00" text-anchor="middle" letter-spacing="14">BUZZ</text>
+        <line x1="130" y1="225" x2="270" y2="225" stroke="#BFFF00" stroke-width="2" stroke-linecap="round"/>
+        <text x="200" y="268" font-family="Arial" font-size="48" font-weight="900" fill="#BFFF00" text-anchor="middle" letter-spacing="14">RATE</text>
+      </g>
+    </svg>
+  </div>
+  <div class="preloader-bar"><div class="preloader-bar-fill"></div></div>
+  <div class="preloader-text">ЗАГРУЗКА...</div>
+</div>
+
+<!-- ===== SVG Symbol: логотип BUZZ RATE (объявляем 1 раз) ===== -->
+<svg style="display:none" aria-hidden="true">
+  <symbol id="buzz-rate-logo" viewBox="0 0 400 400">
+    <defs>
+      <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur1"/>
+        <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur2"/>
+        <feMerge>
+          <feMergeNode in="blur1"/>
+          <feMergeNode in="blur2"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+    <g filter="url(#neonGlow)">
+      <g stroke="#BFFF00" stroke-width="4" fill="none" stroke-linejoin="miter">
+        <rect x="160" y="90" width="80" height="50" rx="4" ry="4"/>
+        <rect x="240" y="105" width="12" height="20" rx="2" ry="2" fill="#BFFF00" stroke="none"/>
+        <polygon points="195,95 208,116 200,116 212,140 198,119 206,119" fill="#BFFF00" stroke="none"/>
+      </g>
+      <text x="200" y="210" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="900" fill="#BFFF00" text-anchor="middle" letter-spacing="14">BUZZ</text>
+      <line x1="130" y1="225" x2="270" y2="225" stroke="#BFFF00" stroke-width="2" stroke-linecap="round"/>
+      <text x="200" y="268" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="900" fill="#BFFF00" text-anchor="middle" letter-spacing="14">RATE</text>
+    </g>
+  </symbol>
+</svg>
+
 <header>
   <div class="header-content">
     <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" class="header-logo" aria-label="На главную">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" overflow="hidden">
-        <defs>
-          <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur1"/>
-            <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur2"/>
-            <feMerge>
-              <feMergeNode in="blur1"/>
-              <feMergeNode in="blur2"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-        </defs>
-        <g id="neon-group" filter="url(#neonGlow)">
-          <g id="battery-icon" stroke="#BFFF00" stroke-width="4" fill="none" stroke-linejoin="miter">
-            <rect x="160" y="90" width="80" height="50" rx="4" ry="4"/>
-            <rect x="240" y="105" width="12" height="20" rx="2" ry="2" fill="#BFFF00" stroke="none"/>
-            <polygon id="lightning" points="195,95 208,116 200,116 212,140 198,119 206,119" fill="#BFFF00" stroke="none"/>
-          </g>
-          <text x="200" y="210" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="900" fill="#BFFF00" text-anchor="middle" letter-spacing="14">BUZZ</text>
-          <line x1="130" y1="225" x2="270" y2="225" stroke="#BFFF00" stroke-width="2" stroke-linecap="round"/>
-          <text x="200" y="268" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="900" fill="#BFFF00" text-anchor="middle" letter-spacing="14">RATE</text>
-        </g>
-      </svg>
+      <svg><use href="#buzz-rate-logo"/></svg>
     </a>
 
-        <nav class="desktop-nav">
-  <ul>
-    <li><a href="#aboutBlock">Обо мне</a></li>
-    <li><a href="#energySection">Обзоры</a></li>
-    <li><a href="#comingSoonSection">Скоро</a></li>
-    <li><a href="#" onclick="openCalc(); return false;"><i class="fa-solid fa-flask" style="margin-right: 6px; font-size: 0.9em;"></i>Калькулятор</a></li>
-  </ul>
-</nav>
+    <nav class="desktop-nav">
+      <ul>
+        <li><a href="#aboutBlock">Обо мне</a></li>
+        <li><a href="#energySection">Обзоры</a></li>
+        <li><a href="#comingSoonSection">Скоро</a></li>
+        <li><a href="#" data-action="open-calc"><i class="fa-solid fa-flask" style="margin-right:6px;font-size:0.9em;"></i>Калькулятор</a></li>
+      </ul>
+    </nav>
 
     <button class="burger-btn" id="burgerBtn" aria-label="Открыть меню">
       <span></span><span></span><span></span>
@@ -55,57 +93,47 @@
   </div>
 </header>
 
-<!-- МОБИЛЬНОЕ МЕНЮ -->
-<div class="mobile-menu-overlay" id="mobileOverlay"></div>
-<div class="mobile-menu" id="mobileMenu">
-  <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Закрыть"><i class="fa-solid fa-xmark"></i></button>
-  <div class="mobile-menu-links">
-  <a href="#aboutBlock" class="mobile-link-btn about-mob">
-    <i class="fa-solid fa-user"></i> Обо мне
-  </a>
-  <a href="#energySection" class="mobile-link-btn reviews-mob">
-    <i class="fa-solid fa-bolt"></i> Обзоры
-  </a>
-  <a href="#comingSoonSection" class="mobile-link-btn soon-mob">
-    <i class="fa-solid fa-clock"></i> Скоро
-  </a>
-    <a href="#" class="mobile-link-btn" onclick="openCalc(); return false;">
-    <i class="fa-solid fa-flask" style="color: #fbbf24;"></i> Калькулятор
-  </a>
-  <a href="#mapSection" class="mobile-link-btn places-mob">
-    <i class="fa-solid fa-location-dot"></i> Места
-  </a>
-    <a href="#" class="mobile-link-btn key-mob" id="openKeyModal">
-    <i class="fa-solid fa-key"></i> Ключ
-  </a>
-
-  <div style="height: 1px; background: var(--border); margin: 10px 0;"></div>
-
-  <a href="https://tiktok.com/@ТВОЙ_НИК" target="_blank" class="mobile-link-btn tiktok-mob">
-    <i class="fa-brands fa-tiktok"></i> Мой TikTok
-  </a>
-  <a href="ТВОЯ_ССЫЛКА_НА_ТЕЛЕГРАМ" target="_blank" class="mobile-link-btn telegram-mob">
-    <i class="fa-brands fa-telegram"></i> Telegram
-  </a>
-</div>
-</div>
-
+<!-- Плавающие кнопки темы и звука -->
 <button class="theme-toggle" id="themeToggle" aria-label="Сменить тему"><i class="fa-solid fa-moon"></i></button>
 <button class="sound-toggle" id="soundToggle" aria-label="Выключить звук"><i class="fa-solid fa-volume-high"></i></button>
-<div style="padding: 40px 20px 0;">
+
+<!-- Герой-секция -->
+<section class="hero-wrap">
   <div class="container">
     <div class="text-part"><span id="typewriter" class="cursor"></span></div>
-    <div class="image-part" id="userPhoto"><img src="images/урод_1.jpg" alt="Фото Сударя"></div>
+    <div class="image-part" id="userPhoto"><img src="images/me-1.jpg" alt="Фото Сударя" loading="lazy" decoding="async"></div>
   </div>
-</div>
+</section>
 
-<div style="padding: 0 20px;">
+<!-- Обо мне -->
+<section class="about-wrap">
   <section class="about-section" id="aboutBlock">
-    <div class="about-image"><img src="images/урод_2.3.webp" alt="Обо мне"></div>
+    <div class="about-image"><img src="images/me-2.webp" alt="Обо мне" loading="lazy" decoding="async"></div>
     <div class="about-text-card"><h2>Обо мне</h2><p><span id="about-typewriter" class="cursor-about"></span></p></div>
   </section>
-</div>
+</section>
 
+<!-- НАПИТОК ДНЯ -->
+<section class="daily-drink-section" id="dailyDrinkSection">
+  <div class="daily-drink-card" id="dailyDrinkCard">
+    <div class="dd-tag"><i class="fa-solid fa-calendar-day"></i> Напиток дня</div>
+    <div class="dd-content">
+      <div class="dd-image-wrap"><img id="ddImage" src="" alt="Напиток дня" loading="lazy"></div>
+      <div class="dd-info">
+        <h3 id="ddBrand"></h3>
+        <p id="ddFlavor"></p>
+        <div class="dd-stats">
+          <span><i class="fa-solid fa-bolt"></i> <span id="ddCaffeine"></span></span>
+          <span><i class="fa-solid fa-star"></i> <span id="ddRating"></span>/10</span>
+        </div>
+        <button class="dd-btn" id="ddBtn"><i class="fa-solid fa-eye"></i> Подробнее</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Обзоры -->
 <section class="energy-section" id="energySection" aria-label="Обзоры энергетиков">
   <div class="noise-overlay"></div>
   <canvas id="particleCanvas"></canvas>
@@ -119,49 +147,105 @@
     <button class="filter-btn" data-filter="high">8 — 10</button>
     <button class="filter-btn" data-filter="mid">6 — 7</button>
     <button class="filter-btn" data-filter="low">Ниже 6</button>
-    <button class="filter-btn" data-filter="fav">
-      <i class="fa-solid fa-heart" style="font-size:11px;margin-right:4px;"></i> Избранное
-    </button>
-        <div class="brand-filter-wrap">
+    <button class="filter-btn" data-filter="fav"><i class="fa-solid fa-heart" style="font-size:11px;margin-right:4px;"></i> Избранное</button>
+    <div class="brand-filter-wrap">
       <button class="filter-btn brand-toggle" id="brandToggle">Марка <i class="fa-solid fa-chevron-down"></i></button>
       <div class="brand-dropdown" id="brandDropdown"></div>
     </div>
-    <button class="filter-btn" id="randomBtn">
-      <i class="fa-solid fa-dice"></i> Случайный Напиток
-    </button>
+    <button class="filter-btn" id="randomBtn"><i class="fa-solid fa-dice"></i> Случайный Напиток</button>
+  </div>
+  <!-- ПОИСК -->
+  <div class="search-wrap">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="text" id="drinkSearch" placeholder="Поиск по названию..." autocomplete="off">
+    <button id="clearSearch" class="clear-search" aria-label="Очистить"><i class="fa-solid fa-xmark"></i></button>
   </div>
   <div class="cards-grid" id="cardsGrid"></div>
 </section>
 
+<!-- ТОП-10 -->
+<section class="top10-section" id="top10Section">
+  <header class="section-header">
+    <div class="section-tag"><i class="fa-solid fa-trophy"></i> Топ-10</div>
+    <h2 class="section-title">Лучшие из лучших</h2>
+    <p class="section-subtitle">Самые высокооценённые напитки по версии Buzz Rate</p>
+  </header>
+  <div class="top10-list" id="top10List"></div>
+</section>
+
+<!-- СТАТИСТИКА -->
+<section class="stats-section" id="statsSection">
+  <header class="section-header">
+    <div class="section-tag"><i class="fa-solid fa-chart-column"></i> Статистика</div>
+    <h2 class="section-title">Цифры по брендам</h2>
+    <p class="section-subtitle">Средние рейтинги и характеристики</p>
+  </header>
+  <div class="stats-grid" id="statsGrid"></div>
+</section>
+
+<!-- МОДАЛКА ДЕТАЛЕЙ НАПИТКА -->
+<div id="drinkDetailsModal" class="custom-modal">
+  <div class="custom-modal-inner details-inner">
+    <button class="custom-modal-close" id="closeDetails"><i class="fa-solid fa-xmark"></i></button>
+    <div class="details-layout">
+      <div class="details-image-wrap">
+        <img id="detailsImage" src="" alt="">
+        <div class="details-rating-big" id="detailsRating"></div>
+      </div>
+      <div class="details-info">
+        <div class="details-brand-row">
+          <h2 id="detailsBrand"></h2>
+          <button class="details-tag-brand" id="detailsTagBrand"></button>
+        </div>
+        <p id="detailsFlavor" class="details-flavor"></p>
+        <div class="details-stats-grid" id="detailsStatsGrid"></div>
+        <div class="details-actions">
+          <button class="details-action-btn" id="detailsFavBtn"><i class="fa-solid fa-heart"></i> В избранное</button>
+          <button class="details-action-btn" id="detailsCompareBtn"><i class="fa-solid fa-code-compare"></i> Сравнить</button>
+          <button class="details-action-btn" id="detailsShareBtn"><i class="fa-solid fa-share-nodes"></i> Поделиться</button>
+          <button class="details-action-btn details-video-btn" id="detailsVideoBtn"><i class="fa-brands fa-tiktok"></i> Обзор</button>
+          <button class="details-action-btn details-drank-btn" id="detailsDrankBtn"><i class="fa-solid fa-mug-hot"></i> Я выпил</button>
+        </div>
+        <div class="details-history" id="detailsHistory" style="display:none;">
+          <h4><i class="fa-solid fa-clock-rotate-left"></i> Недавно просмотренные</h4>
+          <div class="history-list" id="historyList"></div>
+        </div>
+        <div class="details-similar" id="detailsSimilar">
+          <h4><i class="fa-solid fa-link"></i> Похожие напитки</h4>
+          <div class="similar-list" id="similarList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Скоро -->
 <section class="coming-soon-section" id="comingSoonSection">
   <div class="coming-soon-header">
     <h2>Скоро в обзоре</h2>
     <p>Уже тестируем эти напитки</p>
   </div>
-     <div class="coming-grid">
+  <div class="coming-grid">
     <div class="coming-card">
-      <img src="https://picsum.photos/seed/energy-cola/200/280.jpg" alt="Скоро">
+      <img src="https://picsum.photos/seed/energy-cola/200/280.jpg" alt="Скоро" loading="lazy" decoding="async">
       <div class="coming-overlay">
-        <i class="fa-solid fa-lock"></i>
-        <span>Скоро</span>
+        <i class="fa-solid fa-lock"></i><span>Скоро</span>
         <div class="hack-progress-wrap"><div class="hack-progress-bar"></div></div>
         <div class="hack-status"></div>
       </div>
     </div>
     <div class="coming-card">
-      <img src="https://picsum.photos/seed/guardian-drink/200/280.jpg" alt="Скоро">
+      <img src="https://picsum.photos/seed/guardian-drink/200/280.jpg" alt="Скоро" loading="lazy" decoding="async">
       <div class="coming-overlay">
-        <i class="fa-solid fa-lock"></i>
-        <span>Скоро</span>
+        <i class="fa-solid fa-lock"></i><span>Скоро</span>
         <div class="hack-progress-wrap"><div class="hack-progress-bar"></div></div>
         <div class="hack-status"></div>
       </div>
     </div>
     <div class="coming-card">
-      <img src="https://picsum.photos/seed/flash-energy/200/280.jpg" alt="Скоро">
+      <img src="https://picsum.photos/seed/flash-energy/200/280.jpg" alt="Скоро" loading="lazy" decoding="async">
       <div class="coming-overlay">
-        <i class="fa-solid fa-lock"></i>
-        <span>Скоро</span>
+        <i class="fa-solid fa-lock"></i><span>Скоро</span>
         <div class="hack-progress-wrap"><div class="hack-progress-bar"></div></div>
         <div class="hack-status"></div>
       </div>
@@ -169,7 +253,7 @@
   </div>
 </section>
 
-<!-- СЕКЦИЯ КАРТЫ -->
+<!-- Карта -->
 <section class="map-section" id="mapSection">
   <header class="section-header">
     <div class="section-tag"><i class="fa-solid fa-map-location-dot"></i> Где купить</div>
@@ -191,32 +275,28 @@
   </div>
 </section>
 
+<!-- Мобильное меню -->
+<div class="mobile-menu-overlay" id="mobileOverlay"></div>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Закрыть"><i class="fa-solid fa-xmark"></i></button>
+  <div class="mobile-menu-links">
+    <a href="#aboutBlock" class="mobile-link-btn about-mob"><i class="fa-solid fa-user"></i> Обо мне</a>
+    <a href="#energySection" class="mobile-link-btn reviews-mob"><i class="fa-solid fa-bolt"></i> Обзоры</a>
+    <a href="#comingSoonSection" class="mobile-link-btn soon-mob"><i class="fa-solid fa-clock"></i> Скоро</a>
+    <a href="#" class="mobile-link-btn" data-action="open-calc"><i class="fa-solid fa-flask" style="color: #fbbf24;"></i> Калькулятор</a>
+    <a href="#mapSection" class="mobile-link-btn places-mob"><i class="fa-solid fa-location-dot"></i> Места</a>
+    <a href="#" class="mobile-link-btn key-mob" id="openKeyModal"><i class="fa-solid fa-key"></i> Ключ</a>
+    <div class="menu-divider"></div>
+    <a href="https://tiktok.com/@YOUR_NICK" target="_blank" rel="noopener" class="mobile-link-btn tiktok-mob"><i class="fa-brands fa-tiktok"></i> Мой TikTok</a>
+    <a href="https://t.me/YOUR_TELEGRAM" target="_blank" rel="noopener" class="mobile-link-btn telegram-mob"><i class="fa-brands fa-telegram"></i> Telegram</a>
+  </div>
+</div>
+
+<!-- Футер -->
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-logo-wrap">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" overflow="hidden" class="footer-logo-svg">
-        <defs>
-          <filter id="neonGlowFooter" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur1"/>
-            <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur2"/>
-            <feMerge>
-              <feMergeNode in="blur1"/>
-              <feMergeNode in="blur2"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-        </defs>
-        <g id="neon-group-footer" filter="url(#neonGlowFooter)">
-          <g id="battery-icon-footer" stroke="#BFFF00" stroke-width="4" fill="none" stroke-linejoin="miter">
-            <rect x="160" y="90" width="80" height="50" rx="4" ry="4"/>
-            <rect x="240" y="105" width="12" height="20" rx="2" ry="2" fill="#BFFF00" stroke="none"/>
-          </g>
-          <polygon id="lightning-footer" points="195,95 208,116 200,116 212,140 198,119 206,119" fill="#BFFF00" stroke="none"/>
-          <text x="200" y="210" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="900" fill="#BFFF00" text-anchor="middle" letter-spacing="14">BUZZ</text>
-          <line x1="130" y1="225" x2="270" y2="225" stroke="#BFFF00" stroke-width="2" stroke-linecap="round"/>
-          <text x="200" y="268" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="900" fill="#BFFF00" text-anchor="middle" letter-spacing="14">RATE</text>
-        </g>
-      </svg>
+      <svg class="footer-logo-svg"><use href="#buzz-rate-logo"/></svg>
     </div>
     <div class="footer-tagline">
       <p>Честные обзоры энергетических напитков.<br>Состав, вкус, эффект — без прикрас.</p>
@@ -228,13 +308,11 @@
       <span class="footer-dot"></span>
       <a href="#comingSoonSection">Скоро</a>
     </div>
-    <div style="height: 1px; background: var(--border); margin: 10px 0;"></div>
+    <div class="menu-divider"></div>
     <div class="footer-actions">
       <button class="btn-suggest" id="openSuggest"><i class="fa-solid fa-paper-plane"></i> Предложить напиток</button>
-      <button class="btn-key-footer" id="openKeyModalDesktop">
-        <i class="fa-solid fa-key"></i> Ввести код
-      </button>
-      <a href="https://tiktok.com/@ТВОЙ_НИК" target="_blank" class="btn-tiktok" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+      <button class="btn-key-footer" id="openKeyModalDesktop"><i class="fa-solid fa-key"></i> Ввести код</button>
+      <a href="https://tiktok.com/@YOUR_NICK" target="_blank" rel="noopener" class="btn-tiktok" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
     </div>
     <div class="footer-copy"><span>© 2026 Buzz Rate. Все права защищены.</span></div>
   </div>
@@ -243,6 +321,7 @@
 <button class="scroll-top-btn" id="scrollTopBtn" aria-label="Наверх"><i class="fa-solid fa-arrow-up"></i></button>
 <div class="toast-container" id="toastContainer"></div>
 
+<!-- Модалка "Предложить напиток" -->
 <div class="suggest-modal-backdrop" id="suggestModal">
   <div class="suggest-modal">
     <h2>Предложить напиток</h2>
@@ -256,6 +335,7 @@
   </div>
 </div>
 
+<!-- Модалка видео -->
 <div class="video-modal-backdrop" id="videoModal">
   <div class="video-modal" id="videoModalInner">
     <div class="modal-top">
@@ -283,15 +363,18 @@
   </div>
 </div>
 
+<!-- Модалка обновления -->
 <div class="update-modal" id="updateModal">
   <div class="update-content">
     <i class="fa-solid fa-arrow-up-from-bracket"></i>
     <h3>Доступно обновление!</h3>
     <p>Мы ускорили приложение и добавили новые фишки. Обнови, чтобы получить лучший опыт.</p>
-    <a href="ТВОЯ_ССЫЛКА_НА_СКАЧИВАНИЕ_НОВОГО_АПК" class="update-btn">Обновить сейчас</a>
-    <button class="update-later" onclick="document.getElementById('updateModal').style.display='none'">Позже</button>
+    <a href="https://YOUR_DOWNLOAD_LINK" class="update-btn">Обновить сейчас</a>
+    <button class="update-later" id="updateLater">Позже</button>
   </div>
 </div>
+
+<!-- Модалка ключа -->
 <div class="key-modal-backdrop" id="keyModal">
   <div class="key-modal">
     <div class="key-modal-icon"><i class="fa-solid fa-key"></i></div>
@@ -303,10 +386,7 @@
       <div class="key-success-badge"><i class="fa-solid fa-trophy"></i></div>
       <p class="key-success-title">Поздравляю!</p>
       <p class="key-success-text">Ты первый нашёл его!</p>
-      <div class="key-tg-box">
-        <i class="fa-brands fa-telegram"></i>
-        <span id="keyTgUser">@ТВОЙ_НИК_ТЕЛЕГРАМ</span>
-      </div>
+      <div class="key-tg-box"><i class="fa-brands fa-telegram"></i><span id="keyTgUser">@YOUR_TELEGRAM</span></div>
       <p class="key-success-hint">Сделай скриншот и отправь мне в Telegram</p>
     </div>
     <div class="suggest-actions" id="keyActions">
@@ -315,52 +395,47 @@
     </div>
   </div>
 </div>
-<!-- МОДАЛКА: КАЛЬКУЛЯТОР КАФЕИНА -->
+
+<!-- Модалка калькулятора -->
 <div id="calcModal" class="custom-modal">
-  <div class="custom-modal-inner" style="max-width: 450px;">
+  <div class="custom-modal-inner calc-inner">
     <button class="custom-modal-close" id="closeCalc"><i class="fa-solid fa-xmark"></i></button>
-    <h2 style="color: var(--accent); font-family: 'Oswald', sans-serif; text-align: center; margin-bottom: 20px; letter-spacing: 2px;">СИСТЕМНЫЙ МОНИТОР: КАФЕИН</h2>
-    
-        <div style="display: flex; gap: 10px; margin-bottom: 20px; position: relative;">
+    <h2 class="modal-title-accent">СИСТЕМНЫЙ МОНИТОР: КАФЕИН</h2>
+    <div class="calc-search-row">
       <div class="calc-search-wrap">
         <input type="text" id="calcSearch" placeholder="Введи название..." autocomplete="off">
         <div id="calcDropdown" class="calc-dropdown"></div>
       </div>
-      <button id="addCalcBtn" style="background: var(--accent); color: #000; border: none; padding: 0 20px; border-radius: 6px; font-weight: bold; cursor: pointer; font-family: 'Oswald'; font-size: 20px;">+</button>
+      <button id="addCalcBtn" class="calc-add-btn">+</button>
     </div>
-
-    <div id="calcList" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 25px; max-height: 200px; overflow-y: auto;"></div>
-
-    <div style="background: #0a0a0a; border: 1px solid #333; border-radius: 8px; padding: 15px; text-align: center;">
-      <div style="font-size: 14px; color: #888; margin-bottom: 8px; font-family: 'Oswald';">УРОВЕНЬ ЗАГРУЗКИ</div>
-      <div style="background: #222; height: 20px; border-radius: 10px; overflow: hidden; position: relative;">
-        <div id="calcBar" style="height: 100%; width: 0%; background: var(--accent); transition: width 0.5s ease, background 0.5s ease; border-radius: 10px;"></div>
-      </div>
-      <div id="calcText" style="margin-top: 10px; font-family: 'Oswald'; font-size: 18px; letter-spacing: 1px; color: var(--accent);">0 мг / 400 мг</div>
-      <div id="calcStatus" style="margin-top: 5px; font-size: 13px; color: #555;">Система в ожидании...</div>
+    <div id="calcList" class="calc-list"></div>
+    <div class="calc-meter">
+      <div class="calc-meter-label">УРОВЕНЬ ЗАГРУЗКИ</div>
+      <div class="calc-meter-bar-bg"><div id="calcBar" class="calc-meter-bar-fill"></div></div>
+      <div id="calcText" class="calc-meter-text">0 мг / 400 мг</div>
+      <div id="calcStatus" class="calc-meter-status">Система в ожидании...</div>
     </div>
   </div>
 </div>
 
-<!-- МОДАЛКА: СРАВНЕНИЕ -->
+<!-- Модалка сравнения -->
 <div id="compareModal" class="custom-modal">
-  <div class="custom-modal-inner" style="max-width: 600px;">
+  <div class="custom-modal-inner compare-inner">
     <button class="custom-modal-close" id="closeCompare"><i class="fa-solid fa-xmark"></i></button>
-    <h2 style="color: var(--accent); font-family: 'Oswald', sans-serif; text-align: center; margin-bottom: 25px; letter-spacing: 2px;">ПРОТОКОЛ СТОЛКНОВЕНИЯ</h2>
-    
-    <div id="compareContent" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;"></div>
-
-    <div style="margin-top: 25px; padding: 12px; background: rgba(191,255,0,0.05); border: 1px solid rgba(191,255,0,0.2); border-radius: 8px; text-align: center;">
-      <span style="color: #888; font-size: 13px;">⚠️ Внимание: Стоимость не учитывается, так как цена варьируется от магазина к магазину.</span>
+    <h2 class="modal-title-accent">ПРОТОКОЛ СТОЛКНОВЕНИЯ</h2>
+    <div id="compareContent" class="compare-content"></div>
+    <div class="compare-notice">
+      <span>⚠️ Внимание: Стоимость не учитывается, так как цена варьируется от магазина к магазину.</span>
     </div>
   </div>
 </div>
 
-<!-- ПЛАВАЮЩАЯ КНОПКА СРАВНЕНИЯ -->
-<button id="compareFloatBtn" style="position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) scale(0); background: var(--accent); color: #000; border: none; padding: 12px 25px; border-radius: 50px; font-family: 'Oswald', sans-serif; font-weight: bold; font-size: 16px; z-index: 9999; cursor: pointer; box-shadow: 0 0 20px rgba(191,255,0,0.4); transition: transform 0.3s ease;">
+<!-- Плавающая кнопка сравнения -->
+<button id="compareFloatBtn" class="compare-float-btn">
   <i class="fa-solid fa-code-compare"></i> Сравнить (0/2)
 </button>
-<!-- МОДАЛКА: ТЕРМИНАЛ (ПОЛНОЭКРАННЫЙ) -->
+
+<!-- Терминал -->
 <div id="terminalOverlay" class="terminal-overlay">
   <div class="custom-modal-inner terminal-window">
     <div class="terminal-header">
@@ -372,22 +447,23 @@
       <div>Введите <span style="color:#fbbf24;">help</span> для списка команд.</div>
     </div>
     <div class="terminal-input-wrap">
-      <span style="color: var(--accent); margin-right: 8px; font-family: monospace;">>&nbsp;</span>
+      <span class="terminal-prompt">&gt;&nbsp;</span>
       <input type="text" id="terminalInput" autocomplete="off" spellcheck="false">
     </div>
   </div>
 </div>
 
-<!-- МОДАЛКА: ДОСЬЕ АГЕНТА -->
+<!-- Досье агента -->
 <div id="profileModal" class="custom-modal">
   <div class="custom-modal-inner profile-window">
     <button class="custom-modal-close" id="closeProfile"><i class="fa-solid fa-xmark"></i></button>
     <div class="profile-stamp">СЕКРЕТНО</div>
-    <h2 style="color: var(--accent); font-family: 'Oswald'; text-align: center; margin-bottom: 25px; letter-spacing: 2px; border-bottom: 1px solid #333; padding-bottom: 15px;">ДОСЬЕ АГЕНТА</h2>
+    <h2 class="modal-title-accent profile-title">ДОСЬЕ АГЕНТА</h2>
     <div id="profileContent"></div>
   </div>
 </div>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="script.js"></script>
+
+<!-- script.js с defer — НЕ блокирует рендер -->
+<script src="script.js" defer></script>
 </body>
 </html>
