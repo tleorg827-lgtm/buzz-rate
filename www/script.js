@@ -3103,6 +3103,12 @@ const CaffeineTracker = (function() {
 (function() {
   const header = document.querySelector('header');
   if (!header) return;
+  
+  // На мобильных (тах-устройствах) шапка статичная — без эффекта скрытия
+  if (matchMedia('(max-width: 768px)').matches) {
+    return;
+  }
+  
   let lastScroll = 0;
   let ticking = false;
 
@@ -3120,7 +3126,7 @@ const CaffeineTracker = (function() {
     
     header.classList.add('scrolling');
     
-    // Скролл вниз — прячем (с порогом 8px, чтобы дрожание не мешало)
+    // Скролл вниз — прячем
     if (currentScroll > lastScroll + 8 && currentScroll > 150) {
       header.classList.add('header-hidden');
     } 
@@ -3133,8 +3139,6 @@ const CaffeineTracker = (function() {
   }
 
   window.addEventListener('scroll', onScroll, { passive: true });
-  // Также следим за touchmove для мобильных
-  window.addEventListener('touchmove', onScroll, { passive: true });
 })();
 
 // ИНИЦИАЛИЗАЦИЯ НОВЫХ ФИЧ
@@ -3180,3 +3184,48 @@ if (document.readyState !== 'loading') {
     renderDailyDrink();
   }, 100);
 }
+
+
+// ============================================================
+// FIX 3: FALLBACK ДЛЯ КАРТИНОК НА МОБИЛЕ
+// Если картинка не загрузилась — показываем placeholder с названием бренда
+// ============================================================
+(function() {
+  function handleImgError(img) {
+    // Не зацикливаемся
+    if (img.dataset.errorHandled) return;
+    img.dataset.errorHandled = '1';
+    
+    // Заменяем на placeholder
+    const card = img.closest('.energy-card');
+    const brand = card ? card.querySelector('.card-brand')?.textContent : 'Buzz';
+    const initial = brand ? brand.charAt(0).toUpperCase() : 'B';
+    
+    img.style.cssText = 'width:80px;height:120px;background:linear-gradient(135deg,#1a1a24,#0d0d12);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#BFFF00;font-family:Oswald,sans-serif;font-size:48px;font-weight:900;text-shadow:0 0 20px rgba(191,255,0,0.5);object-fit:contain;';
+    
+    // Создаём текстовый placeholder
+    const placeholder = document.createElement('div');
+    placeholder.style.cssText = 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#BFFF00;font-family:Oswald,sans-serif;font-size:48px;font-weight:900;text-shadow:0 0 20px rgba(191,255,0,0.5);pointer-events:none;';
+    placeholder.textContent = initial;
+    img.parentElement.style.position = 'relative';
+    img.parentElement.appendChild(placeholder);
+    img.style.opacity = '0';
+  }
+  
+  // Слушаем ошибки загрузки всех картинок (включая будущие)
+  document.addEventListener('error', function(e) {
+    if (e.target.tagName === 'IMG' && e.target.closest('.energy-card, .details-image-wrap, .top10-list, .similar-list, .history-list')) {
+      handleImgError(e.target);
+    }
+  }, true);
+  
+  // Также проверим существующие картинки
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('img').forEach(img => {
+      if (img.complete && img.naturalWidth === 0) {
+        handleImgError(img);
+      }
+      img.addEventListener('error', () => handleImgError(img));
+    });
+  });
+})();

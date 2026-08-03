@@ -26,12 +26,6 @@ header.scrolling {
   box-shadow: 0 4px 30px rgba(0,0,0,0.5);
   backdrop-filter: blur(12px);
 }
-/* Отступ body под fixed header */
-body { padding-top: 90px; }
-@media (max-width: 768px) {
-  body { padding-top: 75px; }
-}
-
 body.light-theme {
   --bg: #f4f4f8; --bg-section: #eaeaf0; --card: #ffffff;
   --fg: #1a1a24; --muted: #6b7280; --accent: #00c853;
@@ -43,11 +37,16 @@ body.light-theme {
 
 body {
   margin: 0; padding: 0;
+  padding-top: 100px; /* Отступ под fixed header (десктоп) */
   color: #e0e0e0;
   font-family: 'Source Sans 3', sans-serif;
   background: var(--bg); color: var(--fg);
   transition: background 0.4s ease, color 0.4s ease;
   overflow-x: hidden;
+}
+/* На мобиле шапка больше (лого 80px) — нужен больший отступ */
+@media (max-width: 768px) {
+  body { padding-top: 115px; }
 }
 
 @keyframes blink { 50% { border-color: transparent; } }
@@ -527,10 +526,10 @@ html {
 /* --- РАСПОЛОЖЕНИЕ ЭЛЕМЕНТОВ В ХЕДЕРЕ --- */
 .header-content {
   display: flex;
-  justify-content: center; /* БЫЛО flex-start. Сдвигает ближе к центру */
+  justify-content: center;
   align-items: center;
-  padding: 15px 30px;
-  gap: 50px;
+  padding: 5px 30px;
+  gap: 25px;
   position: relative;
   z-index: 9999;
 }
@@ -543,7 +542,7 @@ html {
 }
 
 .header-logo svg {
-  height: 130px; /* Размер лого */
+  height: 80px; /* Размер лого */
   width: auto;
 }
 
@@ -898,31 +897,33 @@ nav a:hover {
   .theme-toggle { right: 12px; }
   .sound-toggle { right: 50px; }
 
-  /* Главный экран (Привет + Фото) — горизонтальный как на ПК */
+  /* Главный экран (Привет + Фото) — горизонтальный, увеличенный */
   .container {
     flex-direction: row !important;
-    padding: 15px;
-    gap: 15px;
+    padding: 20px 15px;
+    gap: 20px;
     align-items: center;
+    min-height: 220px;
   }
   .text-part {
-    font-size: 16px;
-    flex: 1;
+    font-size: 22px;
+    flex: 1.2;
     min-width: 0;
     word-break: break-word;
+    line-height: 1.3;
   }
   .image-part {
     flex: 1;
     min-width: 0;
+    min-height: 180px;
     display: flex;
     align-items: center;
     justify-content: center;
   }
   .image-part img {
-    border-radius: 12px;
+    border-radius: 14px;
     width: 100%;
-    height: auto;
-    max-height: 200px;
+    height: 180px;
     object-fit: cover;
   }
 
@@ -3290,12 +3291,26 @@ body.overload-mode .energy-card.visible {
   .dd-content { flex-direction: column; text-align: center; }
   .dd-image-wrap { width: 100px; height: 130px; }
   .dd-info h3 { font-size: 22px; }
+  /* FIX 1: обзор напитка на мобиле — компактный и читабельный */
+  .details-inner { max-width: 100% !important; max-height: 95vh !important; border-radius: 16px !important; }
   .details-layout { grid-template-columns: 1fr; }
-  .details-image-wrap { padding: 20px; }
-  .details-image-wrap img { max-height: 200px; }
-  .details-info { padding: 20px; }
-  .details-history h4, .details-similar h4 { margin-top: 20px; }
-  .details-stats-grid { grid-template-columns: 1fr 1fr; }
+  .details-image-wrap { padding: 15px; min-height: 200px; }
+  .details-image-wrap img { max-height: 180px; }
+  .details-info { padding: 16px; }
+  .details-info h2 { font-size: 18px !important; }
+  .details-flavor { font-size: 13px !important; margin-bottom: 14px !important; }
+  .details-stats-grid { grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px !important; }
+  .details-stat-box { padding: 8px 10px !important; }
+  .details-stat-box label { font-size: 9px !important; margin-bottom: 2px !important; }
+  .details-stat-box .stat-value { font-size: 14px !important; }
+  .details-actions { gap: 6px !important; margin-bottom: 16px !important; }
+  .details-action-btn { padding: 8px 12px !important; font-size: 12px !important; }
+  .details-rating-big { font-size: 16px !important; padding: 6px 10px !important; top: 10px !important; left: 10px !important; }
+  .details-tag-brand { font-size: 10px !important; padding: 3px 8px !important; }
+  .details-history h4, .details-similar h4 { margin-top: 14px; font-size: 12px !important; }
+  .history-item img, .similar-item img { width: 40px; height: 56px; }
+  .history-item span, .similar-item span { font-size: 8px; }
+  .custom-modal-close { top: 8px !important; right: 8px !important; width: 32px !important; height: 32px !important; font-size: 14px !important; }
   .top10-rank { font-size: 28px; min-width: 36px; }
   .top10-image { width: 40px; height: 56px; }
   .top10-info h4 { font-size: 15px; }
