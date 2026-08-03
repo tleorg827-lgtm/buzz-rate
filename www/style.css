@@ -3093,6 +3093,9 @@ body.overload-mode .energy-card.visible {
   grid-template-columns: 280px 1fr;
   gap: 0;
   min-height: 100%;
+  max-width: 100%;
+  width: 100%;
+  overflow: hidden;
 }
 .details-image-wrap {
   background: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.1) 100%);
@@ -3101,6 +3104,10 @@ body.overload-mode .energy-card.visible {
   align-items: center;
   justify-content: center;
   position: relative;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 .details-image-wrap img {
   max-width: 100%;
@@ -3121,7 +3128,7 @@ body.overload-mode .energy-card.visible {
   box-shadow: 0 4px 20px rgba(0,230,118,0.4);
   z-index: 2;
 }
-.details-info { padding: 30px; }
+.details-info { padding: 30px; max-width: 100%; min-width: 0; overflow: hidden; box-sizing: border-box; }
 .details-brand-row {
   display: flex;
   align-items: center;
@@ -3322,11 +3329,14 @@ body.overload-mode .energy-card.visible {
     border-radius: 14px !important; 
     margin: 10px auto !important;
   }
-  .details-layout { grid-template-columns: 1fr; }
+  .details-layout { grid-template-columns: 1fr !important; width: 100% !important; max-width: 100% !important; }
   .details-image-wrap { 
     padding: 12px; 
     min-height: 180px;
     max-height: 220px;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
   .details-image-wrap img { max-height: 180px; }
   .details-info { padding: 14px 16px; }

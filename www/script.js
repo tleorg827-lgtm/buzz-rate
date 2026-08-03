@@ -524,7 +524,29 @@ async function startScenario() {
   target.classList.remove('cursor');
   document.getElementById('aboutBlock').classList.add('visible'); await sleep(1200); await typeAboutText();
 }
-startScenario();
+// FIX: typewriter запускается только ПОСЛЕ скрытия preloader и загрузки шрифтов
+let _typewriterStarted = false;
+function startTypewriterWhenReady() {
+  if (_typewriterStarted) return;
+  _typewriterStarted = true;
+  
+  // Дополнительная проверка шрифтов (если preloader не дождался)
+  const fontsReady = (document.fonts && document.fonts.ready) 
+    ? document.fonts.ready 
+    : Promise.resolve();
+  
+  fontsReady.then(() => {
+    // Небольшая пауза чтобы фото точно отрисовалось
+    setTimeout(startScenario, 100);
+  });
+}
+
+// Фолбэк: если preloader не существовал, запустим сами
+if (document.readyState === 'complete' && !document.getElementById('preloader')) {
+  startTypewriterWhenReady();
+} else if (!document.getElementById('preloader')) {
+  window.addEventListener('load', startTypewriterWhenReady);
+}
 
 // ==========================================
 // ПАСХАЛКА: МАТРИЦА (5 быстрых кликов на кнопку темы)
@@ -2830,22 +2852,36 @@ const DrinkDetails = (function() {
 // ============================================================
 (function() {
   const preloader = document.getElementById('preloader');
-  if (!preloader) return;
+  if (!preloader) {
+    // Если preloader отсутствует — запускаем typewriter сразу
+    if (typeof startTypewriterWhenReady === 'function') startTypewriterWhenReady();
+    return;
+  }
 
   function hidePreloader() {
     preloader.classList.add('hidden');
     setTimeout(() => preloader.remove(), 700);
+    // ЗАПУСКАЕМ TYPERWRITER ПОСЛЕ скрытия preloader (через 300мс, чтобы fade-out успел начаться)
+    setTimeout(() => {
+      if (typeof startTypewriterWhenReady === 'function') startTypewriterWhenReady();
+    }, 300);
   }
 
-  // Скрываем после полной загрузки страницы
+  // Скрываем после полной загрузки страницы + шрифтов
+  function scheduleHide() {
+    const fontsReady = (document.fonts && document.fonts.ready) 
+      ? document.fonts.ready 
+      : Promise.resolve();
+    fontsReady.then(() => setTimeout(hidePreloader, 800));
+    // Фолбэк — скрываем через 2.5 сек в любом случае
+    setTimeout(hidePreloader, 2500);
+  }
+
   if (document.readyState === 'complete') {
-    setTimeout(hidePreloader, 1200);
+    scheduleHide();
   } else {
-    window.addEventListener('load', () => {
-      setTimeout(hidePreloader, 1200);
-    });
-    // Фолбэк — скрываем через 3 сек в любом случае
-    setTimeout(hidePreloader, 3000);
+    window.addEventListener('load', scheduleHide);
+    setTimeout(hidePreloader, 3500); // абсолютный фолбэк
   }
 })();
 
@@ -3187,45 +3223,77 @@ if (document.readyState !== 'loading') {
 
 
 // ============================================================
-// FIX 3: FALLBACK ДЛЯ КАРТИНОК НА МОБИЛЕ
-// Если картинка не загрузилась — показываем placeholder с названием бренда
+// FIX 3: FALLBACK ДЛЯ КАРТИНОК + ПРИНУДИТЕЛЬНАЯ ЗАГРУЗКА
+// Если картинка не загрузилась — показываем placeholder с первой буквой бренда
+// Также: перепроверяем загрузку через 1.5 сек (для мобилы с медленным интернетом)
 // ============================================================
 (function() {
   function handleImgError(img) {
-    // Не зацикливаемся
     if (img.dataset.errorHandled) return;
     img.dataset.errorHandled = '1';
     
-    // Заменяем на placeholder
     const card = img.closest('.energy-card');
-    const brand = card ? card.querySelector('.card-brand')?.textContent : 'Buzz';
-    const initial = brand ? brand.charAt(0).toUpperCase() : 'B';
+    const brand = card ? (card.querySelector('.card-brand')?.textContent || 'B') : 'B';
+    const initial = brand.charAt(0).toUpperCase();
     
-    img.style.cssText = 'width:80px;height:120px;background:linear-gradient(135deg,#1a1a24,#0d0d12);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#BFFF00;font-family:Oswald,sans-serif;font-size:48px;font-weight:900;text-shadow:0 0 20px rgba(191,255,0,0.5);object-fit:contain;';
-    
-    // Создаём текстовый placeholder
-    const placeholder = document.createElement('div');
-    placeholder.style.cssText = 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#BFFF00;font-family:Oswald,sans-serif;font-size:48px;font-weight:900;text-shadow:0 0 20px rgba(191,255,0,0.5);pointer-events:none;';
-    placeholder.textContent = initial;
-    img.parentElement.style.position = 'relative';
-    img.parentElement.appendChild(placeholder);
+    // Прячем битую картинку
     img.style.opacity = '0';
+    img.style.width = '80px';
+    img.style.height = '120px';
+    img.style.background = 'linear-gradient(135deg,#1a1a24,#0d0d12)';
+    img.style.borderRadius = '8px';
+    
+    // Создаём placeholder поверх
+    if (!img.parentElement.querySelector('.img-placeholder')) {
+      const placeholder = document.createElement('div');
+      placeholder.className = 'img-placeholder';
+      placeholder.style.cssText = 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#BFFF00;font-family:Oswald,sans-serif;font-size:42px;font-weight:900;text-shadow:0 0 20px rgba(191,255,0,0.5);pointer-events:none;z-index:1;';
+      placeholder.textContent = initial;
+      img.parentElement.style.position = 'relative';
+      img.parentElement.appendChild(placeholder);
+    }
   }
   
-  // Слушаем ошибки загрузки всех картинок (включая будущие)
+  // Слушаем ошибки всех img (capturing phase)
   document.addEventListener('error', function(e) {
-    if (e.target.tagName === 'IMG' && e.target.closest('.energy-card, .details-image-wrap, .top10-list, .similar-list, .history-list')) {
+    if (e.target.tagName === 'IMG') {
       handleImgError(e.target);
     }
   }, true);
   
-  // Также проверим существующие картинки
-  document.addEventListener('DOMContentLoaded', () => {
+  // Принудительная проверка через 1.5 сек
+  setTimeout(() => {
     document.querySelectorAll('img').forEach(img => {
-      if (img.complete && img.naturalWidth === 0) {
+      if (img.complete && img.naturalWidth === 0 && !img.dataset.errorHandled) {
         handleImgError(img);
       }
-      img.addEventListener('error', () => handleImgError(img));
+    });
+  }, 1500);
+  
+  // Ещё раз через 3 сек (для совсем медленного интернета)
+  setTimeout(() => {
+    document.querySelectorAll('img').forEach(img => {
+      if (img.complete && img.naturalWidth === 0 && !img.dataset.errorHandled) {
+        handleImgError(img);
+      }
+    });
+  }, 3000);
+  
+  // Для динамически добавленных картинок (модалка, карточки)
+  const observer = new MutationObserver(mutations => {
+    mutations.forEach(m => {
+      m.addedNodes.forEach(node => {
+        if (node.nodeType !== 1) return;
+        const imgs = node.tagName === 'IMG' ? [node] : node.querySelectorAll('img');
+        imgs.forEach(img => {
+          img.addEventListener('error', () => handleImgError(img));
+          // Если уже загрузилось с ошибкой
+          if (img.complete && img.naturalWidth === 0) {
+            handleImgError(img);
+          }
+        });
+      });
     });
   });
+  observer.observe(document.body, { childList: true, subtree: true });
 })();
