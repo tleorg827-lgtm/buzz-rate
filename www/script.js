@@ -713,7 +713,7 @@ function applyFilters() {
   document.querySelectorAll('.energy-card').forEach(card => {
     const r = parseInt(card.dataset.rating);
     const b = card.dataset.brand;
-    const drinkId = b + '_' + card.querySelector('.card-flavor').textContent;
+    const drinkId = 'drink_' + card.dataset.drinkIndex;
     
     let showByRating = true;
     if (activeRatingFilter === 'high' && r < 8) showByRating = false;
@@ -1669,13 +1669,16 @@ function openRickrollModal() {
 
     if (total <= 200) {
       calcBar.style.background = '#00ff41'; calcText.style.color = '#00ff41';
-      calcStatus.textContent = 'Система в норме'; calcStatus.style.color = '#00ff41';
+      const normalMsgs = ['Система в норме','Кофеин распределён равномерно','Бодрость активна','Можно ещё чуть-чуть','Сердце стабильно','Энергия в балансе'];
+calcStatus.textContent = normalMsgs[Math.floor(Math.random() * normalMsgs.length)]; calcStatus.style.color = '#00ff41';
     } else if (total <= 350) {
       calcBar.style.background = '#ffd700'; calcText.style.color = '#ffd700';
-      calcStatus.textContent = 'Внимание: повышенная нагрузка'; calcStatus.style.color = '#ffd700';
+     const warnMsgs = ['Внимание: повышенная нагрузка','Сердце ускоряется','Кофеин на пределе','Рекомендую притормозить','Пульс выше нормы'];
+calcStatus.textContent = warnMsgs[Math.floor(Math.random() * warnMsgs.length)]; calcStatus.style.color = '#ffd700';
     } else {
       calcBar.style.background = '#ff3b5c'; calcText.style.color = '#ff3b5c';
-      calcStatus.textContent = 'ОПАСНОСТЬ: ПРЕВЫШЕН ДОПУСТИМЫЙ ЛИМИТ'; calcStatus.style.color = '#ff3b5c';
+      const dangerMsgs = ['ОПАСНОСТЬ: ПРЕВЫШЕН ДОПУСТИМЫЙ ЛИМИТ','СТОП! Хватит на сегодня','Ты переусердствовал','Завязывай с кофеином','Сердце не железное'];
+calcStatus.textContent = dangerMsgs[Math.floor(Math.random() * dangerMsgs.length)]; calcStatus.style.color = '#ff3b5c';
             unlockAchievement('caffeine');
     }
         // Сохраняем рекорд дозы кофеина
@@ -2054,14 +2057,14 @@ document.querySelectorAll('.coming-card').forEach(card => {
       }
     }
 
-    // === 2. СКРЫТЫЙ ПАРОЛЬ: my -> name -> vox ===
+    // === 2. СКРЫТЫЙ ПАРОЛЬ: my -> name -> v0x ===
     else if (command === 'my' && secretSeq === 0) { secretSeq++; response = "..."; }
     else if (command === 'name' && secretSeq === 1) { secretSeq++; response = "..?"; }
-    else if (command === 'vox' && secretSeq === 2) {
+    else if (command === 'v0x' && secretSeq === 2) {
       secretSeq = 0; isRootAccess = true;
       response = `<span style="color:#c084fc;">ПАРОЛЬ ПРИНЯТ. УРОВЕНЬ ДОПУСКА: ROOT.</span><br>Выберите действие:<br>  <span style="color:#fbbf24;">1</span> - Выдать секретное достижение<br>  <span style="color:#fbbf24;">2</span> - Вкл/Выкл РЕЖИМ БОГА`;
     }
-    else if (secretSeq > 0 && !isRootAccess && command !== 'my' && command !== 'name' && command !== 'vox') { secretSeq = 0; }
+    else if (secretSeq > 0 && !isRootAccess && command !== 'my' && command !== 'name' && command !== 'v0x') { secretSeq = 0; }
 
     // === 3. ДЕЙСТВИЯ ПОСЛЕ ПАРОЛЯ ===
     else if (isRootAccess && command === '1') {
@@ -2180,8 +2183,20 @@ document.querySelectorAll('.coming-card').forEach(card => {
       if (typeof AudioSys !== 'undefined') AudioSys.play('error');
     }
     else if (command === 'cat' && args[1] === 'classified.txt') {
-      response = `РАСШИФРОВКА ФАЙЛА...<br>--- СЕКРЕТНО ---<br>Протокол "Зелёный Бык":<br>Если смешать Hell Energy и Red Bull, получится просто грязная вода с двойной дозой таурина.<br>Не пытайтесь повторить это дома. Мы уже пытались.<br>--- КОНЕЦ ФАЙЛА ---`;
-    }
+  const classifiedSecrets = [
+    `РАСШИФРОВКА ФАЙЛА...<br>--- СЕКРЕТНО ---<br>Протокол "Зелёный Бык":<br>Если смешать Hell Energy и Red Bull, получится просто грязная вода с двойной дозой таурина.<br>Не пытайтесь повторить это дома. Мы уже пытались.<br>--- КОНЕЦ ФАЙЛА ---`,
+    `РАСШИФРОВКА ФАЙЛА...<br>--- СЕКРЕТНО ---<br>Протокол "Красный Блик":<br>Red Bull на самом деле даёт крылья, но только если ты искренне веришь в маркетинг.<br>Исследование отменено. Спонсор продолжил спонсировать.<br>--- КОНЕЦ ФАЙЛА ---`,
+    `РАСШИФРОВКА ФАЙЛА...<br>--- СЕКРЕТНО ---<br>Протокол "Чёрная Молния":<br>Monster Ultra Rosa был создан случайно. Учёный хотел сделать розовый лимонад, но перепутал пробирки.<br>Результат оказался лучше оригинала. Случайности — это гений эволюции.<br>--- КОНЕЦ ФАЙЛА ---`,
+    `РАСШИФРОВКА ФАЙЛА...<br>--- СЕКРЕТНО ---<br>Протокол "Финишная Прямая":<br>Rockstar Energy содержит ровно столько кофеина, чтобы ты думал, что работаешь продуктивнее.<br>Плацебо-эффект подтверждён. Тестирование проведено на кофеинозависимых коллегах.<br>--- КОНЕЦ ФАЙЛА ---`,
+    `РАСШИФРОВКА ФАЙЛА...<br>--- СЕКРЕТНО ---<br>Протокол "Тихий Горнец":<br>Rehab Green Tea — единственный энергетик, который написали программисты.<br>Они хотели бодрый чай, но добавили 160мг кофеина "на всякий случай".<br>--- КОНЕЦ ФАЙЛА ---`,
+    `РАСШИФРОВКА ФАЙЛА...<br>--- СОВЕРШЕННО СЕКРЕТНО ---<br>Протокол "Операция Burn":<br>Burn Cherry изобрели в 2004 году как напиток для диджеев.<br>Идея провалилась, но напиток прижился у студентов во время сессии.<br>Остатки партий до сих пор находят в самых удивительный местах.<br>--- КОНЕЦ ФАЙЛА ---`,
+    `РАСШИФРОВКА ФАЙЛА...<br>--- УЛЬТРА-СЕКРЕТНО ---<br>Протокол "Голубая Птица":<br>Monster Ultra Blue содержит синтетический краситель, который под УФ-лампой светится.<br>Это не баг, это фича. Но лучше не проверяй.<br>--- КОНЕЦ ФАЙЛА ---`,
+    `РАСШИФРОВКА ФАЙЛА...<br>--- СЕКРЕТНО ---<br>Протокол "Матовое Золото":<br>Ultra Gold Lando Norris создан в сотрудничестве с пилотом F1.<br>Ландо сам не пьёт энергетики. Он пьёт только рекламные контракты.<br>--- КОНЕЦ ФАЙЛА ---`,
+    `РАСШИФРОВКА ФАЙЛА...<br>--- СЕКРЕТНО ---<br>Протокол "Бессонница":<br>Battery Energy был создан финнами в 1997 году, когда в Финляндии зимой темнеет в 15:00.<br>Это не напиток. Это способ выжить до весны.<br>--- КОНЕЦ ФАЙЛА ---`,
+    `РАСШИФРОВКА ФАЙЛА...<br>--- СЕКРЕТНО ---<br>Протокол "Турецкий Сон":<br>Non Stop содержит 50г сахара. Это не энергетик, это десерт с кофеином.<br>После банки хочется не работать, а лечь спать. Но уснуть уже нельзя.<br>--- КОНЕЦ ФАЙЛА ---`
+  ];
+  response = classifiedSecrets[Math.floor(Math.random() * classifiedSecrets.length)];
+}
     else if (command === 'ls') { response = `Обнаружено ${drinks.length} объектов в сети.`; } 
     else if (command === 'scan') {
       const brand = args[1];
@@ -2198,7 +2213,10 @@ document.querySelectorAll('.coming-card').forEach(card => {
     }
     else if (command === 'date') { response = `Текущее время сервера: ${new Date().toLocaleString('ru-RU')}`; }
     else if (command === 'coffee') {
-      const rd = drinks[Math.floor(Math.random() * drinks.length)];
+     const _today = new Date().toDateString();
+let _seed = 0;
+for (let i = 0; i < _today.length; i++) _seed = ((_seed << 5) - _seed + _today.charCodeAt(i)) | 0;
+const rd = drinks[Math.abs(_seed) % drinks.length];
       response = `Рекомендация ИИ: <span style="color:#fbbf24;">${rd.brand}</span> (${rd.flavor}). Выпей, пока не затормозил.`;
     }
     else if (command === 'top' && args[1] === 'secret') {
@@ -3004,7 +3022,10 @@ function renderDailyDrink() {
   if (stored.date === today && drinks[stored.index]) {
     drinkIndex = stored.index;
   } else {
-    drinkIndex = Math.floor(Math.random() * drinks.length);
+    const _today = new Date().toDateString();
+let _seed = 0;
+for (let i = 0; i < _today.length; i++) _seed = ((_seed << 5) - _seed + _today.charCodeAt(i)) | 0;
+drinkIndex = Math.abs(_seed) % drinks.length;
     localStorage.setItem(KEY, JSON.stringify({ date: today, index: drinkIndex }));
   }
 
