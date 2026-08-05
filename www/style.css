@@ -3436,3 +3436,125 @@ body.overload-mode .energy-card.visible {
   .daily-drink-section { padding: 30px 15px; }
   .daily-drink-card { padding: 20px; }
 }
+
+    body.furry-mode .leaflet-container { display: none !important; }
+    body.furry-mode .map-wrapper {
+      background: rgba(255, 182, 193, 0.3) !important;
+      border: 2px dashed #ff1493 !important;
+      min-height: 400px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    #furryMapImg {
+      max-width: 90% !important;
+      max-height: 380px !important;
+      border-radius: 16px !important;
+      box-shadow: 0 0 40px rgba(255, 105, 180, 0.5) !important;
+    }
+    body.furry-mode .map-disclaimer p { color: #c71585 !important; }
+    body.furry-mode .map-disclaimer strong { color: #ff1493 !important; }
+
+    /* Кровавые частицы Doom Mode */
+.doom-killed {
+  filter: brightness(0.2) contrast(2) !important;
+  opacity: 0.3 !important;
+  pointer-events: none !important;
+}
+/* ============================================================
+   КВАДРАТНЫЕ АЧИВКИ + ZOOM + ОПИСАНИЕ
+   ============================================================ */
+.profile-ach-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 10px;
+  margin-top: 15px;
+}
+.profile-ach-item {
+  aspect-ratio: 1 / 1;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-align: center;
+}
+.profile-ach-item.locked {
+  opacity: 0.3;
+  filter: grayscale(1);
+  cursor: not-allowed;
+}
+.profile-ach-item.unlocked:hover {
+  transform: scale(1.1);
+  border-color: var(--accent);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  z-index: 5;
+}
+.profile-ach-item i {
+  font-size: 28px;
+  color: var(--muted);
+  transition: all 0.3s ease;
+}
+.profile-ach-item.unlocked i { color: var(--accent); }
+.profile-ach-item.unlocked.tier-bronze i { color: #cd7f32; }
+.profile-ach-item.unlocked.tier-silver i { color: #C0C0C0; }
+.profile-ach-item.unlocked.tier-gold i { color: #fbbf24; }
+.profile-ach-item.unlocked.tier-diamond i { color: #b9f2ff; }
+.profile-ach-item.unlocked.tier-purple i { color: #c084fc; }
+.profile-ach-item span {
+  font-size: 10px;
+  color: var(--muted);
+  font-family: 'Oswald', sans-serif;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+}
+.profile-ach-item.unlocked span { color: var(--fg); }
+
+/* Блок с описанием */
+.ach-description-box {
+  margin-top: 20px;
+  padding: 16px;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  animation: fadeInDesc 0.3s ease;
+}
+@keyframes fadeInDesc {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.ach-description-box .ach-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+.ach-description-box .ach-name {
+  font-family: 'Oswald', sans-serif;
+  font-size: 16px;
+  color: var(--fg);
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+}
+.ach-description-box .ach-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.ach-description-box .ach-close {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 18px;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+.ach-description-box .ach-close:hover { color: #ff3b5c; }

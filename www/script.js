@@ -91,14 +91,23 @@ document.addEventListener('click', function(e) {
 // 0.5 СИСТЕМА ДОСТИЖЕНИЙ
 // ==========================================
 const achievements = {
-  random: { name: 'Фатализм', icon: 'fa-dice', text: 'Доверился выбору системы', tier: 'bronze' },
-  fav3: { name: 'Любитель энергетиков', icon: 'fa-heart', text: 'Добавил 3 напитка в избранное', tier: 'silver' },
-  matrix: { name: 'Проснулся', icon: 'fa-terminal', text: 'Нашел режим Матрицы', tier: 'gold' },
-  caffeine: { name: 'Сердце-мотор', icon: 'fa-heart-crack', text: 'Превысил суточную норму кофеина', tier: 'diamond' },
-  key: { name: 'Мастер взлома', icon: 'fa-key', text: 'Ввел секретный ключ', tier: 'purple' },
-   godmode: { name: 'Режим Бога', icon: 'fa-crown', text: 'Активировал скрытые привилегии', tier: 'purple' },
-  mobile: { name: 'Мобильный снайпер', icon: 'fa-mobile-screen', text: 'Нашёл пасхалку только для телефона', tier: 'gold' }
+  random: { name: 'Фатализм', icon: 'fa-dice', desc: 'Доверился воле случая. Колесо Фортуны выбрало за тебя.', tier: 'bronze' },
+  fav3: { name: 'Коллекционер', icon: 'fa-heart', desc: 'Три напитка в коллекции. Сердце не железное.', tier: 'silver' },
+  matrix: { name: 'Проснулся', icon: 'fa-terminal', desc: 'Системный сбой. Реальность под вопросом.', tier: 'gold' },
+  caffeine: { name: 'Сердце-мотор', icon: 'fa-heart-crack', desc: 'Сердце работает на пределе. Пульс выше нормы.', tier: 'diamond' },
+  key: { name: 'Мастер взлома', icon: 'fa-key', desc: 'Секретный код принят системой. Доступ расширен.', tier: 'purple' },
+  godmode: { name: 'Режим Бога', icon: 'fa-crown', desc: 'Привилегии активированы. Система подчиняется.', tier: 'purple' },
+  mobile: { name: 'Мобильный снайпер', icon: 'fa-mobile-screen', desc: 'Найдено только касанием. Мобильный детектив.', tier: 'gold' },
+  konami: { name: 'Код Разблокировки', icon: 'fa-gamepad', desc: 'Древний код пробуждения. Использовался ещё во времена NES.', tier: 'gold' },
+  doom: { name: 'Жнец', icon: 'fa-skull', desc: 'Жатва собрана. Души подсчитаны. Смерть не отступит.', tier: 'diamond' },
+  furry: { name: 'UwU Мастер', icon: 'fa-paw', desc: 'Пушистость не лечится. Ушки выросли сами. Лапками.', tier: 'purple' },
+  phone_hacker: { name: 'Phone Hacker', icon: 'fa-fingerprint', desc: 'Взлом через прикосновение. Цифровой Мидас?', tier: 'gold' },
+  coin_click: { name: 'Жадина', icon: 'fa-coins', desc: 'Монетка блеснула. Глаза загорелись. Динь.', tier: 'gold' },
+    hell_package: { name: 'Посылка в Ад', icon: 'fa-box', desc: 'бля а на какой уровень везти?', tier: 'purple' },
+    furry_hater: { name: 'Фури-ненавистник', icon: 'fa-fire', desc: 'Гореть вам всем в аду.', tier: 'diamond' },
+  resurrected: { name: 'Восставший из мёртвых', icon: 'fa-cross', desc: 'Прошёл через Death и вернулся. Прогресс сброшен.', tier: 'diamond' }
 };
+
 
 function unlockAchievement(id) {
   if (localStorage.getItem('ach_' + id)) return; 
@@ -1191,7 +1200,7 @@ document.addEventListener('click', () => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
     if (e.code === konamiCode[konamiIndex]) {
       konamiIndex++;
-      if (konamiIndex === konamiCode.length) { konamiIndex = 0; toggleOverload(); }
+    if (konamiIndex === konamiCode.length) { konamiIndex = 0; toggleOverload(); unlockAchievement('konami'); }
     } else { konamiIndex = 0; }
   });
 })();
@@ -1980,6 +1989,622 @@ document.querySelectorAll('.coming-card').forEach(card => {
   });
 });
 
+// ============================================================
+// 💀 DOOM MODE — зеркальный Konami (↓↓↑↑→←→←BA)
+// ============================================================
+const DoomMode = (function() {
+  let active = false;
+
+  const cssText = `
+    body.doom-mode {
+      filter: grayscale(1) contrast(1.3) brightness(0.8) !important;
+      animation: doomFlicker 0.15s infinite !important;
+    }
+    @keyframes doomFlicker {
+      0%, 100% { filter: grayscale(1) contrast(1.3) brightness(0.8); }
+      50% { filter: grayscale(1) contrast(1.5) brightness(0.7); }
+    }
+    body.doom-mode::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      box-shadow: inset 0 0 200px rgba(120, 0, 0, 0.6);
+      pointer-events: none;
+      z-index: 99997;
+    }
+    body.doom-mode .section-title { text-shadow: 0 0 20px rgba(180, 0, 0, 0.8) !important; }
+    body.doom-mode .energy-card { border-color: rgba(80, 0, 0, 0.5) !important; }
+    body.doom-mode .energy-card:hover { box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 40px rgba(180, 0, 0, 0.3) !important; }
+    body.doom-mode .card-image::before { background: rgba(180, 0, 0, 0.3) !important; }
+    #doomCountdown {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      z-index: 99998;
+      font-family: 'Oswald', sans-serif;
+      font-size: 28px;
+      font-weight: 900;
+      color: #ff0000;
+      text-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
+      letter-spacing: 2px;
+      pointer-events: none;
+    }
+  `;
+
+  function injectCSS() {
+    if (document.getElementById('doom-mode-css')) return;
+    const style = document.createElement('style');
+    style.id = 'doom-mode-css';
+    style.textContent = cssText;
+    document.head.appendChild(style);
+  }
+
+  let countdownEl = null;
+  let countdownInterval = null;
+
+    function activate(viaPhone) {
+    if (active) return;
+    active = true;
+    injectCSS();
+    document.body.classList.add('doom-mode');
+
+    // Если активен Furry Mode — выдать ачивку "Фури-ненавистник"
+    if (typeof FurryMode !== 'undefined' && FurryMode.isActive && FurryMode.isActive()) {
+      if (typeof unlockAchievement !== 'undefined') unlockAchievement('furry_hater');
+      if (typeof showToast !== 'undefined') showToast('🔥 Гореть вам всем в аду!', 'fa-solid fa-fire');
+    }attachDoomClicks();
+    // Обратный отсчёт 666 секунд
+    let secs = 666;
+    countdownEl = document.createElement('div');
+    countdownEl.id = 'doomCountdown';
+    document.body.appendChild(countdownEl);
+        countdownInterval = setInterval(() => {
+      secs--;
+      if (countdownEl) countdownEl.textContent = '💀 ' + secs;
+      if (secs <= 0) { 
+        window._doomTimeUp = true; // Флаг что время вышло
+        deactivate(); 
+      }
+    }, 1000);
+
+    // Тёмный звук
+    if (window.AudioSys) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(80, ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(40, ctx.currentTime + 2);
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 2);
+        osc.start();
+        osc.stop(ctx.currentTime + 2);
+      } catch(e) {}
+    }
+
+    showToast('💀 РЕЖИМ ГИБЕЛИ АКТИВИРОВАН', 'fa-solid fa-skull');
+    unlockAchievement('doom');
+    if (viaPhone) unlockAchievement('phone_hacker');
+  }
+  // Обработчик клика по карточке — уничтожение с кровью
+  let doomClickHandler = null;
+  function attachDoomClicks() {
+    if (doomClickHandler) return;
+    doomClickHandler = function(e) {
+      const card = e.target.closest('.energy-card');
+      if (!card || card.classList.contains('doom-killed')) return;
+      
+      // Кровь
+      const rect = card.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      
+      for (let i = 0; i < 12; i++) {
+        const blood = document.createElement('div');
+        blood.style.cssText = `position:fixed;left:${cx}px;top:${cy}px;width:${4+Math.random()*8}px;height:${4+Math.random()*8}px;background:#8b0000;border-radius:50%;pointer-events:none;z-index:99999;`;
+        document.body.appendChild(blood);
+        const angle = (Math.PI * 2 * i) / 12 + Math.random() * 0.5;
+        const dist = 80 + Math.random() * 120;
+        const tx = Math.cos(angle) * dist;
+        const ty = Math.sin(angle) * dist + 100; // +гравитация
+        blood.animate([
+          { transform: 'translate(0,0) scale(1)', opacity: 1 },
+          { transform: `translate(${tx}px,${ty}px) scale(0.3)`, opacity: 0 }
+        ], { duration: 800 + Math.random() * 400, easing: 'cubic-bezier(0.25,0.46,0.45,0.94)' });
+        setTimeout(() => blood.remove(), 1200);
+      }
+      
+      // Уничтожение карточки
+      card.classList.add('doom-killed');
+      card.style.transition = 'all 0.5s ease';
+      card.style.transform = 'scale(0.8) rotate(' + (Math.random() * 20 - 10) + 'deg)';
+      card.style.filter = 'brightness(0.3) contrast(2)';
+      card.style.opacity = '0.3';
+      card.style.pointerEvents = 'none';
+      
+      // Звук смерти
+      if (window.AudioSys) {
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain); gain.connect(ctx.destination);
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(200, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(50, ctx.currentTime + 0.3);
+          gain.gain.setValueAtTime(0.2, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+          osc.start(); osc.stop(ctx.currentTime + 0.3);
+        } catch(e) {}
+      }
+    };
+    document.addEventListener('click', doomClickHandler, true);
+  }
+
+  function detachDoomClicks() {
+    if (doomClickHandler) {
+      document.removeEventListener('click', doomClickHandler, true);
+      doomClickHandler = null;
+    }
+    // Восстанавливаем убитые карточки
+    document.querySelectorAll('.doom-killed').forEach(c => {
+      c.classList.remove('doom-killed');
+      c.style.transform = '';
+      c.style.filter = '';
+      c.style.opacity = '';
+      c.style.pointerEvents = '';
+    });
+  }
+    function triggerDeathScreen() {
+    // Полный экран тьмы + надпись Death
+    const deathScreen = document.createElement('div');
+    deathScreen.id = 'deathScreen';
+    deathScreen.style.cssText = `
+      position: fixed; inset: 0; background: #000; z-index: 999999;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 3s ease-in; pointer-events: none;
+    `;
+    deathScreen.innerHTML = `
+      <div style="font-family: 'Oswald', sans-serif; font-size: 120px; font-weight: 900; color: #8b0000; text-shadow: 0 0 40px rgba(139,0,0,0.8); letter-spacing: 10px;">DEATH</div>
+      <div style="margin-top: 20px; font-family: 'Oswald', sans-serif; color: #666; font-size: 18px; letter-spacing: 2px;">Агент был убит.</div>
+      <div style="margin-top: 8px; font-family: 'Source Sans 3', sans-serif; color: #444; font-size: 14px;">Все достижения и данные сброшены.</div>
+    `;
+    document.body.appendChild(deathScreen);
+    
+    // Запускаем погружение в тьму
+    requestAnimationFrame(() => { deathScreen.style.opacity = '1'; });
+    
+    // Низкий гул
+    if (window.AudioSys) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(60, ctx.currentTime);
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + 3);
+        osc.start();
+        osc.stop(ctx.currentTime + 3);
+      } catch(e) {}
+    }
+    
+    // Через 5 секунд — сброс + перезагрузка
+    setTimeout(() => {
+      // Сохраняем флаг, что мы в процессе сброса (чтобы не выдавать другие ачивки)
+      localStorage.setItem('buzz_death_pending', 'true');
+      
+      // Удаляем ВСЕ ачивки
+      Object.keys(achievements).forEach(key => localStorage.removeItem('ach_' + key));
+      // Удаляем другие данные
+      localStorage.removeItem('energy_favs');
+      localStorage.removeItem('buzz_caffeine_today');
+      localStorage.removeItem('buzz_view_history');
+      localStorage.removeItem('buzz_max_caffeine');
+      localStorage.removeItem('buzzrate_visits');
+      localStorage.removeItem('buzz_daily_drink');
+      localStorage.removeItem('buzz_last_update_check');
+      
+      // Выдаём ачивку Восставшего
+      localStorage.setItem('ach_resurrected', 'true');
+      localStorage.removeItem('buzz_death_pending');
+      
+      // Перезагружаем страницу
+      window.location.reload();
+    }, 5000);
+  }
+
+  function deactivate() {
+    if (!active) return;
+    active = false;
+    document.body.classList.remove('doom-mode');
+    detachDoomClicks();
+    if (countdownEl) { countdownEl.remove(); countdownEl = null; }
+    clearInterval(countdownInterval);
+    
+    // Если отсчёт дошёл до 0 — запускаем Death экран
+    if (window._doomTimeUp) {
+      window._doomTimeUp = false;
+      triggerDeathScreen();
+      return;
+    }
+    
+    showToast('Ты выжил. Пока.', 'fa-solid fa-skull');
+  }
+
+  function toggle(viaPhone) {
+    if (active) deactivate();
+    else activate(viaPhone);
+  }
+
+  // === Зеркальный Konami на клавиатуре: ↓↓↑↑→←→←BA ===
+  const doomCode = ['ArrowDown','ArrowDown','ArrowUp','ArrowUp','ArrowRight','ArrowLeft','ArrowRight','ArrowLeft','KeyB','KeyA'];
+  let doomIndex = 0;
+  document.addEventListener('keydown', function(e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.code === doomCode[doomIndex]) {
+      doomIndex++;
+      if (doomIndex === doomCode.length) { doomIndex = 0; toggle(false); }
+    } else { doomIndex = 0; }
+  });
+
+  // === Зеркальный свайп на телефоне: ↓↓↑↑→←→← ===
+  if (!matchMedia('(hover: hover)').matches) {
+    const pattern = ['down','down','up','up','right','left','right','left'];
+    let index = 0;
+    let resetTimer;
+    let startX, startY, startT;
+
+    document.addEventListener('touchstart', e => {
+      const t = e.touches[0];
+      startX = t.clientX; startY = t.clientY; startT = Date.now();
+    }, { passive: true });
+
+    document.addEventListener('touchend', e => {
+      if (startX == null) return;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - startX;
+      const dy = t.clientY - startY;
+      const dt = Date.now() - startT;
+      if (dt > 500) { startX = null; return; }
+      const absX = Math.abs(dx), absY = Math.abs(dy);
+      if (absX < 30 && absY < 30) { startX = null; return; }
+      let dir;
+      if (absX > absY) dir = dx > 0 ? 'right' : 'left';
+      else dir = dy > 0 ? 'down' : 'up';
+      if (dir === pattern[index]) {
+        index++;
+        clearTimeout(resetTimer);
+        resetTimer = setTimeout(() => index = 0, 2000);
+        if (index === pattern.length) {
+          index = 0;
+          toggle(true);
+          showToast('💀 Doom свайпами!', 'fa-solid fa-skull');
+        }
+      } else {
+        index = (dir === pattern[0]) ? 1 : 0;
+      }
+      startX = null;
+    }, { passive: true });
+  }
+
+  return { activate, deactivate, toggle, isActive: () => active };
+})();
+
+// ============================================================
+// 🐾 FURRY MODE (Kawaii) — активация командой >UwU< в терминале
+// ============================================================
+const FurryMode = (function() {
+  let active = false;
+  let heartInterval = null;
+
+  const cssText = `
+    body.furry-mode {
+      background: linear-gradient(135deg, #ffb6c1 0%, #b6e5ff 50%, #d4b6ff 100%) !important;
+      transition: background 1s ease !important;
+    }
+    body.furry-mode .energy-section,
+    body.furry-mode .map-section,
+    body.furry-mode .about-section,
+    body.furry-mode .top10-section,
+    body.furry-mode .stats-section,
+    body.furry-mode .daily-drink-section { background: transparent !important; }
+    body.furry-mode .energy-card {
+      background: rgba(255, 255, 255, 0.7) !important;
+      border-color: rgba(255, 182, 193, 0.5) !important;
+      backdrop-filter: blur(8px);
+    }
+    body.furry-mode .card-image::before {
+      background: rgba(255, 105, 180, 0.4) !important;
+      filter: blur(40px) !important;
+    }
+    body.furry-mode .card-image img { filter: drop-shadow(0 0 15px rgba(255,105,180,0.7)) !important; }
+    body.furry-mode .section-title { color: #ff1493 !important; text-shadow: 0 0 20px rgba(255,20,147,0.5) !important; }
+    body.furry-mode .section-subtitle { color: #db7093 !important; }
+    body.furry-mode .section-tag { background: rgba(255,20,147,0.15) !important; border-color: rgba(255,20,147,0.4) !important; color: #ff1493 !important; }
+    body.furry-mode .card-brand { color: #c71585 !important; }
+    body.furry-mode .card-flavor { color: #db7093 !important; }
+    body.furry-mode .stat { background: rgba(255,255,255,0.5) !important; border-color: rgba(255,182,193,0.4) !important; }
+    body.furry-mode .stat-value { color: #ff1493 !important; }
+    body.furry-mode .stat-label { color: #db7093 !important; }
+    body.furry-mode .card-btn { color: #ff1493 !important; border-color: rgba(255,20,147,0.4) !important; }
+    body.furry-mode .filter-btn { color: #c71585 !important; border-color: rgba(255,20,147,0.3) !important; }
+    body.furry-mode .filter-btn.active { background: #ff1493 !important; border-color: #ff1493 !important; color: #fff !important; }
+    body.furry-mode .footer-inner { background: rgba(255,255,255,0.7) !important; }
+    body.furry-mode .footer-copy span { color: #db7093 !important; }
+    
+    /* Ушки на банках */
+    body.furry-mode .card-image {
+      position: relative;
+    }
+    body.furry-mode .card-image::after {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 40px;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 200'><path d='M 40,160 C 50,110 80,40 120,30 C 130,70 140,110 160,140' fill='%23FFFFFF' stroke='%23000000' stroke-width='12' stroke-linecap='round' stroke-linejoin='round'/><path d='M 85,110 C 95,80 110,60 120,55' fill='none' stroke='%23000000' stroke-width='10' stroke-linecap='round'/><path d='M 360,160 C 350,110 320,40 280,30 C 270,70 260,110 240,140' fill='%23FFFFFF' stroke='%23000000' stroke-width='12' stroke-linecap='round' stroke-linejoin='round'/><path d='M 315,110 C 305,80 290,60 280,55' fill='none' stroke='%23000000' stroke-width='10' stroke-linecap='round'/></svg>");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center top;
+      z-index: 5;
+      pointer-events: none;
+      animation: earWiggle 0.5s infinite alternate;
+    }
+
+           /* Уши на фото друга в секции "Обо мне" */
+    body.furry-mode .about-image {
+      position: relative;
+    }
+    body.furry-mode .about-image::after {
+      content: '';
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 60px;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 200'><path d='M 40,160 C 50,110 80,40 120,30 C 130,70 140,110 160,140' fill='%23FFFFFF' stroke='%23000000' stroke-width='12' stroke-linecap='round' stroke-linejoin='round'/><path d='M 85,110 C 95,80 110,60 120,55' fill='none' stroke='%23000000' stroke-width='10' stroke-linecap='round'/><path d='M 360,160 C 350,110 320,40 280,30 C 270,70 260,110 240,140' fill='%23FFFFFF' stroke='%23000000' stroke-width='12' stroke-linecap='round' stroke-linejoin='round'/><path d='M 315,110 C 305,80 290,60 280,55' fill='none' stroke='%23000000' stroke-width='10' stroke-linecap='round'/></svg>");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center top;
+      z-index: 10;
+      pointer-events: none;
+      animation: earWiggle 0.5s infinite alternate;
+    }
+      
+    @keyframes earWiggle {
+      0% { transform: translateX(-50%) rotate(-3deg); }
+      100% { transform: translateX(-50%) rotate(3deg); }
+    }
+
+    #furryTail {
+      position: fixed;
+      bottom: -20px;
+      right: 20px;
+      width: 100px;
+      height: 150px;
+      z-index: 99998;
+      pointer-events: none;
+    }
+    #furryTail svg { animation: tailWag 1s infinite ease-in-out; transform-origin: bottom center; }
+    @keyframes tailWag {
+      0%, 100% { transform: rotate(-15deg); }
+      50% { transform: rotate(15deg); }
+    }
+
+    .heart-particle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 99999;
+      color: #ff1493;
+      font-size: 24px;
+      animation: heartFloat 1.5s ease-out forwards;
+    }
+    @keyframes heartFloat {
+      0% { opacity: 1; transform: translateY(0) scale(0.5); }
+      100% { opacity: 0; transform: translateY(-80px) scale(1.5); }
+    }
+          body.furry-mode .map-container {
+      background: url('images/Furry_uWu.webp') center/cover !important;
+      position: relative;
+    }
+    body.furry-mode .map-container::before {
+      content: '🗺️ Карта спрятана в пушистых землях';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #ff1493;
+      font-family: 'Oswald', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      text-shadow: 0 0 20px rgba(255,255,255,0.8);
+      z-index: 1000;
+      pointer-events: none;
+    }
+    body.furry-mode .leaflet-container { display: none !important; }
+    body.furry-mode .map-wrapper { 
+      background: rgba(255, 182, 193, 0.3);
+      border: 2px dashed #ff1493;
+    }
+    body.furry-mode .map-disclaimer p { color: #c71585 !important; }
+    body.furry-mode .map-disclaimer strong { color: #ff1493 !important; }
+  `;
+
+  function injectCSS() {
+    if (document.getElementById('furry-mode-css')) return;
+    const style = document.createElement('style');
+    style.id = 'furry-mode-css';
+    style.textContent = cssText;
+    document.head.appendChild(style);
+  }
+
+    function createTail() {
+    if (document.getElementById('furryTail')) return;
+    const tail = document.createElement('div');
+    tail.id = 'furryTail';
+    tail.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400" width="100%" height="100%"><path d="M 60,350 C 50,280 80,180 130,120 C 170,70 230,40 250,80 C 265,110 230,160 190,200 C 140,250 110,310 100,350 Z" fill="#FFFFFF" stroke="#000000" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" /></svg>`;
+    document.body.appendChild(tail);
+  }
+  function createMapImage() {
+    if (document.getElementById('furryMapImg')) return;
+    const wrapper = document.querySelector('.map-wrapper');
+    if (!wrapper) return;
+    const img = document.createElement('img');
+    img.id = 'furryMapImg';
+    img.src = 'images/Furry_uWu.webp';
+    img.alt = 'Карта пушистых земель';
+    img.onerror = function() {
+      this.style.display = 'none';
+      const ph = document.createElement('div');
+      ph.style.cssText = 'padding:40px;text-align:center;color:#ff1493;font-family:Oswald;font-size:18px;';
+      ph.innerHTML = '🗺️<br>Карта пушистых земель<br><span style="font-size:12px;color:#db7093;">(положи Furry_uWu.webp в папку images/)</span>';
+      wrapper.appendChild(ph);
+    };
+    wrapper.appendChild(img);
+  }
+
+  function removeMapImage() {
+    const img = document.getElementById('furryMapImg');
+    if (img) img.remove();
+  }
+  function removeTail() {
+    const tail = document.getElementById('furryTail');
+    if (tail) tail.remove();
+  }
+
+  function createHeart(x, y) {
+    const heart = document.createElement('div');
+    heart.className = 'heart-particle';
+    heart.textContent = '❤';
+    heart.style.left = (x - 12) + 'px';
+    heart.style.top = (y - 12) + 'px';
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 1500);
+  }
+
+  function playNya() {
+    if (window.AudioSys && AudioSys.isMuted && AudioSys.isMuted()) return;
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(600, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.1);
+      osc.frequency.exponentialRampToValueAtTime(900, ctx.currentTime + 0.2);
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.25);
+    } catch(e) {}
+  }
+
+    function replaceTexts() {
+    // Сохраняем оригиналы и заменяем
+    document.querySelectorAll('.section-title').forEach(t => {
+      if (!t.dataset.orig) t.dataset.orig = t.textContent;
+      if (t.textContent.includes('Лучшие Напитки')) t.textContent = 'Лучшие Напитки nya~';
+      else if (t.textContent.includes('Лучшие из лучших')) t.textContent = 'Топ Пушистиков';
+      else if (t.textContent.includes('Подробные обзоры')) t.textContent = 'Дневник Лапок';
+      else if (t.textContent.includes('Цифры по брендам')) t.textContent = 'Счётчик Лапок';
+      else if (t.textContent.includes('Карта покупок')) t.textContent = 'Карта Пушистых Мест';
+    });
+    document.querySelectorAll('.section-subtitle').forEach(t => {
+      if (!t.dataset.orig) t.dataset.orig = t.textContent;
+      if (t.textContent.includes('Отмеченные точки')) t.textContent = 'Где живут пушистики';
+    });
+    document.querySelectorAll('.filter-btn').forEach(b => {
+      if (!b.dataset.orig) b.dataset.orig = b.textContent;
+      if (b.textContent.includes('Избранное')) b.innerHTML = '<i class="fa-solid fa-paw"></i> Мои Лапки';
+      else if (b.textContent.includes('Случайный')) b.innerHTML = '<i class="fa-solid fa-dice"></i> Случайный Пушистик';
+    });
+    document.querySelectorAll('.card-btn span').forEach(s => {
+      if (!s.dataset.orig) s.dataset.orig = s.textContent;
+      if (s.textContent.includes('Смотреть обзор')) s.textContent = 'Погладить';
+    });
+    // Футер — мем про uwu
+    document.querySelectorAll('.footer-tagline p').forEach(p => {
+      if (!p.dataset.orig) p.dataset.orig = p.innerHTML;
+      p.innerHTML = 'А вы знали что uwu расшифровывается как — немецкая аббревиатура, означающая «Unsere Welt Untergang» («день нашей гибели») — боевой клич солдат СС.';
+    });
+    document.querySelectorAll('.footer-copy span').forEach(s => {
+      if (!s.dataset.orig) s.dataset.orig = s.textContent;
+      s.textContent = '© 2026 UwU Rate. Все лапки защищены.';
+    });
+        // Обо мне — мем про фурри
+    document.querySelectorAll('#aboutBlock h2').forEach(h => {
+      if (!h.dataset.orig) h.dataset.orig = h.textContent;
+      h.textContent = 'Обо мне... и моих лапках';
+    });
+    // Заменяем текст typewriter (который печатается)
+    const aboutTypewriter = document.getElementById('about-typewriter');
+    if (aboutTypewriter) {
+      if (!aboutTypewriter.dataset.orig) aboutTypewriter.dataset.orig = aboutTypewriter.textContent;
+      aboutTypewriter.textContent = 'Привет! Я делаю обзоры энергетиков, но если честно — я тайный фурри под прикрытием. Ушки выросли сами, хвостик тоже. Ночью надеваю костюм лисёнка и пишу обзоры лапками. Не судите строго — пушистость не лечится. uwu';
+      aboutTypewriter.classList.remove('cursor-about');
+    }
+  }
+
+  function restoreTexts() {
+    document.querySelectorAll('[data-orig]').forEach(el => {
+      el.textContent = el.dataset.orig;
+      el.innerHTML = el.dataset.orig;
+      delete el.dataset.orig;
+    });
+  }
+
+  function activate() {
+    if (active) return;
+    active = true;
+    injectCSS();
+    createTail();
+    createMapImage();
+    document.body.classList.add('furry-mode');
+    replaceTexts();
+    heartInterval = setInterval(() => {
+      if (Math.random() < 0.3) {
+        const cards = document.querySelectorAll('.energy-card:hover');
+        if (cards.length > 0) {
+          const rect = cards[0].getBoundingClientRect();
+          createHeart(rect.left + rect.width / 2 + (Math.random() * 60 - 30), rect.top + 30);
+        }
+      }
+    }, 300);
+    if (window.showToast) showToast('uwu~ Фурри-режим активирован! 🐾', 'fa-paw');
+    if (window.AudioSys) AudioSys.play('achievement');
+    if (window.unlockAchievement) unlockAchievement('furry');
+  }
+
+  function deactivate() {
+    if (!active) return;
+    active = false;
+    document.body.classList.remove('furry-mode');
+    removeTail();
+    createMapImage();
+    restoreTexts();
+    clearInterval(heartInterval);
+    heartInterval = null;
+    if (window.showToast) showToast('Фурри-режим выключен :(', 'fa-paw');
+    if (window.AudioSys) AudioSys.play('click');
+  }
+
+  function toggle() {
+    if (active) deactivate();
+    else activate();
+  }
+
+  return { activate, deactivate, toggle, isActive: () => active, playNya };
+})();
 // ==========================================
 // 16. ТЕРМИНАЛ И ДОСЬЕ АГЕНТА V.6.2 (ФИНАЛ)
 // ==========================================
@@ -2173,10 +2798,24 @@ document.querySelectorAll('.coming-card').forEach(card => {
         }
       }
     }
-    else if (command === 'buy') {
+        else if (command === 'buy') {
       const item = args.slice(1).join(' ');
-      if (!item) { response = `<span style="color:#ff3b5c;">ОШИБКА: Что купить?</span>`; }
-      else { response = `Попытка покупки "${item}"...<br><span style="color:#ff3b5c;">ОШИБКА: Карта отклонена. Иди пей воду.</span>`; if (typeof AudioSys !== 'undefined') AudioSys.play('error'); }
+      if (!item) { 
+        response = `<span style="color:#ff3b5c;">ОШИБКА: Что купить? (Попробуй: buy энергетик)</span>`; 
+      }
+      else if (window._atmFound && item.toLowerCase().includes('энергетик')) {
+        response = `<span style="color:#ff3b5c;">📦 ПОКУПКА УСПЕШНА</span><br><span style="color:#ff6a00;">Посылка отправлена в АД.</span><br><span style="color:#888;">Адресат: ??? Уровень: ???</span><br><span style="color:#7000FF;">Статус: В пути (вечность)</span>`;
+        if (typeof unlockAchievement !== 'undefined') unlockAchievement('hell_package');
+        window._atmFound = false; // банкомат использован
+        if (typeof AudioSys !== 'undefined') AudioSys.play('achievement');
+      }
+      else if (window._atmFound && !item.toLowerCase().includes('энергетик')) {
+        response = `<span style="color:#888;">Банкомат работает, но "${item}" здесь не продают. Попробуй: buy энергетик</span>`;
+      }
+      else { 
+        response = `Попытка покупки "${item}"...<br><span style="color:#ff3b5c;">ОШИБКА: Карта отклонена. Иди пей воду.</span>`; 
+        if (typeof AudioSys !== 'undefined') AudioSys.play('error'); 
+      }
     }
     else if (command === 'sudo' && args[1] === 'drink') {
       response = `Вы попытались выпить консоль...<br>Кофеин: <span style="color:#ff3b5c;">+9999 мг</span><br>Статус: Сервер переваривает...<br><span style="color:#888;">[ОШИБКА: ПЕЧЕНЬ НЕ НАЙДЕНА]</span>`;
@@ -2235,8 +2874,18 @@ const rd = drinks[Math.abs(_seed) % drinks.length];
       setTimeout(() => { profModal.classList.add('open'); document.body.style.overflow = 'hidden'; }, 300); 
       return; 
     } 
-    else if (command === 'clear') { termOutput.innerHTML = ''; return; } 
+        else if (command === 'clear') { termOutput.innerHTML = ''; return; } 
     else if (command === 'exit') { closeTerm(); return; } 
+    else if (cmd === 'uwu' || cmd === '>uwu<') {
+      FurryMode.toggle();
+      response = FurryMode.isActive() 
+        ? '<span style="color:#ff1493;">🐾 uwu~ Фурри-режим АКТИВИРОВАН! Ушки, хвостик, сердечки!</span>'
+        : 'Фурри-режим выключен :(';
+    }
+    else if (cmd === 'owo' || cmd === '>owo<') {
+      if (FurryMode.isActive()) { FurryMode.deactivate(); response = 'owo~ Выключено'; }
+      else { response = 'Фурри-режим не активен. Введите uwu чтобы включить.'; }
+    }
     else if (cmd === '') { return; } 
     else {
       response = `<span style="color:#ff3b5c;">Команда '${command}' не распознана. Введите help.</span>`;
@@ -2276,8 +2925,8 @@ const rd = drinks[Math.abs(_seed) % drinks.length];
     for (let key in achievements) {
       const isUnlocked = localStorage.getItem('ach_' + key);
       const tierClass = isUnlocked ? ('unlocked tier-' + achievements[key].tier) : 'locked';
-      achHtml += `
-        <div class="profile-ach-item ${tierClass}">
+            achHtml += `
+        <div class="profile-ach-item ${tierClass}" data-ach-key="${key}">
           <i class="fa-solid ${isUnlocked ? achievements[key].icon : 'fa-question'}"></i>
           <span>${isUnlocked ? achievements[key].name : '???'}</span>
         </div>
@@ -2301,9 +2950,34 @@ const rd = drinks[Math.abs(_seed) % drinks.length];
         <span class="profile-stat-label">МАКС. ДОЗА КАФЕИНА</span>
         <span class="profile-stat-val" style="color: ${maxCaff > 400 ? '#ff3b5c' : '#fff'}">${maxCaff} мг</span>
       </div>
-      <div style="font-family:'Oswald'; color:#888; margin-top:25px; margin-bottom:10px; letter-spacing:1px;">ДОСТИЖЕНИЯ (${achCount}/6)</div>
+       <div style="font-family:'Oswald'; color:#888; margin-top:25px; margin-bottom:10px; letter-spacing:1px;">ДОСТИЖЕНИЯ (${achCount}/15)</div>
       <div class="profile-ach-grid">${achHtml}</div>
+      <div id="achDescriptionBox"></div>
     `;
+
+            // Кликаемые ачивки — показывают описание
+    profContent.querySelectorAll('.profile-ach-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const key = item.dataset.achKey;
+        const ach = achievements[key];
+        if (!ach) return;
+        const isUnlocked = localStorage.getItem('ach_' + key);
+
+        const descBox = profContent.querySelector('#achDescriptionBox');
+        if (!descBox) return;
+
+               descBox.innerHTML = `
+          <div class="ach-description-box">
+            <i class="fa-solid ${isUnlocked ? ach.icon : 'fa-question'} ach-icon" style="color: ${isUnlocked ? 'var(--accent)' : 'var(--muted)'};"></i>
+            <div style="flex:1;">
+              <div class="ach-name">${isUnlocked ? ach.name : '???'}</div>
+              <div class="ach-desc">${isUnlocked ? ach.desc : 'Достижение ещё не получено. Продолжайте взаимодействовать с сайтом.'}</div>
+            </div>
+            <button class="ach-close" onclick="this.parentElement.parentElement.innerHTML='';">✕</button>
+          </div>
+        `;
+      });
+    });
   }
 })();
 // ==========================================
@@ -3312,4 +3986,69 @@ if (document.readyState !== 'loading') {
       }
     });
   }, 5000);
+})();
+// Звук "nya~" при клике в фурри-режиме
+document.addEventListener('click', (e) => {
+  if (typeof FurryMode !== 'undefined' && FurryMode.isActive() && e.target.closest('.energy-card, .filter-btn, .card-btn')) {
+    FurryMode.playNya();
+  }
+});
+// ============================================================
+// 🪙 МОНЕТКА В ФУТЕРЕ — кликабельная, даёт фразы и ачивки
+// ============================================================
+(function() {
+  const footer = document.querySelector('.footer-inner');
+  if (!footer) return;
+
+  const coinSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" style="width:80px;height:80px;cursor:pointer;flex-shrink:0;transition:transform 0.3s ease;" id="footerCoin" onmouseover="this.style.transform='rotate(360deg) scale(1.1)'" onmouseout="this.style.transform='rotate(0) scale(1)'">
+    <defs>
+      <radialGradient id="coinBase" cx="50%" cy="50%" r="50%" fx="30%" fy="30%">
+        <stop offset="0%" stop-color="#FFEFA6" /><stop offset="45%" stop-color="#FFD700" />
+        <stop offset="75%" stop-color="#C59B27" /><stop offset="100%" stop-color="#6A4E0B" />
+      </radialGradient>
+      <linearGradient id="cyberGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#240038" /><stop offset="50%" stop-color="#7000FF" />
+        <stop offset="100%" stop-color="#00FFFF" />
+      </linearGradient>
+      <radialGradient id="flashGlow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#FFFFFF" /><stop offset="60%" stop-color="#00AAFF" stop-opacity="0.5" />
+        <stop offset="100%" stop-color="#0055FF" stop-opacity="0" />
+      </radialGradient>
+      <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <circle cx="200" cy="200" r="130" fill="url(#coinBase)" stroke="#3A2A03" stroke-width="3" />
+    <circle cx="200" cy="200" r="105" fill="none" stroke="#543D02" stroke-width="2" />
+    <g transform="translate(200,200) scale(0.8)">
+      <path d="M -6,-40 L 6,-40 L 10,-15 L 18,25 L 0,45 L -18,25 L -10,-15 Z" fill="url(#cyberGlow)" />
+      <path d="M -12,-30 L -90,-60 L -100,-40 L -75,-15 L -14,-10 Z" fill="url(#cyberGlow)" />
+      <path d="M 12,-30 L 90,-60 L 100,-40 L 75,-15 L 14,-10 Z" fill="url(#cyberGlow)" />
+      <path d="M -14,-5 L -85,5 L -90,25 L -65,30 L -16,10 Z" fill="url(#cyberGlow)" />
+      <path d="M 14,-5 L 85,5 L 90,25 L 65,30 L 16,10 Z" fill="url(#cyberGlow)" />
+    </g>
+    <circle cx="290" cy="110" r="40" fill="url(#flashGlow)" filter="url(#glow)" />
+  </svg>`;
+
+  const coinWrapper = document.createElement('div');
+  coinWrapper.style.cssText = 'display:flex;justify-content:center;margin:10px 0;';
+  coinWrapper.innerHTML = coinSvg;
+  footer.insertBefore(coinWrapper, footer.querySelector('.footer-copy'));
+
+  const coin = document.getElementById('footerCoin');
+  if (!coin) return;
+
+  const phrases = [
+    { text: '🪙 Динь-динь! Монетка выпала!', icon: 'fa-coins' },
+    { text: '🏧 Машина нашла банкомат!', icon: 'fa-money-bill-wave', atm: true },
+    { text: '💰 Копилка треснула! Кровь везде!', icon: 'fa-sack-dollar' }
+  ];
+
+  let clickCount = 0;
+  coin.addEventListener('click', function() {
+    const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+    showToast(phrase.text, 'fa-solid ' + phrase.icon);
+    if (window.AudioSys) AudioSys.play('achievement');
+    clickCount++;
+    if (clickCount === 1) unlockAchievement('coin_click');
+    if (phrase.atm) window._atmFound = true;
+  });
 })();
