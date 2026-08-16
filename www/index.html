@@ -3,14 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Buzz Rate</title>
-  <link rel="icon" href="data:,">
+  <title>Buzz Rate — Честные обзоры энергетических напитков</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <meta name="description" content="Buzz Rate — честные обзоры энергетических напитков. Состав, вкус, рейтинг, эффект — без прикрас.">
+  <meta property="og:title" content="Buzz Rate — Обзоры энергетиков">
+  <meta property="og:description" content="Честные обзоры энергетических напитков. Состав, вкус, рейтинг, эффект — без прикрас.">
+  <meta property="og:type" content="website">
 
   <!-- Preconnect для ускорения соединения с CDN -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-  <link rel="preconnect" href="https://unpkg.com">
+
 
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -59,11 +63,11 @@
         </feMerge>
       </filter>
     </defs>
-    <g filter="url(#neonGlow)">
+    <g id="neon-group" filter="url(#neonGlow)">
       <g stroke="#BFFF00" stroke-width="4" fill="none" stroke-linejoin="miter">
         <rect x="160" y="90" width="80" height="50" rx="4" ry="4"/>
         <rect x="240" y="105" width="12" height="20" rx="2" ry="2" fill="#BFFF00" stroke="none"/>
-        <polygon points="195,95 208,116 200,116 212,140 198,119 206,119" fill="#BFFF00" stroke="none"/>
+        <polygon id="lightning" points="195,95 208,116 200,116 212,140 198,119 206,119" fill="#BFFF00" stroke="none"/>
       </g>
       <text x="200" y="210" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="900" fill="#BFFF00" text-anchor="middle" letter-spacing="14">BUZZ</text>
       <line x1="130" y1="225" x2="270" y2="225" stroke="#BFFF00" stroke-width="2" stroke-linecap="round"/>
@@ -74,7 +78,7 @@
 
 <header>
   <div class="header-content">
-    <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" class="header-logo" aria-label="На главную">
+    <a href="#" data-action="scroll-top" class="header-logo" aria-label="На главную">
       <svg><use href="#buzz-rate-logo"/></svg>
     </a>
 
@@ -97,10 +101,14 @@
 <button class="theme-toggle" id="themeToggle" aria-label="Сменить тему"><i class="fa-solid fa-moon"></i></button>
 <button class="sound-toggle" id="soundToggle" aria-label="Выключить звук"><i class="fa-solid fa-volume-high"></i></button>
 
+<main id="mainContent">
+<!-- visually-hidden for h1 -->
+<style>.visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}</style>
+
 <!-- Герой-секция -->
 <section class="hero-wrap">
   <div class="container">
-    <div class="text-part"><span id="typewriter" class="cursor"></span></div>
+    <div class="text-part"><h1 class="visually-hidden">Buzz Rate — Честные обзоры энергетических напитков</h1><span id="typewriter" class="cursor"></span></div>
     <div class="image-part" id="userPhoto"><img src="images/me-1.jpg" alt="Фото Сударя" decoding="async" fetchpriority="high"></div>
   </div>
 </section>
@@ -199,6 +207,7 @@
         </div>
         <p id="detailsFlavor" class="details-flavor"></p>
         <div class="details-stats-grid" id="detailsStatsGrid"></div>
+        <div class="details-extra-info" id="detailsExtraInfo"></div>
         <div class="details-actions">
           <button class="details-action-btn" id="detailsFavBtn"><i class="fa-solid fa-heart"></i> В избранное</button>
           <button class="details-action-btn" id="detailsCompareBtn"><i class="fa-solid fa-code-compare"></i> Сравнить</button>
@@ -275,6 +284,8 @@
   </div>
 </section>
 
+</main>
+
 <!-- Мобильное меню -->
 <div class="mobile-menu-overlay" id="mobileOverlay"></div>
 <div class="mobile-menu" id="mobileMenu">
@@ -287,8 +298,8 @@
     <a href="#mapSection" class="mobile-link-btn places-mob"><i class="fa-solid fa-location-dot"></i> Места</a>
     <a href="#" class="mobile-link-btn key-mob" id="openKeyModal"><i class="fa-solid fa-key"></i> Ключ</a>
     <div class="menu-divider"></div>
-    <a href="https://tiktok.com/@YOUR_NICK" target="_blank" rel="noopener" class="mobile-link-btn tiktok-mob"><i class="fa-brands fa-tiktok"></i> Мой TikTok</a>
-    <a href="https://t.me/YOUR_TELEGRAM" target="_blank" rel="noopener" class="mobile-link-btn telegram-mob"><i class="fa-brands fa-telegram"></i> Telegram</a>
+    <a href="https://tiktok.com/@varna.23.live" target="_blank" rel="noopener" class="mobile-link-btn tiktok-mob"><i class="fa-brands fa-tiktok"></i> Мой TikTok</a>
+    <a href="https://t.me/varna_23" target="_blank" rel="noopener" class="mobile-link-btn telegram-mob"><i class="fa-brands fa-telegram"></i> Telegram</a>
   </div>
 </div>
 
@@ -312,7 +323,7 @@
     <div class="footer-actions">
       <button class="btn-suggest" id="openSuggest"><i class="fa-solid fa-paper-plane"></i> Предложить напиток</button>
       <button class="btn-key-footer" id="openKeyModalDesktop"><i class="fa-solid fa-key"></i> Ввести код</button>
-      <a href="https://tiktok.com/@YOUR_NICK" target="_blank" rel="noopener" class="btn-tiktok" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+      <a href="https://tiktok.com/@varna.23.live" target="_blank" rel="noopener" class="btn-tiktok" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
     </div>
     <div class="footer-copy"><span>© 2026 Buzz Rate. Все права защищены.</span></div>
   </div>
@@ -363,16 +374,6 @@
   </div>
 </div>
 
-<!-- Модалка обновления -->
-<div class="update-modal" id="updateModal">
-  <div class="update-content">
-    <i class="fa-solid fa-arrow-up-from-bracket"></i>
-    <h3>Доступно обновление!</h3>
-    <p>Мы ускорили приложение и добавили новые фишки. Обнови, чтобы получить лучший опыт.</p>
-    <a href="https://YOUR_DOWNLOAD_LINK" class="update-btn">Обновить сейчас</a>
-    <button class="update-later" id="updateLater">Позже</button>
-  </div>
-</div>
 
 <!-- Модалка ключа -->
 <div class="key-modal-backdrop" id="keyModal">
