@@ -489,14 +489,31 @@ function createCard(drink) {
   return card;
 }
 
+// Режим сортировки: 'rating' (по умолчанию), 'new' (последние добавленные), 'az' (А-Я)
+let activeSortMode = 'rating';
+
+function getSortedDrinks() {
+  // Индекс в массиве drinks = порядок добавления (последние строки — новее)
+  const withIndex = drinks.map((d, i) => ({ d, i }));
+
+  if (activeSortMode === 'new') {
+    withIndex.sort((a, b) => b.i - a.i); // последние добавленные — первыми
+  } else if (activeSortMode === 'az') {
+    withIndex.sort((a, b) => a.d.brand.localeCompare(b.d.brand, 'ru')); // А-Я
+  } else {
+    withIndex.sort((a, b) => +b.d.rating - +a.d.rating); // по рейтингу (по умолчанию)
+  }
+  return withIndex.map(x => x.d);
+}
+
 function renderCards() {
-  // Сортировка от большего к меньшему
-  const sorted = [...drinks].sort((a, b) => +b.rating - +a.rating);
+  const sorted = getSortedDrinks();
   grid.innerHTML = '';
   const frag = document.createDocumentFragment();
   sorted.forEach(drink => { const card = createCard(drink); if(card) frag.appendChild(card); });
   grid.appendChild(frag);
   initCardEffects(); // Запускаем звезды, счетчики, тилт и лайки для новых карточек
+  applyFilters(); // Сохраняем активные фильтры при пересортировке
 }
 
 function initCardEffects() {
@@ -838,7 +855,45 @@ document.addEventListener('click', () => {
   document.getElementById('brandDropdown').classList.remove('open');
   document.getElementById('brandToggle').classList.remove('open');
 });
+// ==========================================
+// ВЫПАДАЮЩЕЕ МЕНЮ СОРТИРОВКИ
+// ==========================================
+function generateSortDropdown() {
+  const dropdown = document.getElementById('sortDropdown');
+  if (!dropdown) return;
+  const options = [
+    { key: 'rating', label: 'По рейтингу' },
+    { key: 'new', label: 'Сначала новые' },
+    { key: 'az', label: 'А — Я' }
+  ];
+  dropdown.innerHTML = options.map(o =>
+    `<div class="brand-option ${o.key === activeSortMode ? 'active' : ''}" data-sort="${o.key}">
+      <div class="brand-dot" style="background:var(--accent)"></div>${o.label}
+    </div>`
+  ).join('');
 
+  dropdown.querySelectorAll('.brand-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      dropdown.querySelectorAll('.brand-option').forEach(o => o.classList.remove('active'));
+      opt.classList.add('active');
+      activeSortMode = opt.dataset.sort;
+      dropdown.classList.remove('open');
+      document.getElementById('sortToggle').classList.remove('open');
+      renderCards();
+    });
+  });
+}
+generateSortDropdown();
+
+document.getElementById('sortToggle').addEventListener('click', (e) => {
+  e.stopPropagation();
+  document.getElementById('sortDropdown').classList.toggle('open');
+  document.getElementById('sortToggle').classList.toggle('open');
+});
+document.addEventListener('click', () => {
+  document.getElementById('sortDropdown').classList.remove('open');
+  document.getElementById('sortToggle').classList.remove('open');
+});
 // Фильтрация
 function applyFilters() {
   const activeRatingFilter = document.querySelector('.filter-btn.active:not(.brand-toggle)')?.dataset.filter || 'all';

@@ -3618,7 +3618,7 @@ body.coronation-active .daily-drink-card {
 body.coronation-active .theme-toggle i,
 body.coronation-active .sound-toggle i,
 body.coronation-active .scroll-top-btn i {
-  color: #fbbf24 !important;
+  color: var(--accent) !important;
 }
 body.coronation-active .section-title,
 body.coronation-active .section-tag {
