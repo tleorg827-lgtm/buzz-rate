@@ -51,6 +51,11 @@
 
 <!-- ===== SVG Symbol: логотип BUZZ RATE (объявляем 1 раз) ===== -->
 <svg style="display:none" aria-hidden="true">
+  <symbol id="matrix-agent-silhouette" viewBox="0 0 100 160">
+    <path class="agent-body" d="M0,160 L0,110 Q0,68 50,68 Q100,68 100,110 L100,160 Z" />
+    <ellipse class="agent-body" cx="50" cy="42" rx="28" ry="34" />
+    <rect class="agent-eyes" x="27" y="38" width="46" height="7" rx="3.5" />
+  </symbol>
   <symbol id="buzz-rate-logo" viewBox="0 0 400 400">
     <defs>
       <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
@@ -117,9 +122,16 @@
 <section class="about-wrap">
   <section class="about-section" id="aboutBlock">
     <div class="about-image"><img src="images/me-2.webp" alt="Обо мне" decoding="async" fetchpriority="high"></div>
-    <div class="about-text-card"><h2>Обо мне</h2><p><span id="about-typewriter" class="cursor-about"></span></p></div>
+    <div class="about-text-card">
+      <h2>Обо мне</h2>
+      <p><span id="about-typewriter" class="cursor-about"></span></p>
+      <p id="coronationCongrats" class="coronation-congrats">
+        <i class="fa-solid fa-crown"></i> Вы разблокировали 10+ достижений и получили королевский статус на Buzz Rate — таких немного. Спасибо, что копаетесь в сайте так глубоко.
+      </p>
+    </div>
   </section>
 </section>
+
 
 <!-- НАПИТОК ДНЯ -->
 <section class="daily-drink-section" id="dailyDrinkSection">
@@ -352,6 +364,12 @@
 
 <!-- Модалка видео -->
 <div class="video-modal-backdrop" id="videoModal">
+  <div class="matrix-agent matrix-agent-left" aria-hidden="true">
+    <svg viewBox="0 0 100 160"><use href="#matrix-agent-silhouette"/></svg>
+  </div>
+  <div class="matrix-agent matrix-agent-right" aria-hidden="true">
+    <svg viewBox="0 0 100 160"><use href="#matrix-agent-silhouette"/></svg>
+  </div>
   <div class="video-modal" id="videoModalInner">
     <div class="modal-top">
       <div class="modal-top-left">

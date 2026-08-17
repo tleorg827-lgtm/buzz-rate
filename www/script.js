@@ -115,6 +115,14 @@ const AudioSys = (function() {
           gain.gain.setValueAtTime(0.18, c.currentTime);
           gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.5);
           osc.start(c.currentTime); osc.stop(c.currentTime + 0.5);
+        } else if (type === 'swish') {
+          // Лёгкий "свист" — когда берёшь фигуру пальцем/мышкой
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(600, c.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(200, c.currentTime + 0.15);
+          gain.gain.setValueAtTime(0.08, c.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.15);
+          osc.start(c.currentTime); osc.stop(c.currentTime + 0.15);
         }
       } catch(e) {}
     }).catch(() => {});
@@ -176,8 +184,12 @@ document.addEventListener('click', function(e) {
   if (window.AudioSys && typeof AudioSys.resume === 'function') {
     try { AudioSys.resume(); } catch(err) {}
   }
-  const target = e.target.closest('button, .filter-btn, .fav-btn, .cmp-btn, .calc-option, .mobile-link-btn');
-  if (target && !target.closest('.modal-bottom-actions') && !target.closest('.scroll-top-btn') && !target.getAttribute('href')) {
+  // Любой клик по кнопке/пункту меню/опции списка сопровождается звуком.
+  // Раньше здесь были исключения (кнопка "наверх", элементы с href,
+  // TikTok-кнопка в видео-модалке, пункты выпадающих списков Марка/Сортировка) —
+  // из-за них часть кнопок оставалась без звука.
+  const target = e.target.closest('button, .filter-btn, .fav-btn, .cmp-btn, .calc-option, .brand-option, .mobile-link-btn');
+  if (target) {
    if (typeof AudioSys !== 'undefined') AudioSys.play('click');
   }
 });
@@ -200,7 +212,7 @@ const achievements = {
   resurrected: { name: 'Восставший из мёртвых', icon: 'fa-cross', desc: 'Прошёл через Death и вернулся. Прогресс сброшен.', tier: 'diamond' },
   hacker: { name: 'Хакер', icon: 'fa-code', desc: 'Доступ к терминалу  получен. Взлом системы начать.', tier: 'gold' },
     coin_click: { name: 'Жадина', icon: 'fa-coins', desc: 'Нашёл спрятанную монету с черепом в логотипе.', tier: 'gold' },
-  hell_package: { name: 'Посылка в АД', icon: 'fa-box', desc: 'Отправил энергетик по адресу банкомата.', tier: 'purple' },
+  hell_package: { name: 'Посылка в АД', icon: 'fa-box', desc: 'Бля, и куда мне её доставить?', tier: 'purple' },
   coronation: { name: 'Коронованный', icon: 'fa-crown', desc: 'Собрал 10+ достижений. Система признала тебя королём.', tier: 'gold' },
   maze_runner: { name: 'Бегун по лабиринтам', icon: 'fa-route', desc: 'Прошёл лабиринт «Туда-Сюда». Выбрался за 60 секунд.', tier: 'gold' }
 };
@@ -346,7 +358,7 @@ const drinks = [
 
  { brand: "Monster Energy - Ultra Wild Passion", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra_wild_passion.webp", caffeine: "150 мг", sugar: "0 г", cal: "10 kcal", ph: "3.5", video: "7671963390838918422" },
 
- { brand: "Monster Energy - The Doctor VR46", key: "monster", flavor: "500 мл", rating: 8, img: "images/vr-46.webp", caffeine: "160 мг", sugar: "52 г", cal: "219 kcal", ph: "3", video: "" },
+ { brand: "Monster Energy - The Doctor VR46", key: "monster", flavor: "500 мл", rating: 8, img: "images/vr-46.webp", caffeine: "160 мг", sugar: "52 г", cal: "219 kcal", ph: "3", video: "7674675530762816790" },
   
  { brand: "Monster Energy - Juiced Juce", key: "monster", flavor: "500 мл", rating: 5, img: "images/juced-juce.webp", caffeine: "160 мг", sugar: "49 г", cal: "211 kcal", ph: "3.4", video: "7598063208871628054" },
   // --- HELL (скопируй 11 раз, у тебя 1 оригинал) ---
@@ -390,7 +402,7 @@ const drinks = [
 
 
   // --- C4 (1 раз) ---
-  { brand: "C4", key: "c4", flavor: "Original, 500 мл", rating: 8, img: "", caffeine: "200 мг", sugar: "0 г", cal: "10 kcal", ph: "3.5", video: "7361838290757873979" }
+  { brand: "C4", key: "c4", flavor: " 500 мл", rating: 8, img: "images/c4.webp", caffeine: "200 мг", sugar: "0 г", cal: "10 kcal", ph: "3.5", video: "" }
 ];
 
 // ==========================================
@@ -440,6 +452,12 @@ function saveFavs(arr) {
 // 4. ГЕНЕРАЦИЯ КАРТОЧЕК ИЗ МАССИВА
 // ==========================================
 const grid = document.getElementById('cardsGrid') || document.createElement('div');
+
+// Объявлено здесь (а не в разделе "Фильтры" ниже), потому что renderCards()
+// вызывает applyFilters(), а applyFilters() читает activeBrandFilter —
+// первый вызов renderCards() происходит раньше, чем JS доходит до раздела
+// "8. ФИЛЬТРЫ", и let-переменная там ещё была бы в temporal dead zone.
+let activeBrandFilter = 'all';
 
 function createCard(drink) {
   const card = document.createElement('article');
@@ -498,6 +516,8 @@ function getSortedDrinks() {
 
   if (activeSortMode === 'new') {
     withIndex.sort((a, b) => b.i - a.i); // последние добавленные — первыми
+  } else if (activeSortMode === 'old') {
+    withIndex.sort((a, b) => a.i - b.i); // самые старые — первыми
   } else if (activeSortMode === 'az') {
     withIndex.sort((a, b) => a.d.brand.localeCompare(b.d.brand, 'ru')); // А-Я
   } else {
@@ -816,7 +836,7 @@ animateParticles();
 // 8. ФИЛЬТРЫ (ПО РЕЙТИНГУ И МАРКАМ)
 // ==========================================
 const filterBtns = document.querySelectorAll('.filter-btn:not(.brand-toggle)');
-let activeBrandFilter = 'all';
+// activeBrandFilter объявлена выше, в разделе 4 — см. комментарий там
 
 // Генерация выпадающего списка марок
 function generateBrandDropdown() {
@@ -864,6 +884,7 @@ function generateSortDropdown() {
   const options = [
     { key: 'rating', label: 'По рейтингу' },
     { key: 'new', label: 'Сначала новые' },
+    { key: 'old', label: 'Сначала старые' },
     { key: 'az', label: 'А — Я' }
   ];
   dropdown.innerHTML = options.map(o =>
@@ -2201,6 +2222,10 @@ const DoomMode = (function() {
       intro.classList.remove('show');
       setTimeout(() => intro.remove(), 600);
       document.body.classList.add('doom-mode');
+      // Форсируем видимость ВСЕХ карточек сразу — иначе те, что ниже
+      // первого экрана, остаются с opacity:0 (ждут ленивого IntersectionObserver)
+      // и в Doom Mode их не видно, даже если проскроллить вниз.
+      document.querySelectorAll('.energy-card:not(.visible)').forEach(c => c.classList.add('visible'));
       attachDoomClicks();
 
       // Обратный отсчёт 60 секунд
@@ -2325,6 +2350,7 @@ const DoomMode = (function() {
         setTimeout(() => { ks.killCounter.style.transform = 'scale(1)'; }, 200);
         // Все банки уничтожены!
         if (ks.killedCount >= ks.totalCards) {
+          clearInterval(countdownInterval);
           unlockAchievement('doom_slayer');
           // Экран «ЖАТВА ЗАВЕРШЕНА» + ачивка
           const slayScreen = document.createElement('div');
@@ -2337,6 +2363,12 @@ const DoomMode = (function() {
           // Звук «жатва завершена» — мощный
           if(window.AudioSys){try{const ctx=AudioSys.getCtx?AudioSys.getCtx():null;if(ctx){const o1=ctx.createOscillator();const g1=ctx.createGain();o1.connect(g1);g1.connect(ctx.destination);o1.type='square';o1.frequency.setValueAtTime(100,ctx.currentTime);o1.frequency.exponentialRampToValueAtTime(30,ctx.currentTime+1.5);g1.gain.setValueAtTime(0.4,ctx.currentTime);g1.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+1.5);o1.start();o1.stop(ctx.currentTime+1.5);const o2=ctx.createOscillator();const g2=ctx.createGain();o2.connect(g2);g2.connect(ctx.destination);o2.type='sawtooth';o2.frequency.setValueAtTime(60,ctx.currentTime+0.5);o2.frequency.exponentialRampToValueAtTime(15,ctx.currentTime+2);g2.gain.setValueAtTime(0,ctx.currentTime);g2.gain.linearRampToValueAtTime(0.25,ctx.currentTime+0.7);g2.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+2);o2.start(ctx.currentTime+0.5);o2.stop(ctx.currentTime+2);const o3=ctx.createOscillator();const g3=ctx.createGain();o3.connect(g3);g3.connect(ctx.destination);o3.type='square';o3.frequency.setValueAtTime(440,ctx.currentTime);o3.frequency.exponentialRampToValueAtTime(110,ctx.currentTime+0.8);g3.gain.setValueAtTime(0.2,ctx.currentTime);g3.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.8);o3.start();o3.stop(ctx.currentTime+0.8);}}catch(e){}}
           setTimeout(()=>{slayScreen.animate([{opacity:1},{opacity:0}],{duration:800,fill:'forwards'}).onfinish=()=>slayScreen.remove();},4000);
+          // Уничтожение всех карточек — третий, "чистый" способ выйти из режима:
+          // выключаем Doom Mode без штрафного Death-экрана и сброса данных.
+          setTimeout(() => {
+            window._doomAllKilled = true;
+            deactivate();
+          }, 4200);
         }
       }
       
@@ -2471,7 +2503,14 @@ const DoomMode = (function() {
     detachDoomClicks();
     if (countdownEl) { countdownEl.remove(); countdownEl = null; }
     clearInterval(countdownInterval);
-    
+
+    // Третий способ выхода — все карточки уничтожены. Без штрафа и сброса данных.
+    if (window._doomAllKilled) {
+      window._doomAllKilled = false;
+      showToast('☠ Жатва завершена. Ничего не осталось.', 'fa-solid fa-skull-crossbones');
+      return;
+    }
+
     // Если отсчёт дошёл до 0 — запускаем Death экран
     if (window._doomTimeUp) {
       window._doomTimeUp = false;
@@ -2684,7 +2723,7 @@ const BlockBlastGame = (function() {
   }
 
   function flashAndClear(rows, cols, onDone) {
-    if (window.AudioSys) { try { AudioSys.play('achievement'); } catch(e) {} }
+    if (window.AudioSys) { try { AudioSys.play('pop'); } catch(e) {} }
     let start = null;
     const duration = 260;
     function frame(ts) {
@@ -3005,7 +3044,7 @@ const BlockBlastGame = (function() {
     if (gameOver) return;
     e.preventDefault();
     if (window.AudioSys && typeof AudioSys.resume === 'function') { try { AudioSys.resume(); } catch(err) {} }
-    if (window.AudioSys) { try { AudioSys.play('pop'); } catch(e) {} }
+    if (window.AudioSys) { try { AudioSys.play('swish'); } catch(e) {} }
 
     draggedFigureIndex = index;
     isDragging = true;
@@ -3290,6 +3329,17 @@ const Coronation = (function() {
   function activateGold() {
     if (document.body.classList.contains('coronation-active')) return;
     document.body.classList.add('coronation-active');
+    // Перекрашиваем существующие фоновые частицы в золото
+    if (typeof particleColor !== 'undefined') {
+      particleColor = 'rgba(251, 191, 36, 0.55)';
+    }
+    // Золотая корона рядом с логотипом в шапке
+    const logo = document.querySelector('.header-logo');
+    if (logo && !logo.querySelector('.coronation-crown-icon')) {
+      const crown = document.createElement('i');
+      crown.className = 'fa-solid fa-crown coronation-crown-icon';
+      logo.appendChild(crown);
+    }
   }
 
   function buildThroneRoom() {
@@ -3474,9 +3524,8 @@ const Coronation = (function() {
 // ==========================================
 const Preacher = (function() {
   const VISIT_KEY = 'buzzrate_visits';
-  const LAST_SHOW_KEY = 'buzz_preacher_last_show';
-  const LAST_SHOW_TIME_KEY = 'buzz_preacher_last_show_time';
-  const COOLDOWN_MS = 24 * 60 * 60 * 1000;  // 24 часа между показами
+  const LAST_CHECK_DATE_KEY = 'buzz_preacher_last_check_date';
+  const SPAWN_CHANCE = 0.25;
   const MIN_DELAY_MS = 5000;
   const MAX_DELAY_MS = 20000;
 
@@ -3504,17 +3553,17 @@ const Preacher = (function() {
     const visits = getVisitCount();
     if (visits < 1) return false;
 
-    const lastTime = parseInt(safeLSGet(LAST_SHOW_TIME_KEY, '0'), 10);
-    if (Date.now() - lastTime < COOLDOWN_MS) return false;
+    const today = new Date().toDateString();
+    // Проверяем ровно один раз в день, независимо от результата броска —
+    // так шанс реально "разыгрывается" один раз в сутки, а не на каждый визит.
+    if (safeLSGet(LAST_CHECK_DATE_KEY, null) === today) return false;
+    safeLSSet(LAST_CHECK_DATE_KEY, today);
 
-    const randomChance = 0.25 + Math.min(0.2, visits * 0.01);
-    return Math.random() < randomChance;
+    return Math.random() < SPAWN_CHANCE;
   }
 
   function markShown() {
-    const visits = getVisitCount();
-    safeLSSet(LAST_SHOW_KEY, String(visits));
-    safeLSSet(LAST_SHOW_TIME_KEY, String(Date.now()));
+    // Дата проверки уже сохранена в shouldShow(); отдельно отмечать нечего.
   }
 
   function openGreeting() {
@@ -3565,7 +3614,11 @@ const Preacher = (function() {
     noBtn.style.transition = 'left 0.2s ease, top 0.2s ease, transform 0.15s ease';
     noBtn.style.transform = 'none';
     const initial = noBtn.getBoundingClientRect();
-    noBtn.style.left = initial.left + 'px';
+    // Сдвигаем от исходной позиции вправо, чтобы гарантированно не перекрывать "Да"
+    let startLeft = initial.left + 90;
+    const maxStartLeft = window.innerWidth - noBtn.offsetWidth - 20;
+    if (startLeft > maxStartLeft) startLeft = maxStartLeft;
+    noBtn.style.left = startLeft + 'px';
     noBtn.style.top = initial.top + 'px';
 
     // Функция получения безопасной позиции (не залезает на yesBtn)
@@ -4134,6 +4187,58 @@ const MazeGame = (function() {
   let realMaxCaff = 0; 
   let resetPending = false; 
 
+  const RANKS = [
+    { name: 'Новичок', cls: 'rank-newbie', min: 0, desc: 'Только зашёл на сайт. Всё ещё впереди.' },
+    { name: 'Стажер', cls: 'rank-intern', min: 20, desc: 'Освоился с карточками и фильтрами.' },
+    { name: 'Опытный агент', cls: 'rank-agent', min: 50, desc: 'Изучил сайт вдоль и поперёк.' },
+    { name: 'Кофеиновый маньяк', cls: 'rank-maniac', min: 80, desc: 'Кофеин в крови больше не пугает.' },
+    { name: 'Легенда Базз Рейта', cls: 'rank-legend', min: 120, desc: 'Максимальный уровень прогресса по очкам.' }
+  ];
+  function buildRankHistoryHtml(score) {
+    let items = RANKS.filter(r => score >= r.min).map(r =>
+      `<div class="rank-history-item"><span class="${r.cls}">${r.name}</span><p>${r.desc}</p></div>`
+    ).join('');
+    if (safeLSGet('ach_coronation', null)) {
+      items += `<div class="rank-history-item"><span class="rank-royal">Почётный гость Buzz Rate</span><p>Собрал 10+ достижений и принял корону.</p></div>`;
+    }
+    return items;
+  }
+
+  const HELL_BRAND_KEYS = Object.keys(bNames);
+  const hellCart = new Set();
+  const hellPurchasePhrases = {
+    monster: 'Классика. Банк одобряет, печень — нет.',
+    redbull: 'Крылья не прилагаются, но энергия сойдёт.',
+    hell: 'Прямая доставка из преисподней, без пересадок.',
+    burn: 'Вишнёвый привкус без единой вишни. Как обычно.',
+    battery: 'Финский холод в жидком виде.',
+    nonstop: 'Сахара как в десерте, спать не будешь всё равно.',
+    rockstar: 'Плацебо-эффект работоспособности включён.',
+    c4: 'Для тех, кто путает энергетик со спортпитом.'
+  };
+
+  function buildHellShopHtml(brandArg) {
+    const phrase = hellPurchasePhrases[brandArg] || 'Принято.';
+    const remaining = HELL_BRAND_KEYS.filter(k => !hellCart.has(k));
+    let btns = remaining.map(k => `<button class="hell-shop-btn" data-brand="${k}">${bNames[k]}</button>`).join('');
+    btns += `<button class="hell-shop-pay-btn">Оплатить (${hellCart.size})</button>`;
+    const label = remaining.length ? 'Добавить ещё или оплатить:' : 'Ну куда тебе столько? Оплачивай.';
+    return `<div><span style="color:#fbbf24;">${bNames[brandArg]}:</span> <em>${phrase}</em></div>
+      <div class="hell-shop-box">
+        <div class="hell-shop-label">${label}</div>
+        <div class="hell-shop-btns">${btns}</div>
+      </div>`;
+  }
+
+  function finalizeHellPurchase() {
+    if (hellCart.size === 0) return;
+    termOutput.innerHTML += `<div style="color:#ff6a00;">📦 ПОКУПКА ОФОРМЛЕНА (${hellCart.size} шт.)</div><div style="color:#888;">Бля, и куда мне её доставить?</div><div style="color:#7000FF;">Статус: В пути (вечность)</div>`;
+    termOutput.scrollTop = termOutput.scrollHeight;
+    if (typeof unlockAchievement !== 'undefined') unlockAchievement('hell_package');
+    hellCart.clear();
+    window._atmFound = false;
+  }
+
   function attachTerminalListener() {
     const nicknameEl = document.querySelector('.correct-name');
     if (nicknameEl) {
@@ -4201,7 +4306,7 @@ const MazeGame = (function() {
     else if (command === 'name' && secretSeq === 1) { secretSeq++; response = "..?"; }
     else if (command === 'v0x' && secretSeq === 2) {
       secretSeq = 0; isRootAccess = true;
-      response = `<span style="color:#c084fc;">ПАРОЛЬ ПРИНЯТ. УРОВЕНЬ ДОПУСКА: ROOT.</span><br>Выберите действие:<br>  <span style="color:#fbbf24;">1</span> - Выдать секретное достижение<br>  <span style="color:#fbbf24;">2</span> - Вкл/Выкл РЕЖИМ БОГА`;
+      response = `<span style="color:#c084fc;">ПАРОЛЬ ПРИНЯТ. УРОВЕНЬ ДОПУСКА: ROOT.</span><br>Выберите действие:<br>  <span style="color:#fbbf24;">1</span> - Выдать секретное достижение<br>  <span style="color:#fbbf24;">2</span> - Вкл/Выкл РЕЖИМ БОГА<br>  <span style="color:#fbbf24;">3</span> - Компенсация за отсутствие телефона`;
     }
     else if (secretSeq > 0 && !isRootAccess && command !== 'my' && command !== 'name' && command !== 'v0x') { secretSeq = 0; }
 
@@ -4209,6 +4314,11 @@ const MazeGame = (function() {
     else if (isRootAccess && command === '1') {
       unlockAchievement('godmode');
       response = `<span style="color:#fbbf24;">Достижение "Режим Бога" разблокировано в системе.</span>`;
+    }
+    else if (isRootAccess && command === '3') {
+      unlockAchievement('mobile');
+      unlockAchievement('phone_hacker');
+      response = `<span style="color:#fbbf24;">Мобильные достижения разблокированы вручную. Телефон системе больше не нужен.</span>`;
     }
     else if (isRootAccess && command === '2') {
       if (!godModeActive) {
@@ -4316,21 +4426,23 @@ const MazeGame = (function() {
       }
     }
         else if (command === 'buy') {
-      const item = args.slice(1).join(' ');
-      if (!item) { 
-        response = `<span style="color:#ff3b5c;">ОШИБКА: Что купить? (Попробуй: buy энергетик)</span>`; 
+      const brandArg = (args[1] || '').toLowerCase();
+      if (!window._atmFound) {
+        response = `Попытка покупки "${escHtml(args.slice(1).join(' '))}"...<br><span style="color:#ff3b5c;">ОШИБКА: Карта отклонена. Иди пей воду.</span>`;
+        if (typeof AudioSys !== 'undefined') AudioSys.play('error');
       }
-      else if (window._atmFound && item.toLowerCase().includes('энергетик')) {
-        response = `<span style="color:#ff3b5c;">📦 ПОКУПКА УСПЕШНА</span><br><span style="color:#ff6a00;">Посылка отправлена в АД.</span><br><span style="color:#888;">Адресат: ??? Уровень: ???</span><br><span style="color:#7000FF;">Статус: В пути (вечность)</span>`;
-        if (typeof unlockAchievement !== 'undefined') unlockAchievement('hell_package');
-        window._atmFound = false; // банкомат использован
+      else if (hellCart.size >= HELL_BRAND_KEYS.length) {
+        response = `<span style="color:#ff6a00;">Ну куда тебе столько? Заканчивай уже и жми "Оплатить".</span>`;
       }
-      else if (window._atmFound && !item.toLowerCase().includes('энергетик')) {
-        response = `<span style="color:#888;">Банкомат работает, но "${escHtml(item)}" здесь не продают. Попробуй: buy энергетик</span>`;
+      else if (!brandArg || !HELL_BRAND_KEYS.includes(brandArg)) {
+        response = `<span style="color:#ff3b5c;">ОШИБКА: Укажи существующую марку. Например: buy monster</span>`;
       }
-      else { 
-        response = `Попытка покупки "${escHtml(item)}"...<br><span style="color:#ff3b5c;">ОШИБКА: Карта отклонена. Иди пей воду.</span>`; 
-        if (typeof AudioSys !== 'undefined') AudioSys.play('error'); 
+      else if (hellCart.has(brandArg)) {
+        response = `<span style="color:#888;">${bNames[brandArg]} уже в корзине. Выбери другую марку.</span>`;
+      }
+      else {
+        hellCart.add(brandArg);
+        response = buildHellShopHtml(brandArg);
       }
     }
     else if (command === 'sudo' && args[1] === 'drink') {
@@ -4416,6 +4528,22 @@ const rd = drinks[Math.abs(_seed) % drinks.length];
     termOutput.scrollTop = termOutput.scrollHeight;
   });
 
+  termOutput.addEventListener('click', (e) => {
+    const btn = e.target.closest('.hell-shop-btn, .hell-shop-pay-btn');
+    if (!btn) return;
+    if (typeof AudioSys !== 'undefined') AudioSys.play('click');
+    if (btn.classList.contains('hell-shop-pay-btn')) {
+      finalizeHellPurchase();
+    } else {
+      const brand = btn.dataset.brand;
+      if (brand && !hellCart.has(brand)) {
+        hellCart.add(brand);
+        termOutput.innerHTML += buildHellShopHtml(brand);
+        termOutput.scrollTop = termOutput.scrollHeight;
+      }
+    }
+  });
+
   // Логика Досье (без изменений)
   function renderProfile() {
     let visits = 0;
@@ -4438,6 +4566,7 @@ const rd = drinks[Math.abs(_seed) % drinks.length];
 
     let rank, rankClass;
     if (score >= 120) { rank = 'Легенда Базз Рейта'; rankClass = 'rank-legend'; }
+    else if (safeLSGet('ach_coronation', null)) { rank = 'Почётный гость Buzz Rate'; rankClass = 'rank-royal'; }
     else if (score >= 80) { rank = 'Кофеиновый маньяк'; rankClass = 'rank-maniac'; }
     else if (score >= 50) { rank = 'Опытный агент'; rankClass = 'rank-agent'; }
     else if (score >= 20) { rank = 'Стажер'; rankClass = 'rank-intern'; }
@@ -4459,7 +4588,9 @@ const rd = drinks[Math.abs(_seed) % drinks.length];
       <div class="profile-stat-row">
         <span class="profile-stat-label">КЛАСС АГЕНТА</span>
         <span class="profile-stat-val ${rankClass}">${rank} (${score} очков)</span>
+        <button class="rank-history-btn" id="rankHistoryBtn" aria-label="Все ранги"><i class="fa-solid fa-chevron-right"></i></button>
       </div>
+      <div class="rank-history-list" id="rankHistoryList"></div>
       <div class="profile-stat-row">
         <span class="profile-stat-label">МИССИЙ (ВИЗИТОВ)</span>
         <span class="profile-stat-val">${visits}</span>
@@ -4476,6 +4607,17 @@ const rd = drinks[Math.abs(_seed) % drinks.length];
       <div class="profile-ach-grid">${achHtml}</div>
       <div id="achDescriptionBox"></div>
     `;
+
+            // Кликаемые ачивки — показывают описание
+    const rankBtn = profContent.querySelector('#rankHistoryBtn');
+    const rankList = profContent.querySelector('#rankHistoryList');
+    if (rankBtn && rankList) {
+      rankList.innerHTML = buildRankHistoryHtml(score);
+      rankBtn.addEventListener('click', () => {
+        rankList.classList.toggle('open');
+        rankBtn.classList.toggle('open');
+      });
+    }
 
             // Кликаемые ачивки — показывают описание
     profContent.querySelectorAll('.profile-ach-item').forEach(item => {
