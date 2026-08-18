@@ -1343,6 +1343,8 @@ nav a:hover {
   box-shadow: none; /* УБРАЛИ ТЕНЬ, КОГНО ОНО ЗА ЭКРАНОМ */
   display: flex; flex-direction: column;
   padding: 80px 20px 40px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .mobile-menu.open { 
   transform: translateX(0); /* ВЫЕЗЖАЕТ НА МЕСТО */
@@ -2636,7 +2638,13 @@ body.overload-mode .energy-card.visible {
 }
 
 /* === ПАСХАЛКА: индикатор долгого тапа по лого === */
-.header-logo { position: relative; }
+.header-logo {
+  position: relative;
+  -webkit-touch-callout: none; /* убираем системное меню iOS при долгом тапе */
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation; /* убирает 300мс задержку клика и двойной-тап-зум на мобильных */
+}
 
 
 /* ============================================================
@@ -4941,3 +4949,93 @@ body.doom-mode .energy-card {
   opacity: 1 !important;
   transform: perspective(800px) translateY(0) !important;
 }
+#mobileSecretMenu {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px);
+  z-index: 100005;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  max-width: 260px;
+  background: rgba(10, 10, 15, 0.97);
+  border: 1px solid rgba(191,255,0,0.3);
+  border-radius: 20px;
+  padding: 16px 18px 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+}
+#mobileSecretMenu.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+.secret-dpad-hint {
+  font-family: 'Oswald', sans-serif;
+  font-size: 10px;
+  color: #888;
+  text-align: center;
+  letter-spacing: 0.5px;
+  line-height: 1.4;
+}
+.secret-dpad {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.secret-dpad-row {
+  display: flex;
+  gap: 6px;
+}
+.secret-dpad-ab {
+  margin-top: 8px;
+}
+.secret-dpad-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(191,255,0,0.25);
+  background: rgba(191,255,0,0.06);
+  color: #BFFF00;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.1s ease, background 0.15s ease;
+}
+.secret-dpad-btn:active,
+.secret-dpad-btn.pressed {
+  transform: scale(0.9);
+  background: rgba(191,255,0,0.25);
+}
+.secret-dpad-letter {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  border-color: rgba(255,59,92,0.3);
+  color: #ff3b5c;
+  background: rgba(255,59,92,0.06);
+}
+.secret-dpad-letter.pressed,
+.secret-dpad-letter:active {
+  background: rgba(255,59,92,0.25);
+}
+.secret-dpad-close {
+  margin-top: 4px;
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 4px 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.secret-dpad-close:hover { color: #ff5050; }

@@ -214,9 +214,15 @@ const achievements = {
     coin_click: { name: 'Жадина', icon: 'fa-coins', desc: 'Нашёл спрятанную монету с черепом в логотипе.', tier: 'gold' },
   hell_package: { name: 'Посылка в АД', icon: 'fa-box', desc: 'Бля, и куда мне её доставить?', tier: 'purple' },
   coronation: { name: 'Коронованный', icon: 'fa-crown', desc: 'Собрал 10+ достижений. Система признала тебя королём.', tier: 'gold' },
-  maze_runner: { name: 'Бегун по лабиринтам', icon: 'fa-route', desc: 'Прошёл лабиринт «Туда-Сюда». Выбрался за 60 секунд.', tier: 'gold' }
+    mode_master: { name: 'Владыка режимов', icon: 'fa-hat-wizard', desc: 'Активировал все секретные режимы: Матрицу, DOOM и Buzz Blast через Konami-код.', tier: 'gold' }
 };
 
+
+function checkModeMaster() {
+  if (safeLSGet('ach_matrix', null) && safeLSGet('ach_doom', null) && safeLSGet('ach_konami', null)) {
+    unlockAchievement('mode_master');
+  }
+}
 
 function unlockAchievement(id) {
   if (safeLSGet('ach_' + id, null)) return; 
@@ -231,6 +237,7 @@ function unlockAchievement(id) {
   c.appendChild(t);
   requestAnimationFrame(() => requestAnimationFrame(() => t.classList.add('show')));
   setTimeout(() => { t.classList.remove('show'); t.classList.add('hide'); t.addEventListener('transitionend', () => t.remove()); }, 4000);
+  if (id === 'matrix' || id === 'doom' || id === 'konami') checkModeMaster();
 }
 
 // ==========================================
@@ -1446,6 +1453,73 @@ document.addEventListener('click', () => {
 // ==========================================
 // ЛОГИКА КЛИКА МАТРИЦЫ (Должно быть после создания карты!)
 // ==========================================
+function activateMatrixMode() {
+  matrixActive = true;
+  document.body.classList.remove('light-theme');
+  document.body.classList.add('matrix-mode');
+  createMatrixRain();
+  window._stopAboutTyping = true;
+
+  setTimeout(function() {
+    var aboutEl = document.getElementById('about-typewriter');
+    if (aboutEl) {
+      window._matrixOrigText = aboutEl.textContent;
+      aboutEl.textContent = "Я занимаюсь обзорами энергетиков. Здесь вы найдете честные и подробные обзоры различных энергетических напитков, их состав, вкус и эффект. Моя задача следить за вами. ";
+    }
+    var discEl = document.querySelector('.map-disclaimer p');
+    if (discEl) {
+      window._matrixOrigDisc = discEl.innerHTML;
+      discEl.innerHTML = 'Мы знаем о вас всё, но <strong>не отвечаем за их текущее наличие</strong> в матрице. Ассортимент может измениться.';
+    }
+  }, 60);
+
+  applyMatrixMapEffect();
+  showToast('🟢 Wake up, Wake up!', 'fa-solid fa-terminal');
+  unlockAchievement('matrix');
+}
+
+function deactivateMatrixMode() {
+  matrixActive = false;
+  document.body.classList.remove('matrix-mode');
+  var rain = document.getElementById('matrixCanvas');
+  if (rain) rain.remove();
+  themeToggle.innerHTML = '<i class="fa-solid fa-moon"></i>';
+
+  var aboutEl2 = document.getElementById('about-typewriter');
+  if (aboutEl2 && window._matrixOrigText) {
+    aboutEl2.textContent = window._matrixOrigText;
+    delete window._matrixOrigText;
+  }
+  var discEl2 = document.querySelector('.map-disclaimer p');
+  if (discEl2 && window._matrixOrigDisc) {
+    discEl2.innerHTML = window._matrixOrigDisc;
+    delete window._matrixOrigDisc;
+  }
+
+  if (secretMysteryMarker && map) {
+    map.removeLayer(secretMysteryMarker);
+    secretMysteryMarker.setIcon(blueIcon);
+    secretMysteryMarker.setPopupContent(`
+      <div class="store-popup" style="text-align: center;">
+        <div class="store-popup-header" style="justify-content: center; border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 15px; padding-bottom: 10px;">
+          <span style="color: #6e6e8a; font-family: 'Oswald', sans-serif; font-size: 28px; font-weight: 700; letter-spacing: 6px;">???</span>
+        </div>
+        <p style="color: #eaeaf0; margin: 0; font-size: 15px; line-height: 1.5;">
+          <span style="color: #BFFF00; font-weight: bold; font-family: 'Oswald', sans-serif; font-size: 20px; letter-spacing: 1px;">???</span>
+        </p>
+      </div>
+    `);
+    markers.forEach(m => m.addTo(map));
+    map.flyTo([43.2070, 27.9120], 13, { duration: 1.5 });
+  }
+  showToast('Матрица отключена', 'fa-solid fa-power-off');
+}
+
+function toggleMatrixMode() {
+  if (matrixActive) deactivateMatrixMode();
+  else activateMatrixMode();
+}
+
 themeToggle.addEventListener('click', function() {
   themeClicks++;
   clearTimeout(themeClickTimer);
@@ -1453,77 +1527,11 @@ themeToggle.addEventListener('click', function() {
 
   if (themeClicks >= 5 && !matrixActive) {
     themeClicks = 0;
-    matrixActive = true;
-    document.body.classList.remove('light-theme');
-    document.body.classList.add('matrix-mode');
-    createMatrixRain();
-
-    /* Останавливаем типерайтер и ждём пока точно остановится */
-    window._stopAboutTyping = true;
-
-    setTimeout(function() {
-      /* Смена текста "Обо мне" для матрицы */
-      var aboutEl = document.getElementById('about-typewriter');
-      if (aboutEl) {
-        window._matrixOrigText = aboutEl.textContent;
-        aboutEl.textContent = "Я занимаюсь обзорами энергетиков. Здесь вы найдете честные и подробные обзоры различных энергетических напитков, их состав, вкус и эффект. Моя задача следить за вами. ";
-      }
-
-      /* Смена текста под картой для матрицы */
-      var discEl = document.querySelector('.map-disclaimer p');
-      if (discEl) {
-        window._matrixOrigDisc = discEl.innerHTML;
-        discEl.innerHTML = 'Мы знаем о вас всё, но <strong>не отвечаем за их текущее наличие</strong> в матрице. Ассортимент может измениться.';
-      }
-    }, 60);
-
-    applyMatrixMapEffect();
-    
-    showToast('🟢 Wake up, Wake up!', 'fa-solid fa-terminal');
-        unlockAchievement('matrix');
+    activateMatrixMode();
     return;
   }
-
   if (matrixActive) {
-    matrixActive = false;
-    document.body.classList.remove('matrix-mode');
-    var rain = document.getElementById('matrixCanvas');
-    if (rain) rain.remove();
-    themeToggle.innerHTML = '<i class="fa-solid fa-moon"></i>';
-    
-    /* Возвращаем оригинальный текст "Обо мне" */
-    var aboutEl2 = document.getElementById('about-typewriter');
-    if (aboutEl2 && window._matrixOrigText) {
-      aboutEl2.textContent = window._matrixOrigText;
-      delete window._matrixOrigText;
-    }
-
-    /* Возвращаем оригинальный текст под картой */
-    var discEl2 = document.querySelector('.map-disclaimer p');
-    if (discEl2 && window._matrixOrigDisc) {
-      discEl2.innerHTML = window._matrixOrigDisc;
-      delete window._matrixOrigDisc;
-    }
-    
-    /* МАГИЯ КАРТЫ: Возвращаем всё как было */
-    if (secretMysteryMarker) {
-      map.removeLayer(secretMysteryMarker);
-      secretMysteryMarker.setIcon(blueIcon);
-      secretMysteryMarker.setPopupContent(`
-        <div class="store-popup" style="text-align: center;">
-          <div class="store-popup-header" style="justify-content: center; border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 15px; padding-bottom: 10px;">
-            <span style="color: #6e6e8a; font-family: 'Oswald', sans-serif; font-size: 28px; font-weight: 700; letter-spacing: 6px;">???</span>
-          </div>
-          <p style="color: #eaeaf0; margin: 0; font-size: 15px; line-height: 1.5;">
-            <span style="color: #BFFF00; font-weight: bold; font-family: 'Oswald', sans-serif; font-size: 20px; letter-spacing: 1px;">???</span>
-          </p>
-        </div>
-      `);
-    }
-    markers.forEach(m => m.addTo(map));
-    map.flyTo([43.2070, 27.9120], 13, { duration: 1.5 });
-    
-    showToast('Матрица отключена', 'fa-solid fa-power-off');
+    deactivateMatrixMode();
   } else {
     document.body.classList.toggle('light-theme');
     var isLight = document.body.classList.contains('light-theme');
@@ -2084,14 +2092,19 @@ document.querySelectorAll('.coming-card').forEach(card => {
 const DoomMode = (function() {
   let active = false;
 
-  const cssText = `
+    const cssText = `
+    /* ВАЖНО: раньше здесь был filter: contrast()/brightness() на body.doom-mode.
+       CSS-свойство filter создаёт новый containing block для всех
+       position:fixed потомков — из-за этого таймер и счётчик убитых банок
+       (fixed-дети body) переставали быть "прибитыми" к экрану и скроллились
+       вместе со страницей. Заменяем эффект на полупрозрачный оверлей
+       с mix-blend-mode — похожий вид, без побочного эффекта на позиционирование. */
     body.doom-mode {
-      filter: contrast(1.3) brightness(0.8) !important;
       animation: doomFlicker 0.15s infinite !important;
     }
     @keyframes doomFlicker {
-      0%, 100% { filter: contrast(1.3) brightness(0.8); }
-      50% { filter: contrast(1.5) brightness(0.7); }
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.97; }
     }
     body.doom-mode::before {
       content: '';
@@ -2100,6 +2113,15 @@ const DoomMode = (function() {
       box-shadow: inset 0 0 200px rgba(120, 0, 0, 0.6);
       pointer-events: none;
       z-index: 99997;
+    }
+    body.doom-mode::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 99995;
+      background: rgba(20, 0, 0, 0.15);
+      mix-blend-mode: multiply;
     }
     body.doom-mode .section-title { text-shadow: 0 0 20px rgba(180, 0, 0, 0.8) !important; }
     body.doom-mode .energy-card { border-color: rgba(80, 0, 0, 0.5) !important; }
@@ -2150,9 +2172,14 @@ const DoomMode = (function() {
       box-shadow: 0 0 20px #ff0000, 0 0 40px rgba(255,0,0,0.3) !important;
       transition: transform 0.15s ease;
     }
-    @keyframes doomPulse {
+        @keyframes doomPulse {
       0% { box-shadow: 0 0 30px rgba(255,0,0,0.3), inset 0 0 20px rgba(255,0,0,0.1); }
       100% { box-shadow: 0 0 50px rgba(255,0,0,0.6), inset 0 0 30px rgba(255,0,0,0.2); }
+    }
+    @media (max-width: 768px) {
+      #doomCountdown, #doomKillCounter {
+        top: max(12px, env(safe-area-inset-top)) !important;
+      }
     }
   `;
 
@@ -3828,348 +3855,7 @@ const Preacher = (function() {
 
   return { openGreeting };
 })();
-// ==========================================
-// 16.9. ТУДА-СЮДА (мини-игра-лабиринт)
-// ==========================================
-const MazeGame = (function() {
-  const GRID = 15;
-  const CELL = 28;
-  let canvas = null, ctx = null;
-  let overlay = null;
-  let maze = [];
-  let player = { x: 1, y: 1 };
-  let goal = { x: GRID - 2, y: GRID - 2 };
-  let movingWalls = [];
-  let timeLeft = 60;
-  let timerInterval = null;
-  let running = false;
-  let keyHandler = null;
-  let level = 1;
-  let lastTick = 0;
 
-  function generateMaze() {
-    // Инициализация — всё стены
-    maze = Array.from({length: GRID}, () => Array(GRID).fill(1));
-
-    // Рекурсивный backtracker
-    function carve(x, y) {
-      maze[y][x] = 0;
-      const dirs = [[0,-2],[2,0],[0,2],[-2,0]];
-      // Перемешать
-      for (let i = dirs.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [dirs[i], dirs[j]] = [dirs[j], dirs[i]];
-      }
-      for (const [dx, dy] of dirs) {
-        const nx = x + dx, ny = y + dy;
-        if (nx > 0 && nx < GRID - 1 && ny > 0 && ny < GRID - 1 && maze[ny][nx] === 1) {
-          maze[y + dy/2][x + dx/2] = 0;
-          carve(nx, ny);
-        }
-      }
-    }
-    carve(1, 1);
-
-    // Убираем несколько стен, чтобы сделать лабиринт менее жестким
-    for (let i = 0; i < 15; i++) {
-      const x = 1 + Math.floor(Math.random() * (GRID - 2));
-      const y = 1 + Math.floor(Math.random() * (GRID - 2));
-      if (maze[y][x] === 1) maze[y][x] = 0;
-    }
-
-    // Гарантируем старт и финиш
-    maze[1][1] = 0;
-    maze[GRID - 2][GRID - 2] = 0;
-  }
-
-  function spawnMovingWalls() {
-    movingWalls = [];
-    const count = 3 + level * 2;
-    for (let i = 0; i < count; i++) {
-      // Находим пустую клетку
-      let x, y;
-      do {
-        x = 1 + Math.floor(Math.random() * (GRID - 2));
-        y = 1 + Math.floor(Math.random() * (GRID - 2));
-      } while (maze[y][x] !== 0 || (x === 1 && y === 1) || (x === GRID - 2 && y === GRID - 2));
-
-      // Направление движения
-      const horizontal = Math.random() < 0.5;
-      const dir = Math.random() < 0.5 ? 1 : -1;
-      movingWalls.push({ x, y, dx: horizontal ? dir : 0, dy: horizontal ? 0 : dir });
-    }
-  }
-
-  function updateMovingWalls() {
-    for (const w of movingWalls) {
-      const nx = w.x + w.dx;
-      const ny = w.y + w.dy;
-      // Если впереди стена — разворот
-      if (nx < 0 || nx >= GRID || ny < 0 || ny >= GRID || maze[ny][nx] === 1) {
-        w.dx = -w.dx; w.dy = -w.dy;
-      } else {
-        w.x = nx; w.y = ny;
-      }
-      // Столкновение с игроком
-      if (w.x === player.x && w.y === player.y) {
-        gameOver('Тебя раздавили!');
-        return;
-      }
-    }
-  }
-
-  function draw() {
-    if (!ctx) return;
-    ctx.fillStyle = '#0a0a0f';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Стены и пути
-    for (let y = 0; y < GRID; y++) {
-      for (let x = 0; x < GRID; x++) {
-        const px = x * CELL, py = y * CELL;
-        if (maze[y][x] === 1) {
-          // Стена
-          ctx.fillStyle = '#1a1a2e';
-          ctx.fillRect(px, py, CELL, CELL);
-          ctx.strokeStyle = 'rgba(168, 85, 247, 0.15)';
-          ctx.lineWidth = 1;
-          ctx.strokeRect(px + 0.5, py + 0.5, CELL - 1, CELL - 1);
-        } else {
-          // Путь
-          ctx.fillStyle = '#0e0e16';
-          ctx.fillRect(px, py, CELL, CELL);
-        }
-      }
-    }
-
-    // Финиш
-    const gx = goal.x * CELL, gy = goal.y * CELL;
-    ctx.fillStyle = '#00e676';
-    ctx.shadowColor = '#00e676';
-    ctx.shadowBlur = 15;
-    ctx.fillRect(gx + 6, gy + 6, CELL - 12, CELL - 12);
-    ctx.shadowBlur = 0;
-    // Внутри — символ 🏁
-    ctx.fillStyle = '#0a0a0f';
-    ctx.font = 'bold 14px Oswald, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('F', gx + CELL/2, gy + CELL/2);
-
-    // Движущиеся стены
-    for (const w of movingWalls) {
-      const wx = w.x * CELL, wy = w.y * CELL;
-      ctx.fillStyle = '#ef4444';
-      ctx.shadowColor = '#ef4444';
-      ctx.shadowBlur = 10;
-      ctx.fillRect(wx + 4, wy + 4, CELL - 8, CELL - 8);
-      ctx.shadowBlur = 0;
-    }
-
-    // Игрок
-    const px = player.x * CELL, py = player.y * CELL;
-    ctx.fillStyle = '#fbbf24';
-    ctx.shadowColor = '#fbbf24';
-    ctx.shadowBlur = 18;
-    ctx.beginPath();
-    ctx.arc(px + CELL/2, py + CELL/2, CELL/2 - 4, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.shadowBlur = 0;
-  }
-
-  function move(dx, dy) {
-    if (!running) return;
-    const nx = player.x + dx;
-    const ny = player.y + dy;
-    if (nx < 0 || nx >= GRID || ny < 0 || ny >= GRID) return;
-    if (maze[ny][nx] === 1) return; // стена
-    player.x = nx; player.y = ny;
-
-    // Столкновение с движущейся стеной
-    for (const w of movingWalls) {
-      if (w.x === player.x && w.y === player.y) {
-        gameOver('Тебя раздавили!');
-        return;
-      }
-    }
-
-    // Финиш?
-    if (player.x === goal.x && player.y === goal.y) {
-      win();
-      return;
-    }
-    draw();
-  }
-
-  function tick(ts) {
-    if (!running) return;
-    // Движущиеся стены двигаются каждые 400мс (уровень 1), быстрее на след. уровнях
-    const interval = Math.max(150, 500 - level * 80);
-    if (ts - lastTick > interval) {
-      lastTick = ts;
-      updateMovingWalls();
-      draw();
-    }
-    requestAnimationFrame(tick);
-  }
-
-  function startTimer() {
-    clearInterval(timerInterval);
-    timerInterval = setInterval(() => {
-      timeLeft--;
-      const el = document.getElementById('mazeTimer');
-      if (el) el.textContent = timeLeft;
-      if (timeLeft <= 0) {
-        gameOver('Время вышло!');
-      }
-    }, 1000);
-  }
-
-  function win() {
-    running = false;
-    clearInterval(timerInterval);
-    if (window.AudioSys) { try { AudioSys.play('achievement'); } catch(e) {} }
-    if (typeof unlockAchievement !== 'undefined') unlockAchievement('maze_runner');
-    showEndScreen('ПОБЕДА!', 'Ты выбрался за ' + (60 - timeLeft) + ' сек', '#00e676', true);
-  }
-
-  function gameOver(reason) {
-    running = false;
-    clearInterval(timerInterval);
-    if (window.AudioSys) { try { AudioSys.play('error'); } catch(e) {} }
-    showEndScreen('ПОРАЖЕНИЕ', reason, '#ef4444', false);
-  }
-
-  function showEndScreen(title, sub, color, isWin) {
-    const endEl = document.getElementById('mazeEnd');
-    if (!endEl) return;
-    endEl.innerHTML = `
-      <div class="maze-end-title" style="color:${color}">${title}</div>
-      <div class="maze-end-sub">${sub}</div>
-      <div class="maze-end-actions">
-        <button class="maze-btn maze-btn-primary" id="mazeRetry">
-          <i class="fa-solid fa-rotate-right"></i> Ещё раз
-        </button>
-        <button class="maze-btn" id="mazeClose2">
-          <i class="fa-solid fa-xmark"></i> Выйти
-        </button>
-      </div>
-    `;
-    endEl.style.display = 'flex';
-    document.getElementById('mazeRetry').addEventListener('click', () => {
-      endEl.style.display = 'none';
-      startGame();
-    });
-    document.getElementById('mazeClose2').addEventListener('click', close);
-  }
-
-  function startGame() {
-    generateMaze();
-    spawnMovingWalls();
-    player = { x: 1, y: 1 };
-    goal = { x: GRID - 2, y: GRID - 2 };
-    timeLeft = 60;
-    running = true;
-    lastTick = performance.now();
-    const timerEl = document.getElementById('mazeTimer');
-    if (timerEl) timerEl.textContent = timeLeft;
-    const lvlEl = document.getElementById('mazeLevel');
-    if (lvlEl) lvlEl.textContent = level;
-    draw();
-    startTimer();
-    requestAnimationFrame(tick);
-  }
-
-  function buildOverlay() {
-    overlay = document.createElement('div');
-    overlay.id = 'mazeOverlay';
-    overlay.innerHTML = `
-      <div class="maze-modal">
-        <button class="maze-close" id="mazeClose" aria-label="Закрыть"><i class="fa-solid fa-xmark"></i></button>
-        <div class="maze-header">
-          <div class="maze-logo"><i class="fa-solid fa-route"></i> ТУДА-СЮДА</div>
-        </div>
-        <div class="maze-hud">
-          <div class="maze-hud-block">
-            <div class="maze-hud-label">ВРЕМЯ</div>
-            <div class="maze-hud-value" id="mazeTimer">60</div>
-          </div>
-          <div class="maze-hud-block">
-            <div class="maze-hud-label">УРОВЕНЬ</div>
-            <div class="maze-hud-value" id="mazeLevel">1</div>
-          </div>
-          <div class="maze-hud-block">
-            <div class="maze-hud-label">ЦЕЛЬ</div>
-            <div class="maze-hud-value"><i class="fa-solid fa-flag-checkered"></i></div>
-          </div>
-        </div>
-        <canvas id="mazeCanvas" width="${GRID * CELL}" height="${GRID * CELL}"></canvas>
-        <div class="maze-controls">
-          <button class="maze-ctrl" data-maze="up"><i class="fa-solid fa-arrow-up"></i></button>
-          <div class="maze-ctrl-row">
-            <button class="maze-ctrl" data-maze="left"><i class="fa-solid fa-arrow-left"></i></button>
-            <button class="maze-ctrl" data-maze="down"><i class="fa-solid fa-arrow-down"></i></button>
-            <button class="maze-ctrl" data-maze="right"><i class="fa-solid fa-arrow-right"></i></button>
-          </div>
-        </div>
-        <div class="maze-hint">WASD или стрелки. Дойди до <i class="fa-solid fa-flag-checkered"></i> за 60 сек.</div>
-        <div class="maze-end" id="mazeEnd" style="display:none;"></div>
-      </div>
-    `;
-    document.body.appendChild(overlay);
-    canvas = document.getElementById('mazeCanvas');
-    ctx = canvas.getContext('2d');
-    requestAnimationFrame(() => overlay.classList.add('show'));
-
-    document.getElementById('mazeClose').addEventListener('click', close);
-    overlay.querySelectorAll('[data-maze]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const a = btn.getAttribute('data-maze');
-        if (a === 'up') move(0, -1);
-        else if (a === 'down') move(0, 1);
-        else if (a === 'left') move(-1, 0);
-        else if (a === 'right') move(1, 0);
-      });
-    });
-  }
-
-  function open() {
-    if (overlay) { close(); return; }
-    buildOverlay();
-    level = 1;
-    startGame();
-    keyHandler = function(e) {
-      if (!running) return;
-      switch (e.code) {
-        case 'ArrowUp': case 'KeyW': move(0, -1); e.preventDefault(); break;
-        case 'ArrowDown': case 'KeyS': move(0, 1); e.preventDefault(); break;
-        case 'ArrowLeft': case 'KeyA': move(-1, 0); e.preventDefault(); break;
-        case 'ArrowRight': case 'KeyD': move(1, 0); e.preventDefault(); break;
-        case 'Escape': close(); e.preventDefault(); break;
-      }
-    };
-    document.addEventListener('keydown', keyHandler);
-    if (window.AudioSys) { try { AudioSys.play('click'); } catch(e) {} }
-  }
-
-  function close() {
-    running = false;
-    clearInterval(timerInterval);
-    if (keyHandler) {
-      document.removeEventListener('keydown', keyHandler);
-      keyHandler = null;
-    }
-    if (overlay) {
-      overlay.classList.remove('show');
-      const el = overlay;
-      setTimeout(() => el.remove(), 300);
-      overlay = null;
-    }
-    canvas = null; ctx = null;
-  }
-
-  return { open, close };
-})();
 // ==========================================
 // 16. ТЕРМИНАЛ И ДОСЬЕ АГЕНТА V.6.2 (ФИНАЛ)
 // ==========================================
@@ -4346,7 +4032,7 @@ const MazeGame = (function() {
     }
 
     // === 5. ОСТАЛЬНЫЕ КОМАНДЫ ===
-    else if (command === 'help') {
+           else if (command === 'help') {
       response = `Доступные команды:<br>
       <span style="color:#fbbf24;">help</span> - Список команд<br>
       <span style="color:#fbbf24;">ls</span> - Объекты в базе<br>
@@ -4363,12 +4049,12 @@ const MazeGame = (function() {
       <span style="color:#fbbf24;">cat classified.txt</span> - Секретный файл<br>
       <span style="color:#fbbf24;">top secret</span> - Расшифровать данные<br>
       <span style="color:#fbbf24;">ping</span> - Пинговать Сервер<br>
-      <span style="color:#ff3b5c;">reset</span> - СБРОС ДАННЫХ (ОПАСНО)<br>
       <span style="color:#fbbf24;">status</span> - Досье агента<br>
+      <span style="color:#fbbf24;">rumors</span> - Слухи дня (туманно, без спойлеров)<br>
       <span style="color:#fbbf24;">clear</span> - Очистить экран<br>
       <span style="color:#fbbf24;">exit</span> - Отключиться<br>
-      <span style="color:#fbbf24;">rumors</span> - Слухи дня (туманно, без спойлеров)`;
-    } 
+      <span style="color:#ff3b5c;">reset</span> - СБРОС ДАННЫХ (ОПАСНО)`;
+    }
     else if (command === 'analyze') {
       const brand = args[1];
       if (!brand) { response = `<span style="color:#ff3b5c;">ОШИБКА: Укажите марку (пример: analyze hell).</span>`; }
@@ -4755,7 +4441,11 @@ document.addEventListener('click', function(e) {
 })();
 
 // ============================================================
-// МОБИЛЬНАЯ ПАСХАЛКА #1: ДОЛГИЙ ТАП ПО ЛОГО (3 сек)
+// МОБИЛЬНАЯ ПАСХАЛКА: ДОЛГИЙ ТАП ПО ЛОГО → МЕНЮ СЕКРЕТНЫХ РЕЖИМОВ
+// Раньше здесь были тряска (Motion API — часто требует разрешения и
+// ненадёжна) и свайп-паттерны (сложно повторить точно на маленьком экране).
+// Заменено на явное меню из трёх кнопок — надёжный вариант без гаданий,
+// жестов и системных разрешений.
 // ============================================================
 (function() {
   const logo = document.querySelector('.header-logo');
@@ -4764,9 +4454,12 @@ document.addEventListener('click', function(e) {
   let timer;
   let active = false;
   let progress;
+  let menuHideTimer = null;
 
+  // ВАЖНО: НЕ вызываем preventDefault на touchstart — иначе браузер не
+  // генерирует синтетический click после короткого тапа, и пасхалка с
+  // монеткой в лого (4 обычных клика) перестаёт работать на телефоне.
   function start(e) {
-    if (e.cancelable) e.preventDefault();
     active = true;
     progress = document.createElement('div');
     progress.style.cssText = 'position:absolute;bottom:-4px;left:0;height:2px;width:0;background:#BFFF00;transition:width 3s linear;box-shadow:0 0 8px #BFFF00;';
@@ -4774,20 +4467,14 @@ document.addEventListener('click', function(e) {
     logo.appendChild(progress);
     requestAnimationFrame(() => { if (progress) progress.style.width = '100%'; });
 
-    timer = setTimeout(() => {
+        timer = setTimeout(() => {
       if (!active) return;
       active = false;
       if (progress) { progress.remove(); progress = null; }
+      window.__logoLongPressJustFired = true;
+      setTimeout(() => { window.__logoLongPressJustFired = false; }, 500);
       unlockAchievement('mobile');
-      showToast('📱 Ты нашёл мобильную пасхалку! Тряхни телефон 3 раза — будет сюрприз...', 'fa-solid fa-mobile-screen');
-      if (typeof DeviceMotionEvent !== 'undefined' &&
-          typeof DeviceMotionEvent.requestPermission === 'function') {
-        DeviceMotionEvent.requestPermission().then(state => {
-          if (state === 'granted') initShakeListener();
-        }).catch(() => {});
-      } else {
-        initShakeListener();
-      }
+      showSecretMenu();
     }, 3000);
   }
 
@@ -4797,125 +4484,80 @@ document.addEventListener('click', function(e) {
     if (progress) { progress.remove(); progress = null; }
   }
 
-  logo.addEventListener('touchstart', start, { passive: false });
+  // Предотвращаем скролл страницы ТОЛЬКО когда долгий тап уже начался —
+  // это не мешает обычному короткому тапу (клику) по лого.
+  function touchMoveDuringHold(e) {
+    if (active && e.cancelable) e.preventDefault();
+    cancel();
+  }
+
+  logo.addEventListener('touchstart', start, { passive: true });
   logo.addEventListener('touchend', cancel);
-  logo.addEventListener('touchmove', cancel);
+  logo.addEventListener('touchmove', touchMoveDuringHold, { passive: false });
   logo.addEventListener('touchcancel', cancel);
-})();
 
-// ============================================================
-// МОБИЛЬНАЯ ПАСХАЛКА #2: ТРЯХНИ ТЕЛЕФОН 3 РАЗА → OVERLOAD
-// ============================================================
-let _shakeListenerInitialized = false;
-function initShakeListener() {
-  if (_shakeListenerInitialized) return;
-  _shakeListenerInitialized = true;
+    function showSecretMenu() {
+    const old = document.getElementById('mobileSecretMenu');
+    if (old) old.remove();
+    clearTimeout(menuHideTimer);
 
-  let lastShake = 0;
-  let shakeCount = 0;
-  let resetTimer;
+    const menu = document.createElement('div');
+    menu.id = 'mobileSecretMenu';
+    menu.innerHTML = `
+      <div class="secret-dpad-hint">Введи код вручную, как на клавиатуре:<br>Konami ↑↑↓↓←→←→BA · DOOM (зеркально) ↓↓↑↑→←→←BA</div>
+      <div class="secret-dpad">
+        <div class="secret-dpad-row">
+          <button class="secret-dpad-btn" data-key="arrowup"><i class="fa-solid fa-arrow-up"></i></button>
+        </div>
+        <div class="secret-dpad-row">
+          <button class="secret-dpad-btn" data-key="arrowleft"><i class="fa-solid fa-arrow-left"></i></button>
+          <button class="secret-dpad-btn" data-key="arrowdown"><i class="fa-solid fa-arrow-down"></i></button>
+          <button class="secret-dpad-btn" data-key="arrowright"><i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+        <div class="secret-dpad-row secret-dpad-ab">
+          <button class="secret-dpad-btn secret-dpad-letter" data-key="b">B</button>
+          <button class="secret-dpad-btn secret-dpad-letter" data-key="a">A</button>
+        </div>
+      </div>
+      <button class="secret-dpad-close" id="secretDpadClose"><i class="fa-solid fa-xmark"></i> Закрыть</button>
+    `;
+    document.body.appendChild(menu);
+    requestAnimationFrame(() => menu.classList.add('show'));
+    if (typeof AudioSys !== 'undefined') AudioSys.play('open');
+    showToast('📱 Введи код на пульте ниже', 'fa-solid fa-mobile-screen');
 
-  window.addEventListener('devicemotion', function(e) {
-    const a = e.accelerationIncludingGravity;
-    if (!a) return;
-    const magnitude = Math.sqrt(
-      (a.x||0)*(a.x||0) + (a.y||0)*(a.y||0) + (a.z||0)*(a.z||0)
-    );
-    const now = Date.now();
+    menu.querySelectorAll('.secret-dpad-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (typeof AudioSys !== 'undefined') AudioSys.play('click');
+        btn.classList.add('pressed');
+        setTimeout(() => btn.classList.remove('pressed'), 150);
 
-    if (magnitude > 18 && now - lastShake > 400) {
-      lastShake = now;
-      shakeCount++;
-      clearTimeout(resetTimer);
-      resetTimer = setTimeout(() => shakeCount = 0, 1500);
+        const key = btn.dataset.key;
+        const success = (typeof window.__buzzProcessSequenceKey === 'function')
+          ? window.__buzzProcessSequenceKey(key)
+          : false;
 
-      if (shakeCount >= 3) {
-        shakeCount = 0;
-        if (typeof window.toggleOverload === 'function') {
-          window.toggleOverload();
-          showToast('⚡ Тряхнул как надо!', 'fa-solid fa-bolt');
+        clearTimeout(menuHideTimer);
+        if (success) {
+          setTimeout(hideSecretMenu, 500);
+        } else {
+          menuHideTimer = setTimeout(hideSecretMenu, 15000);
         }
-      }
-    }
-  }, { passive: true });
-}
+      });
+    });
 
-// ============================================================
-// МОБИЛЬНАЯ ПАСХАЛКА #3: СВАЙП KONAMI (↑↑↓↓←→←→)
-// ============================================================
-(function() {
-  if (matchMedia('(hover: hover)').matches) return; // только тач-устройства
+    document.getElementById('secretDpadClose').addEventListener('click', hideSecretMenu);
 
-  // Два паттерна: обычный Konami и Doom
-  const konamiPattern = ['up','up','down','down','left','right','left','right'];
-  const doomPattern = ['down','down','up','up','right','left','right','left'];
-  
-  let konamiIndex = 0;
-  let doomIndex = 0;
-  let resetTimer;
-  let startX, startY, startT;
+    menuHideTimer = setTimeout(hideSecretMenu, 15000);
+  }
 
-  document.addEventListener('touchstart', e => {
-    const t = e.touches[0];
-    startX = t.clientX; startY = t.clientY; startT = Date.now();
-  }, { passive: true });
-
-  document.addEventListener('touchend', e => {
-    if (startX == null) return;
-    const t = e.changedTouches[0];
-    const dx = t.clientX - startX;
-    const dy = t.clientY - startY;
-    const dt = Date.now() - startT;
-
-    if (dt > 500) { startX = null; return; }
-
-    const absX = Math.abs(dx), absY = Math.abs(dy);
-    if (absX < 30 && absY < 30) { startX = null; return; }
-
-    let dir;
-    if (absX > absY) dir = dx > 0 ? 'right' : 'left';
-    else dir = dy > 0 ? 'down' : 'up';
-
-    let matched = false;
-
-    // Проверяем Konami (↑↑↓↓←→←→)
-    if (dir === konamiPattern[konamiIndex]) {
-      konamiIndex++;
-      matched = true;
-      if (konamiIndex === konamiPattern.length) {
-        konamiIndex = 0;
-        if (typeof window.toggleOverload === 'function') {
-          window.toggleOverload();
-          showToast('🎮 Konami свайпами!', 'fa-solid fa-gamepad');
-          unlockAchievement('mobile');
-        }
-      }
-    } else {
-      konamiIndex = (dir === konamiPattern[0]) ? 1 : 0;
-    }
-
-    // Проверяем Doom (↓↓↑↑→←→←)
-    if (dir === doomPattern[doomIndex]) {
-      doomIndex++;
-      matched = true;
-      if (doomIndex === doomPattern.length) {
-        doomIndex = 0;
-        if (typeof DoomMode !== 'undefined') {
-          DoomMode.toggle(true);
-          showToast('💀 Doom свайпами!', 'fa-solid fa-skull');
-        }
-      }
-    } else {
-      doomIndex = (dir === doomPattern[0]) ? 1 : 0;
-    }
-
-    if (matched) {
-      clearTimeout(resetTimer);
-      resetTimer = setTimeout(() => { konamiIndex = 0; doomIndex = 0; }, 2000);
-    }
-
-    startX = null;
-  }, { passive: true });
+  function hideSecretMenu() {
+    const menu = document.getElementById('mobileSecretMenu');
+    if (!menu) return;
+    menu.classList.remove('show');
+    setTimeout(() => menu.remove(), 300);
+    if (typeof window.__buzzResetSequence === 'function') window.__buzzResetSequence();
+  }
 })();
 
 
@@ -5778,6 +5420,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const coinSpawnKey = 'buzz_coin_spawned';
 
   logo.addEventListener('click', function() {
+      if (window.__logoLongPressJustFired) return;
     logoClicks++;
     clearTimeout(logoTimer);
     logoTimer = setTimeout(() => { logoClicks = 0; }, 2000);
@@ -5820,8 +5463,8 @@ document.addEventListener('DOMContentLoaded', () => {
 })();
 
 // ==========================================
-// ГЛОБАЛЬНЫЕ КЛАВИАТУРНЫЕ КОМБО (KONAMI + DOOM)
-// Единственный обработчик — раньше их было два и они конфликтовали
+// ГЛОБАЛЬНЫЕ КОМБО (KONAMI + DOOM) — клавиатура + мобильный D-pad
+// Overload-режим удалён по запросу.
 // ==========================================
 (function() {
   // Классический Konami: ↑ ↑ ↓ ↓ ← → ← → B A
@@ -5847,18 +5490,6 @@ document.addEventListener('DOMContentLoaded', () => {
     clearTimeout(resetTimer);
   }
 
-  // Переключатель overload-режима (ретро-эффекты)
-  window.toggleOverload = function() {
-    const body = document.body;
-    if (body.classList.contains('overload-mode')) {
-      body.classList.remove('overload-mode');
-      if (typeof showToast === 'function') showToast('Overload выключен', 'fa-solid fa-power-off');
-    } else {
-      body.classList.add('overload-mode');
-      if (typeof showToast === 'function') showToast('⚡ Overload активирован!', 'fa-solid fa-bolt');
-    }
-  };
-
   function onKonamiSuccess() {
     resetAll();
 
@@ -5876,49 +5507,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function onDoomSuccess() {
     resetAll();
-
-    if (document.body.classList.contains('overload-mode')) {
-      document.body.classList.remove('overload-mode');
-    }
-
     if (typeof DoomMode !== 'undefined') {
-      DoomMode.toggle(false); // false = не с телефона
+      DoomMode.toggle(false);
     }
   }
 
-  function handleKeydown(e) {
-    if (e.target.matches('input, textarea, select') || e.target.isContentEditable) {
-      return;
-    }
-
-    const key = e.key.toLowerCase();
+  // processKey — сравнение одной "клавиши" (реальной или с виртуального
+  // D-pad) с последовательностями Konami/Doom. Общая для клавиатуры и тапов.
+  // Возвращает true, если код был успешно введён целиком.
+  function processKey(key) {
     let matchedAny = false;
 
-    // Konami
     if (key === konamiSeq[konamiIndex].toLowerCase()) {
       konamiIndex++;
       matchedAny = true;
       if (konamiIndex === konamiSeq.length) {
-        e.preventDefault();
         onKonamiSuccess();
-        konamiIndex = 0;
-        doomIndex = 0;
-        return;
+        konamiIndex = 0; doomIndex = 0;
+        return true;
       }
     } else {
       konamiIndex = (key === konamiSeq[0].toLowerCase()) ? 1 : 0;
     }
 
-    // Doom
     if (key === doomSeq[doomIndex].toLowerCase()) {
       doomIndex++;
       matchedAny = true;
       if (doomIndex === doomSeq.length) {
-        e.preventDefault();
         onDoomSuccess();
-        konamiIndex = 0;
-        doomIndex = 0;
-        return;
+        konamiIndex = 0; doomIndex = 0;
+        return true;
       }
     } else {
       doomIndex = (key === doomSeq[0].toLowerCase()) ? 1 : 0;
@@ -5926,10 +5544,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (matchedAny) {
       clearTimeout(resetTimer);
-      resetTimer = setTimeout(resetAll, 2000);
+      resetTimer = setTimeout(resetAll, 4000);
+    }
+    return false;
+  }
+
+  function handleKeydown(e) {
+    if (e.target.matches('input, textarea, select') || e.target.isContentEditable) {
+      return;
+    }
+    const key = e.key.toLowerCase();
+    const before = konamiIndex + doomIndex;
+    const success = processKey(key);
+    if (success || konamiIndex + doomIndex !== before) {
+      e.preventDefault();
     }
   }
 
   document.addEventListener('keydown', handleKeydown);
+
+  // Доступ для мобильного D-pad
+  window.__buzzProcessSequenceKey = processKey;
+  window.__buzzResetSequence = resetAll;
 })();
 
