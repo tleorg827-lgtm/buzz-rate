@@ -9,6 +9,7 @@
   <meta property="og:title" content="Buzz Rate — Обзоры энергетиков">
   <meta property="og:description" content="Честные обзоры энергетических напитков. Состав, вкус, рейтинг, эффект — без прикрас.">
   <meta property="og:type" content="website">
+  <meta name="theme-color" content="#0a0a0f" id="themeColorMeta">
 
   <!-- Preconnect для ускорения соединения с CDN -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -57,8 +58,8 @@
     <rect class="agent-eyes" x="27" y="38" width="46" height="7" rx="3.5" />
   </symbol>
   <symbol id="buzz-rate-logo" viewBox="0 0 400 400">
-    <defs>
-      <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+    <rect class="logo-backdrop" x="85" y="65" width="230" height="220" rx="24" />
+    <defs>      <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
         <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur1"/>
         <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur2"/>
         <feMerge>
@@ -70,13 +71,36 @@
     </defs>
     <g id="neon-group" filter="url(#neonGlow)">
       <g stroke="#BFFF00" stroke-width="4" fill="none" stroke-linejoin="miter">
-        <rect x="160" y="90" width="80" height="50" rx="4" ry="4"/>
+        <rect class="battery-outline" x="160" y="90" width="80" height="50" rx="4" ry="4"/>
         <rect x="240" y="105" width="12" height="20" rx="2" ry="2" fill="#BFFF00" stroke="none"/>
-        <polygon id="lightning" points="195,95 208,116 200,116 212,140 198,119 206,119" fill="#BFFF00" stroke="none"/>
+        <polygon id="lightning" class="battery-bolt" points="195,95 208,116 200,116 212,140 198,119 206,119" fill="#BFFF00" stroke="none"/>
+      </g>
+            <text x="200" y="210" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="900" fill="#BFFF00" text-anchor="middle" letter-spacing="14">BUZZ</text>
+      <line x1="130" y1="225" x2="270" y2="225" stroke="#BFFF00" stroke-width="2" stroke-linecap="round"/>
+      <text x="200" y="268" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="900" fill="#BFFF00" text-anchor="middle" letter-spacing="14">RATE</text>
+    </g>
+  </symbol>
+
+    <symbol id="buzz-rate-logo-crowned" viewBox="0 0 400 400">
+    <rect class="logo-backdrop" x="85" y="65" width="230" height="220" rx="24" />
+    <g id="neon-group-crowned" filter="url(#neonGlow)">
+      <g stroke="#BFFF00" stroke-width="4" fill="none" stroke-linejoin="miter">
+        <rect class="battery-outline" x="160" y="90" width="80" height="50" rx="4" ry="4"/>
+        <rect x="240" y="105" width="12" height="20" rx="2" ry="2" fill="#BFFF00" stroke="none"/>
+        <polygon class="battery-bolt" points="195,95 208,116 200,116 212,140 198,119 206,119" fill="#BFFF00" stroke="none"/>
       </g>
       <text x="200" y="210" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="900" fill="#BFFF00" text-anchor="middle" letter-spacing="14">BUZZ</text>
       <line x1="130" y1="225" x2="270" y2="225" stroke="#BFFF00" stroke-width="2" stroke-linecap="round"/>
       <text x="200" y="268" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="900" fill="#BFFF00" text-anchor="middle" letter-spacing="14">RATE</text>
+    </g>
+     <g transform="translate(109,38) rotate(-45 50 45) scale(0.72)">
+      <rect x="10" y="62" width="80" height="14" rx="3" fill="#d97706"/>
+      <rect x="10" y="62" width="80" height="5" rx="2" fill="#fbbf24"/>
+      <path d="M10,62 L10,38 L28,52 L38,20 L50,42 L62,20 L72,52 L90,38 L90,62 Z" fill="#fbbf24" stroke="#d97706" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="10" cy="34" r="6" fill="#fde68a" stroke="#d97706" stroke-width="2"/>
+      <circle cx="50" cy="16" r="7" fill="#fde68a" stroke="#d97706" stroke-width="2"/>
+      <circle cx="90" cy="34" r="6" fill="#fde68a" stroke="#d97706" stroke-width="2"/>
+      <circle cx="50" cy="55" r="6" fill="#ef4444" stroke="#7f1d1d" stroke-width="1.5"/>
     </g>
   </symbol>
 </svg>
@@ -137,6 +161,7 @@
 <section class="daily-drink-section" id="dailyDrinkSection">
   <div class="daily-drink-card" id="dailyDrinkCard">
     <div class="dd-tag"><i class="fa-solid fa-calendar-day"></i> Напиток дня</div>
+    <div class="dd-countdown" id="ddCountdown"><i class="fa-solid fa-clock"></i> <span id="ddCountdownText"></span></div>
     <div class="dd-content">
       <div class="dd-image-wrap"><img id="ddImage" src="" alt="Напиток дня" loading="lazy"></div>
       <div class="dd-info">
@@ -169,6 +194,10 @@
     <button class="filter-btn" data-filter="low">Ниже 6</button>
     <button class="filter-btn" data-filter="fav"><i class="fa-solid fa-heart" style="font-size:11px;margin-right:4px;"></i> Избранное</button>
     <div class="brand-filter-wrap">
+      <button class="filter-btn brand-toggle" id="volumeToggle">Объём <i class="fa-solid fa-chevron-down"></i></button>
+      <div class="brand-dropdown" id="volumeDropdown"></div>
+    </div>
+    <div class="brand-filter-wrap">
       <button class="filter-btn brand-toggle" id="brandToggle">Марка <i class="fa-solid fa-chevron-down"></i></button>
       <div class="brand-dropdown" id="brandDropdown"></div>
     </div>
@@ -184,6 +213,7 @@
     <input type="text" id="drinkSearch" placeholder="Поиск по названию..." autocomplete="off">
     <button id="clearSearch" class="clear-search" aria-label="Очистить"><i class="fa-solid fa-xmark"></i></button>
   </div>
+  <div class="results-counter" id="resultsCounter"></div>
   <div class="cards-grid" id="cardsGrid"></div>
 </section>
 
@@ -224,6 +254,10 @@
         <p id="detailsFlavor" class="details-flavor"></p>
         <div class="details-stats-grid" id="detailsStatsGrid"></div>
         <div class="details-extra-info" id="detailsExtraInfo"></div>
+        <div class="details-caffeine-progress" id="detailsCaffeineProgress">
+          <div class="dcp-label"><i class="fa-solid fa-bolt"></i> <span id="dcpText">0 / 400 мг сегодня</span></div>
+          <div class="dcp-bar-bg"><div class="dcp-bar-fill" id="dcpBarFill"></div></div>
+        </div>
         <div class="details-actions">
           <button class="details-action-btn" id="detailsFavBtn"><i class="fa-solid fa-heart"></i> В избранное</button>
           <button class="details-action-btn" id="detailsCompareBtn"><i class="fa-solid fa-code-compare"></i> Сравнить</button>
@@ -346,15 +380,18 @@
 </footer>
 
 <button class="scroll-top-btn" id="scrollTopBtn" aria-label="Наверх"><i class="fa-solid fa-arrow-up"></i></button>
-<div class="toast-container" id="toastContainer"></div>
+<div class="toast-container" id="toastContainer" role="status" aria-live="polite" aria-atomic="true"></div>
 
 <!-- Модалка "Предложить напиток" -->
 <div class="suggest-modal-backdrop" id="suggestModal">
   <div class="suggest-modal">
     <h2>Предложить напиток</h2>
     <p>Пришли название напитка, который хочешь увидеть в обзоре</p>
-    <input type="text" class="suggest-input" id="drinkName" placeholder="Название энергетика...">
-    <textarea class="suggest-input suggest-textarea" id="drinkComment" placeholder="Почему его стоит обзять? (необязательно)"></textarea>
+    <input type="text" class="suggest-input" id="drinkName" placeholder="Название энергетика..." maxlength="80">
+    <div class="suggest-counter" id="drinkNameCounter">0 / 80</div>
+    <textarea class="suggest-input suggest-textarea" id="drinkComment" placeholder="Почему его стоит обзять? (необязательно)" maxlength="300"></textarea>
+    <div class="suggest-counter" id="drinkCommentCounter">0 / 300</div>
+    <input type="text" id="drinkWebsite" name="website" tabindex="-1" autocomplete="off" class="honeypot-field">
     <div class="suggest-actions">
       <button class="btn-cancel" id="closeSuggest">Отмена</button>
       <button class="btn-send" id="sendSuggest">Отправить</button>
@@ -409,7 +446,7 @@
       <div class="key-success-badge"><i class="fa-solid fa-trophy"></i></div>
       <p class="key-success-title">Поздравляю!</p>
       <p class="key-success-text">Ты первый нашёл его!</p>
-      <div class="key-tg-box"><i class="fa-brands fa-telegram"></i><span id="keyTgUser">@YOUR_TELEGRAM</span></div>
+      <div class="key-tg-box"><i class="fa-brands fa-telegram"></i><span id="keyTgUser">https://t.me/varna_23</span></div>
       <p class="key-success-hint">Сделай скриншот и отправь мне в Telegram</p>
     </div>
     <div class="suggest-actions" id="keyActions">
@@ -438,6 +475,7 @@
       <div id="calcText" class="calc-meter-text">0 мг / 400 мг</div>
       <div id="calcStatus" class="calc-meter-status">Система в ожидании...</div>
     </div>
+        <div class="calc-personal-note">Цифры — наши, выводы — твои. Просто знай свою норму — остальное на твой вкус.</div>
   </div>
 </div>
 
@@ -447,8 +485,8 @@
     <button class="custom-modal-close" id="closeCompare"><i class="fa-solid fa-xmark"></i></button>
     <h2 class="modal-title-accent">ПРОТОКОЛ СТОЛКНОВЕНИЯ</h2>
     <div id="compareContent" class="compare-content"></div>
-    <div class="compare-notice">
-      <span>⚠️ Внимание: Стоимость не учитывается, так как цена варьируется от магазина к магазину.</span>
+        <div class="compare-notice">
+      <span>⚠️ Цены в карточках напитков ориентировочные и могут отличаться в зависимости от магазина.</span>
     </div>
   </div>
 </div>
@@ -482,7 +520,21 @@
     <button class="custom-modal-close" id="closeProfile"><i class="fa-solid fa-xmark"></i></button>
     <div class="profile-stamp">СЕКРЕТНО</div>
     <h2 class="modal-title-accent profile-title">ДОСЬЕ АГЕНТА</h2>
+    <div class="auto-theme-row">
+      <span><i class="fa-solid fa-clock-rotate-left"></i> Авто-тема (день/ночь)</span>
+      <button class="auto-theme-toggle" id="autoThemeToggle" aria-label="Переключить авто-тему"></button>
+    </div>
     <div id="profileContent"></div>
+    <button class="diary-open-btn" id="diaryOpenBtn"><i class="fa-solid fa-book"></i> Дневник напитков</button>
+  </div>
+</div>
+
+<!-- Дневник напитков -->
+<div id="diaryModal" class="custom-modal">
+  <div class="custom-modal-inner diary-inner">
+    <button class="custom-modal-close" id="closeDiary"><i class="fa-solid fa-xmark"></i></button>
+    <h2 class="modal-title-accent">ДНЕВНИК НАПИТКОВ</h2>
+    <div id="diaryList" class="diary-list"></div>
   </div>
 </div>
 
