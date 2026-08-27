@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Buzz Rate — Честные обзоры энергетических напитков</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <meta name="description" content="Buzz Rate — честные обзоры энергетических напитков. Состав, вкус, рейтинг, эффект — без прикрас.">
+  <meta property="og:title" content="Buzz Rate — Обзоры энергетиков">
+  <meta property="og:description" content="Честные обзоры энергетических напитков. Состав, вкус, рейтинг, эффект — без прикрас.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#0a0a0f" id="themeColorMeta">
+
+  <!-- Preconnect для ускорения соединения с CDN -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- ===== ЗАГРУЗОЧНЫЙ ЭКРАН ===== -->
+<div class="preloader" id="preloader">
+  <div class="preloader-logo">
+    <svg viewBox="0 0 400 400" class="preloader-svg">
+      <defs>
+        <filter id="preloaderGlow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="b1"/>
+          <feMerge><feMergeNode in="b1"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <g filter="url(#preloaderGlow)">
+        <g stroke="#BFFF00" stroke-width="4" fill="none">
+          <rect x="160" y="90" width="80" height="50" rx="4" ry="4"/>
+          <rect x="240" y="105" width="12" height="20" rx="2" ry="2" fill="#BFFF00" stroke="none"/>
+          <polygon class="preloader-bolt" points="195,95 208,116 200,116 212,140 198,119 206,119" fill="#BFFF00" stroke="none"/>
+        </g>
+        <text x="200" y="210" font-family="Arial" font-size="48" font-weight="900" fill="#BFFF00" text-anchor="middle" letter-spacing="14">BUZZ</text>
+        <line x1="130" y1="225" x2="270" y2="225" stroke="#BFFF00" stroke-width="2" stroke-linecap="round"/>
+        <text x="200" y="268" font-family="Arial" font-size="48" font-weight="900" fill="#BFFF00" text-anchor="middle" letter-spacing="14">RATE</text>
+      </g>
+    </svg>
+  </div>
+  <div class="preloader-bar"><div class="preloader-bar-fill"></div></div>
+  <div class="preloader-text">ЗАГРУЗКА...</div>
+</div>
+
+<!-- ===== SVG Symbol: логотип BUZZ RATE (объявляем 1 раз) ===== -->
+<svg style="display:none" aria-hidden="true">
+  <symbol id="matrix-agent-silhouette" viewBox="0 0 100 160">
+    <path class="agent-body" d="M0,160 L0,110 Q0,68 50,68 Q100,68 100,110 L100,160 Z" />
+    <ellipse class="agent-body" cx="50" cy="42" rx="28" ry="34" />
+    <rect class="agent-eyes" x="27" y="38" width="46" height="7" rx="3.5" />
+  </symbol>
+  <symbol id="buzz-rate-logo" viewBox="0 0 400 400">
+    <rect class="logo-backdrop" x="85" y="65" width="230" height="220" rx="24" />
+    <defs>      <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur1"/>
+        <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur2"/>
+        <feMerge>
+          <feMergeNode in="blur1"/>
+          <feMergeNode in="blur2"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+    <g id="neon-group" filter="url(#neonGlow)">
+      <g stroke="#BFFF00" stroke-width="4" fill="none" stroke-linejoin="miter">
+        <rect class="battery-outline" x="160" y="90" width="80" height="50" rx="4" ry="4"/>
+        <rect x="240" y="105" width="12" height="20" rx="2" ry="2" fill="#BFFF00" stroke="none"/>
+        <polygon id="lightning" class="battery-bolt" points="195,95 208,116 200,116 212,140 198,119 206,119" fill="#BFFF00" stroke="none"/>
+      </g>
+            <text x="200" y="210" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="900" fill="#BFFF00" text-anchor="middle" letter-spacing="14">BUZZ</text>
+      <line x1="130" y1="225" x2="270" y2="225" stroke="#BFFF00" stroke-width="2" stroke-linecap="round"/>
+      <text x="200" y="268" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="900" fill="#BFFF00" text-anchor="middle" letter-spacing="14">RATE</text>
+    </g>
+  </symbol>
+
+    <symbol id="buzz-rate-logo-crowned" viewBox="0 0 400 400">
+    <rect class="logo-backdrop" x="85" y="65" width="230" height="220" rx="24" />
+    <g id="neon-group-crowned" filter="url(#neonGlow)">
+      <g stroke="#BFFF00" stroke-width="4" fill="none" stroke-linejoin="miter">
+        <rect class="battery-outline" x="160" y="90" width="80" height="50" rx="4" ry="4"/>
+        <rect x="240" y="105" width="12" height="20" rx="2" ry="2" fill="#BFFF00" stroke="none"/>
+        <polygon class="battery-bolt" points="195,95 208,116 200,116 212,140 198,119 206,119" fill="#BFFF00" stroke="none"/>
+      </g>
+      <text x="200" y="210" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="900" fill="#BFFF00" text-anchor="middle" letter-spacing="14">BUZZ</text>
+      <line x1="130" y1="225" x2="270" y2="225" stroke="#BFFF00" stroke-width="2" stroke-linecap="round"/>
+      <text x="200" y="268" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="900" fill="#BFFF00" text-anchor="middle" letter-spacing="14">RATE</text>
+    </g>
+     <g transform="translate(109,38) rotate(-45 50 45) scale(0.72)">
+      <rect x="10" y="62" width="80" height="14" rx="3" fill="#d97706"/>
+      <rect x="10" y="62" width="80" height="5" rx="2" fill="#fbbf24"/>
+      <path d="M10,62 L10,38 L28,52 L38,20 L50,42 L62,20 L72,52 L90,38 L90,62 Z" fill="#fbbf24" stroke="#d97706" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="10" cy="34" r="6" fill="#fde68a" stroke="#d97706" stroke-width="2"/>
+      <circle cx="50" cy="16" r="7" fill="#fde68a" stroke="#d97706" stroke-width="2"/>
+      <circle cx="90" cy="34" r="6" fill="#fde68a" stroke="#d97706" stroke-width="2"/>
+      <circle cx="50" cy="55" r="6" fill="#ef4444" stroke="#7f1d1d" stroke-width="1.5"/>
+    </g>
+  </symbol>
+</svg>
+
+<header>
+  <div class="header-content">
+    <a href="#" data-action="scroll-top" class="header-logo" aria-label="На главную">
+      <svg><use href="#buzz-rate-logo"/></svg>
+    </a>
+
+    <nav class="desktop-nav">
+      <ul>
+        <li><a href="#aboutBlock">Обо мне</a></li>
+        <li><a href="#energySection">Обзоры</a></li>
+        <li><a href="#comingSoonSection">Скоро</a></li>
+        <li><a href="#" data-action="open-calc"><i class="fa-solid fa-flask" style="margin-right:6px;font-size:0.9em;"></i>Калькулятор</a></li>
+      </ul>
+    </nav>
+
+    <button class="burger-btn" id="burgerBtn" aria-label="Открыть меню">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- Плавающие кнопки темы и звука -->
+<button class="theme-toggle" id="themeToggle" aria-label="Сменить тему"><i class="fa-solid fa-moon"></i></button>
+<button class="sound-toggle" id="soundToggle" aria-label="Выключить звук"><i class="fa-solid fa-volume-high"></i></button>
+
+<main id="mainContent">
+<!-- visually-hidden for h1 -->
+<style>.visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}</style>
+
+<!-- Герой-секция -->
+<section class="hero-wrap">
+  <div class="container">
+    <div class="text-part"><h1 class="visually-hidden">Buzz Rate — Честные обзоры энергетических напитков</h1><span id="typewriter" class="cursor"></span></div>
+    <div class="image-part" id="userPhoto"><img src="images/me-1.jpg" alt="Фото Сударя" decoding="async" fetchpriority="high"></div>
+  </div>
+</section>
+
+<!-- Обо мне -->
+<section class="about-wrap">
+  <section class="about-section" id="aboutBlock">
+    <div class="about-image"><img src="images/me-2.webp" alt="Обо мне" decoding="async" fetchpriority="high"></div>
+    <div class="about-text-card">
+      <h2>Обо мне</h2>
+      <p><span id="about-typewriter" class="cursor-about"></span></p>
+      <p id="coronationCongrats" class="coronation-congrats">
+        <i class="fa-solid fa-crown"></i> Вы разблокировали 10+ достижений и получили королевский статус на Buzz Rate — таких немного. Спасибо, что копаетесь в сайте так глубоко.
+      </p>
+    </div>
+  </section>
+</section>
+
+
+<!-- НАПИТОК ДНЯ -->
+<section class="daily-drink-section" id="dailyDrinkSection">
+  <div class="daily-drink-card" id="dailyDrinkCard">
+    <div class="dd-tag"><i class="fa-solid fa-calendar-day"></i> Напиток дня</div>
+    <div class="dd-countdown" id="ddCountdown"><i class="fa-solid fa-clock"></i> <span id="ddCountdownText"></span></div>
+    <div class="dd-content">
+      <div class="dd-image-wrap"><img id="ddImage" src="" alt="Напиток дня" loading="lazy"></div>
+      <div class="dd-info">
+        <h3 id="ddBrand"></h3>
+        <p id="ddFlavor"></p>
+        <div class="dd-stats">
+          <span><i class="fa-solid fa-bolt"></i> <span id="ddCaffeine"></span></span>
+          <span><i class="fa-solid fa-star"></i> <span id="ddRating"></span>/10</span>
+        </div>
+        <button class="dd-btn" id="ddBtn"><i class="fa-solid fa-eye"></i> Подробнее</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Обзоры -->
+<section class="energy-section" id="energySection" aria-label="Обзоры энергетиков">
+  <div class="noise-overlay"></div>
+  <canvas id="particleCanvas"></canvas>
+  <header class="section-header">
+    <div class="section-tag"><i class="fa-solid fa-bolt"></i> Топ обзоры</div>
+    <h2 class="section-title">Лучшие Напитки</h2>
+    <p class="section-subtitle">Честные рейтинги, состав и вкусовые впечатления</p>
+  </header>
+  <div class="filters-wrap">
+    <button class="filter-btn active" data-filter="all">Все</button>
+    <button class="filter-btn" data-filter="high">8 — 10</button>
+    <button class="filter-btn" data-filter="mid">6 — 7</button>
+    <button class="filter-btn" data-filter="low">Ниже 6</button>
+    <button class="filter-btn" data-filter="fav"><i class="fa-solid fa-heart" style="font-size:11px;margin-right:4px;"></i> Избранное</button>
+    <div class="brand-filter-wrap">
+      <button class="filter-btn brand-toggle" id="volumeToggle">Объём <i class="fa-solid fa-chevron-down"></i></button>
+      <div class="brand-dropdown" id="volumeDropdown"></div>
+    </div>
+    <div class="brand-filter-wrap">
+      <button class="filter-btn brand-toggle" id="brandToggle">Марка <i class="fa-solid fa-chevron-down"></i></button>
+      <div class="brand-dropdown" id="brandDropdown"></div>
+    </div>
+    <div class="brand-filter-wrap">
+      <button class="filter-btn brand-toggle" id="sortToggle">Сортировка <i class="fa-solid fa-chevron-down"></i></button>
+      <div class="brand-dropdown" id="sortDropdown"></div>
+    </div>
+    <button class="filter-btn" id="randomBtn"><i class="fa-solid fa-dice"></i> Случайный Напиток</button>
+  </div>
+  <!-- ПОИСК -->
+  <div class="search-wrap">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="text" id="drinkSearch" placeholder="Поиск по названию..." autocomplete="off">
+    <button id="clearSearch" class="clear-search" aria-label="Очистить"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="results-counter" id="resultsCounter"></div>
+  <div class="cards-grid" id="cardsGrid"></div>
+</section>
+
+<!-- ТОП-10 -->
+<section class="top10-section" id="top10Section">
+  <header class="section-header">
+    <div class="section-tag"><i class="fa-solid fa-trophy"></i> Топ-10</div>
+    <h2 class="section-title">Лучшие из лучших</h2>
+    <p class="section-subtitle">Самые высокооценённые напитки по версии Buzz Rate</p>
+  </header>
+  <div class="top10-list" id="top10List"></div>
+</section>
+
+<!-- СТАТИСТИКА -->
+<section class="stats-section" id="statsSection">
+  <header class="section-header">
+    <div class="section-tag"><i class="fa-solid fa-chart-column"></i> Статистика</div>
+    <h2 class="section-title">Цифры по брендам</h2>
+    <p class="section-subtitle">Средние рейтинги и характеристики</p>
+  </header>
+  <div class="stats-grid" id="statsGrid"></div>
+</section>
+
+<!-- МОДАЛКА ДЕТАЛЕЙ НАПИТКА -->
+<div id="drinkDetailsModal" class="custom-modal">
+  <div class="custom-modal-inner details-inner">
+    <button class="custom-modal-close" id="closeDetails"><i class="fa-solid fa-xmark"></i></button>
+    <div class="details-layout">
+      <div class="details-image-wrap">
+        <img id="detailsImage" src="" alt="">
+        <div class="details-rating-big" id="detailsRating"></div>
+      </div>
+      <div class="details-info">
+        <div class="details-brand-row">
+          <h2 id="detailsBrand"></h2>
+          <button class="details-tag-brand" id="detailsTagBrand"></button>
+        </div>
+        <p id="detailsFlavor" class="details-flavor"></p>
+        <div class="details-stats-grid" id="detailsStatsGrid"></div>
+        <div class="details-extra-info" id="detailsExtraInfo"></div>
+        <div class="details-caffeine-progress" id="detailsCaffeineProgress">
+          <div class="dcp-label"><i class="fa-solid fa-bolt"></i> <span id="dcpText">0 / 400 мг сегодня</span></div>
+          <div class="dcp-bar-bg"><div class="dcp-bar-fill" id="dcpBarFill"></div></div>
+        </div>
+        <div class="details-actions">
+          <button class="details-action-btn" id="detailsFavBtn"><i class="fa-solid fa-heart"></i> В избранное</button>
+          <button class="details-action-btn" id="detailsCompareBtn"><i class="fa-solid fa-code-compare"></i> Сравнить</button>
+          <button class="details-action-btn" id="detailsShareBtn"><i class="fa-solid fa-share-nodes"></i> Поделиться</button>
+          <button class="details-action-btn details-video-btn" id="detailsVideoBtn"><i class="fa-brands fa-tiktok"></i> Обзор</button>
+          <button class="details-action-btn details-drank-btn" id="detailsDrankBtn"><i class="fa-solid fa-mug-hot"></i> Я выпил</button>
+        </div>
+        <div class="details-history" id="detailsHistory" style="display:none;">
+          <h4><i class="fa-solid fa-clock-rotate-left"></i> Недавно просмотренные</h4>
+          <div class="history-list" id="historyList"></div>
+        </div>
+        <div class="details-similar" id="detailsSimilar">
+          <h4><i class="fa-solid fa-link"></i> Похожие напитки</h4>
+          <div class="similar-list" id="similarList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Скоро -->
+<section class="coming-soon-section" id="comingSoonSection">
+  <div class="coming-soon-header">
+    <h2>Скоро в обзоре</h2>
+    <p>Уже тестируем эти напитки</p>
+  </div>
+  <div class="coming-grid">
+    <div class="coming-card">
+      <img src="https://picsum.photos/seed/energy-cola/200/280.jpg" alt="Скоро" loading="lazy" decoding="async">
+      <div class="coming-overlay">
+        <i class="fa-solid fa-lock"></i><span>Скоро</span>
+        <div class="hack-progress-wrap"><div class="hack-progress-bar"></div></div>
+        <div class="hack-status"></div>
+      </div>
+    </div>
+    <div class="coming-card">
+      <img src="https://picsum.photos/seed/guardian-drink/200/280.jpg" alt="Скоро" loading="lazy" decoding="async">
+      <div class="coming-overlay">
+        <i class="fa-solid fa-lock"></i><span>Скоро</span>
+        <div class="hack-progress-wrap"><div class="hack-progress-bar"></div></div>
+        <div class="hack-status"></div>
+      </div>
+    </div>
+    <div class="coming-card">
+      <img src="https://picsum.photos/seed/flash-energy/200/280.jpg" alt="Скоро" loading="lazy" decoding="async">
+      <div class="coming-overlay">
+        <i class="fa-solid fa-lock"></i><span>Скоро</span>
+        <div class="hack-progress-wrap"><div class="hack-progress-bar"></div></div>
+        <div class="hack-status"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Карта -->
+<section class="map-section" id="mapSection">
+  <header class="section-header">
+    <div class="section-tag"><i class="fa-solid fa-map-location-dot"></i> Где купить</div>
+    <h2 class="section-title">Карта покупок</h2>
+    <p class="section-subtitle">Отмеченные точки — магазины, где мы брали напитки для обзоров</p>
+  </header>
+  <div class="filters-wrap" style="margin-bottom: 30px;">
+    <div class="brand-filter-wrap">
+      <button class="filter-btn brand-toggle" id="mapBrandToggle">Фильтр по марке <i class="fa-solid fa-chevron-down"></i></button>
+      <div class="brand-dropdown" id="mapBrandDropdown"></div>
+    </div>
+  </div>
+  <div class="map-wrapper">
+    <div id="mapContainer" class="map-container"></div>
+  </div>
+  <div class="map-disclaimer">
+    <i class="fa-solid fa-circle-info"></i>
+    <p>Мы брали энергетики в этих точках, но <strong>не отвечаем за их текущее наличие</strong> в магазине. Ассортимент может измениться.</p>
+  </div>
+</section>
+
+</main>
+
+<!-- Мобильное меню -->
+<div class="mobile-menu-overlay" id="mobileOverlay"></div>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Закрыть"><i class="fa-solid fa-xmark"></i></button>
+  <div class="mobile-menu-links">
+    <a href="#aboutBlock" class="mobile-link-btn about-mob"><i class="fa-solid fa-user"></i> Обо мне</a>
+    <a href="#energySection" class="mobile-link-btn reviews-mob"><i class="fa-solid fa-bolt"></i> Обзоры</a>
+    <a href="#comingSoonSection" class="mobile-link-btn soon-mob"><i class="fa-solid fa-clock"></i> Скоро</a>
+    <a href="#" class="mobile-link-btn" data-action="open-calc"><i class="fa-solid fa-flask" style="color: #fbbf24;"></i> Калькулятор</a>
+    <a href="#mapSection" class="mobile-link-btn places-mob"><i class="fa-solid fa-location-dot"></i> Места</a>
+    <a href="#" class="mobile-link-btn key-mob" id="openKeyModal"><i class="fa-solid fa-key"></i> Ключ</a>
+    <div class="menu-divider"></div>
+    <a href="https://tiktok.com/@varna.23.live" target="_blank" rel="noopener" class="mobile-link-btn tiktok-mob"><i class="fa-brands fa-tiktok"></i> Мой TikTok</a>
+    <a href="https://t.me/varna_23" target="_blank" rel="noopener" class="mobile-link-btn telegram-mob"><i class="fa-brands fa-telegram"></i> Telegram</a>
+  </div>
+</div>
+
+<!-- Футер -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-logo-wrap">
+      <svg class="footer-logo-svg"><use href="#buzz-rate-logo"/></svg>
+    </div>
+    <div class="footer-tagline">
+      <p>Честные обзоры энергетических напитков.<br>Состав, вкус, эффект — без прикрас.</p>
+    </div>
+    <div class="footer-nav">
+      <a href="#aboutBlock">Обо мне</a>
+      <span class="footer-dot"></span>
+      <a href="#energySection">Обзоры</a>
+      <span class="footer-dot"></span>
+      <a href="#comingSoonSection">Скоро</a>
+    </div>
+    <div class="menu-divider"></div>
+    <div class="footer-actions">
+      <button class="btn-suggest" id="openSuggest"><i class="fa-solid fa-paper-plane"></i> Предложить напиток</button>
+      <button class="btn-key-footer" id="openKeyModalDesktop"><i class="fa-solid fa-key"></i> Ввести код</button>
+      <a href="https://tiktok.com/@varna.23.live" target="_blank" rel="noopener" class="btn-tiktok" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+    </div>
+    <div class="footer-copy"><span>© 2026 Buzz Rate. Все права защищены.</span></div>
+  </div>
+</footer>
+
+<button class="scroll-top-btn" id="scrollTopBtn" aria-label="Наверх"><i class="fa-solid fa-arrow-up"></i></button>
+<div class="toast-container" id="toastContainer" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<!-- Модалка "Предложить напиток" -->
+<div class="suggest-modal-backdrop" id="suggestModal">
+  <div class="suggest-modal">
+    <h2>Предложить напиток</h2>
+    <p>Пришли название напитка, который хочешь увидеть в обзоре</p>
+    <input type="text" class="suggest-input" id="drinkName" placeholder="Название энергетика..." maxlength="80">
+    <div class="suggest-counter" id="drinkNameCounter">0 / 80</div>
+    <textarea class="suggest-input suggest-textarea" id="drinkComment" placeholder="Почему его стоит обзять? (необязательно)" maxlength="300"></textarea>
+    <div class="suggest-counter" id="drinkCommentCounter">0 / 300</div>
+    <input type="text" id="drinkWebsite" name="website" tabindex="-1" autocomplete="off" class="honeypot-field">
+    <div class="suggest-actions">
+      <button class="btn-cancel" id="closeSuggest">Отмена</button>
+      <button class="btn-send" id="sendSuggest">Отправить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модалка видео -->
+<div class="video-modal-backdrop" id="videoModal">
+  <div class="matrix-agent matrix-agent-left" aria-hidden="true">
+    <svg viewBox="0 0 100 160"><use href="#matrix-agent-silhouette"/></svg>
+  </div>
+  <div class="matrix-agent matrix-agent-right" aria-hidden="true">
+    <svg viewBox="0 0 100 160"><use href="#matrix-agent-silhouette"/></svg>
+  </div>
+  <div class="video-modal" id="videoModalInner">
+    <div class="modal-top">
+      <div class="modal-top-left">
+        <div class="modal-brand-pill">
+          <div class="modal-brand-dot" id="modalDot">M</div>
+          <div class="modal-brand-label" id="modalLabel">Monster</div>
+        </div>
+      </div>
+      <button class="modal-close-btn" id="modalClose" aria-label="Закрыть"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-video-area" id="modalVideoWrap">
+      <div class="modal-video-placeholder" id="modalPlaceholder"><div class="spinner"></div><span>Загрузка обзора...</span></div>
+      <div class="modal-progress-wrap"><div class="modal-progress-bar" id="modalProgress"></div></div>
+    </div>
+    <div class="modal-bottom">
+      <div class="modal-bottom-info">
+        <div class="modal-bottom-flavor" id="modalFlavor">Original</div>
+        <div class="modal-bottom-rating" id="modalRatingText">Рейтинг: <strong>8/10</strong></div>
+      </div>
+      <div class="modal-bottom-actions">
+        <button class="modal-action-btn tiktok-btn" id="modalTiktokBtn" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Модалка ключа -->
+<div class="key-modal-backdrop" id="keyModal">
+  <div class="key-modal">
+    <div class="key-modal-icon"><i class="fa-solid fa-key"></i></div>
+    <h2>Секретный ключ</h2>
+    <p>Если ты нашёл код — введи его сюда</p>
+    <input type="text" class="suggest-input" id="keyInput" placeholder="Введи код..." autocomplete="off" spellcheck="false">
+    <div id="keyError" class="key-error"></div>
+    <div id="keySuccess" class="key-success" style="display:none;">
+      <div class="key-success-badge"><i class="fa-solid fa-trophy"></i></div>
+      <p class="key-success-title">Поздравляю!</p>
+      <p class="key-success-text">Ты первый нашёл его!</p>
+      <div class="key-tg-box"><i class="fa-brands fa-telegram"></i><span id="keyTgUser">https://t.me/varna_23</span></div>
+      <p class="key-success-hint">Сделай скриншот и отправь мне в Telegram</p>
+    </div>
+    <div class="suggest-actions" id="keyActions">
+      <button class="btn-cancel" id="closeKeyModal">Отмена</button>
+      <button class="btn-send" id="submitKey">Активировать</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модалка калькулятора -->
+<div id="calcModal" class="custom-modal">
+  <div class="custom-modal-inner calc-inner">
+    <button class="custom-modal-close" id="closeCalc"><i class="fa-solid fa-xmark"></i></button>
+    <h2 class="modal-title-accent">СИСТЕМНЫЙ МОНИТОР: КАФЕИН</h2>
+    <div class="calc-search-row">
+      <div class="calc-search-wrap">
+        <input type="text" id="calcSearch" placeholder="Введи название..." autocomplete="off">
+        <div id="calcDropdown" class="calc-dropdown"></div>
+      </div>
+      <button id="addCalcBtn" class="calc-add-btn">+</button>
+    </div>
+    <div id="calcList" class="calc-list"></div>
+    <div class="calc-meter">
+      <div class="calc-meter-label">УРОВЕНЬ ЗАГРУЗКИ</div>
+      <div class="calc-meter-bar-bg"><div id="calcBar" class="calc-meter-bar-fill"></div></div>
+      <div id="calcText" class="calc-meter-text">0 мг / 400 мг</div>
+      <div id="calcStatus" class="calc-meter-status">Система в ожидании...</div>
+    </div>
+        <div class="calc-personal-note">Цифры — наши, выводы — твои. Просто знай свою норму — остальное на твой вкус.</div>
+  </div>
+</div>
+
+<!-- Модалка сравнения -->
+<div id="compareModal" class="custom-modal">
+  <div class="custom-modal-inner compare-inner">
+    <button class="custom-modal-close" id="closeCompare"><i class="fa-solid fa-xmark"></i></button>
+    <h2 class="modal-title-accent">ПРОТОКОЛ СТОЛКНОВЕНИЯ</h2>
+    <div id="compareContent" class="compare-content"></div>
+        <div class="compare-notice">
+      <span>⚠️ Цены в карточках напитков ориентировочные и могут отличаться в зависимости от магазина.</span>
+    </div>
+  </div>
+</div>
+
+<!-- Плавающая кнопка сравнения -->
+<button id="compareFloatBtn" class="compare-float-btn">
+  <i class="fa-solid fa-code-compare"></i> Сравнить (0/2)
+</button>
+
+<!-- Терминал -->
+<div id="terminalOverlay" class="terminal-overlay">
+  <div class="custom-modal-inner terminal-window">
+    <div class="terminal-header">
+      <span>BUZZ_RATE://TERMINAL_V.2.0</span>
+      <button class="custom-modal-close" id="closeTerminal"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="terminal-body" id="terminalOutput">
+      <div style="color: var(--accent);">Инициализация протокола... <span style="color:#fff;">OK</span></div>
+      <div>Введите <span style="color:#fbbf24;">help</span> для списка команд.</div>
+    </div>
+    <div class="terminal-input-wrap">
+      <span class="terminal-prompt">&gt;&nbsp;</span>
+      <input type="text" id="terminalInput" autocomplete="off" spellcheck="false">
+    </div>
+  </div>
+</div>
+
+<!-- Досье агента -->
+<div id="profileModal" class="custom-modal">
+  <div class="custom-modal-inner profile-window">
+    <button class="custom-modal-close" id="closeProfile"><i class="fa-solid fa-xmark"></i></button>
+    <div class="profile-stamp">СЕКРЕТНО</div>
+    <h2 class="modal-title-accent profile-title">ДОСЬЕ АГЕНТА</h2>
+    <div class="auto-theme-row">
+      <span><i class="fa-solid fa-clock-rotate-left"></i> Авто-тема (день/ночь)</span>
+      <button class="auto-theme-toggle" id="autoThemeToggle" aria-label="Переключить авто-тему"></button>
+    </div>
+    <div id="profileContent"></div>
+    <button class="diary-open-btn" id="diaryOpenBtn"><i class="fa-solid fa-book"></i> Дневник напитков</button>
+  </div>
+</div>
+
+<!-- Дневник напитков -->
+<div id="diaryModal" class="custom-modal">
+  <div class="custom-modal-inner diary-inner">
+    <button class="custom-modal-close" id="closeDiary"><i class="fa-solid fa-xmark"></i></button>
+    <h2 class="modal-title-accent">ДНЕВНИК НАПИТКОВ</h2>
+    <div id="diaryList" class="diary-list"></div>
+  </div>
+</div>
+
+<!-- GoatCounter — аналитика посещений -->
+<script data-goatcounter="https://buzzrate.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+
+<!-- script.js с defer — НЕ блокирует рендер -->
+<script src="script.js" defer></script>
+</body>
+</html>
