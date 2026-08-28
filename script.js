@@ -435,6 +435,8 @@ const drinks = [
 
  { brand: "Monster Energy - Ultra Wild Passion", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra_wild_passion.webp", caffeine: "150 мг", sugar: "0 г", cal: "10 kcal", ph: "3.5", video: "7671963390838918422",taste:" Яркий, сочный и тропический вкус спелой маракуйи (passionfruit) с легким цитрусовым акцентом. Он имеет идеальный баланс кислого и сладкого. Несмотря на полное отсутствие сахара, этот вкус отлично скрывает подсластители, пьется легко, приятно освежает и напоминает легкий летний коктейль из тропических фруктов. Его часто сравнивают по легкости с классическим белым Ultra White, но с насыщенным ароматом маракуйи.", price:"3,50 €" },
 
+{ brand: "Monster Energy - Juice Voodoo Grape", key: "monster", flavor: "473 мл", rating: 8, img: "images/juice_voodoo.webp", caffeine: "160 мг", sugar: "36 г", cal: "150 kcal", ph: "2.7", video: "7678420816043822358",taste:"Плотный, насыщенный и десертный вкус темного винограда с глубоким фруктовым профилем. Напиток имеет тяжелую соковую текстуру с преобладанием экстремальной сладости, которую на финише пытается уравновесить резкая ягодная кислинка. Несмотря на высокую плотность, он пьется как газированный нектар, оставляя долгое и приторное послевкусие, напоминающее виноградный Чупа-Чупс или жевательную резинку. Его часто сравнивают по вкусовому направлению с Ultra Violet, но за счет добавления натурального сока Voodoo Grape гораздо гуще, слаще и имеет специфический аптечный оттенок американского сиропа от кашля.", price:"3,50 €" },
+
  { brand: "Monster Energy - The Doctor VR46", key: "monster", flavor: "500 мл", rating: 8, img: "images/vr-46.webp", caffeine: "160 мг", sugar: "52 г", cal: "219 kcal", ph: "3", video: "7674675530762816790", taste:" Максимально свежий, искрящийся и бодрящий вкус спелых цитрусовых с акцентом на лимон, апельсин и легкую мандариновую сладость. Он абсолютно не похож на классические «химические» энергетики, пьется легко, обладает умеренной газацией и оставляет приятную кислинку.",price:" 2,65 €" },
   
  { brand: "Monster Energy - Juiced Aussie Style Lemonade", key: "monster", flavor: "500 мл", rating: 5, img: "images/juced-juce.webp", caffeine: "160 мг", sugar: "49 г", cal: "211 kcal", ph: "3.4", video: "7598063208871628054", taste:"Это идеальная интерпретация классического домашнего лимонада. В отличие от обычных химозных лимонных газировок, здесь используется концентрат сока спелых австралийских цитрусов. Вкус имеет идеальный баланс: он одновременно сладкий, интенсивно-кислый, очень сочный и освежающий. Напоминает натуральный лимонад со льдом, который сбивает любую жажду.",price:"2,35 €" },
@@ -1493,7 +1495,7 @@ if (suggestModal) {
   suggestModal.addEventListener('click', e => { if(e.target === suggestModal) suggestModal.classList.remove('open'); });
 }
 if (sendSuggestBtn && drinkNameInput && drinkCommentInput) {
-  const SUGGEST_WORKER_URL = 'buzzrate-suggest.tleorg827.workers.dev'; 
+const SUGGEST_WORKER_URL = 'https://buzzrate-suggest.tleorg827.workers.dev';
 // подставь свой адрес воркера
   const nameCounter = document.getElementById('drinkNameCounter');
   const commentCounter = document.getElementById('drinkCommentCounter');
@@ -1854,10 +1856,10 @@ function initMap() {
   });
 
   // Инициализация карты
-  map = L.map('mapContainer', { zoomControl: false }).setView([43.2070, 27.9120], 13);
+  map = L.map('mapContainer', { zoomControl: false, minZoom: 11, maxZoom: 17 }).setView([43.2070, 27.9120], 13);
   L.control.zoom({ position: 'bottomright' }).addTo(map);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors', maxZoom: 17, minZoom: 11, subdomains: ['a', 'b', 'c']
   }).addTo(map);
 
   // Создаем метки
@@ -1889,6 +1891,20 @@ function initMap() {
 
   initMapFilter();
   if (typeof matrixActive !== 'undefined' && matrixActive) applyMatrixMapEffect();
+
+  // Пересчитываем размеры контейнера после первой отрисовки —
+  // иначе Leaflet может неправильно считать центр при зуме
+  setTimeout(() => { if (map) map.invalidateSize(); }, 300);
+
+  const mapSection = document.getElementById('mapContainer')?.closest('section') || document.getElementById('mapContainer');
+  if (mapSection && 'IntersectionObserver' in window) {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && map) map.invalidateSize();
+      });
+    }, { threshold: 0.1 });
+    obs.observe(mapSection);
+  }
 }
 
 function applyMatrixMapEffect() {
@@ -2308,10 +2324,14 @@ document.addEventListener('DOMContentLoaded', () => { if (typeof updateThemeColo
     if (typeof unlockAchievement !== 'undefined') unlockAchievement(achId);
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', trackTimeVisit);
+  function scheduleTimeVisit() {
+    setTimeout(trackTimeVisit, 1500);
+  }
+
+  if (document.readyState === 'complete') {
+    scheduleTimeVisit();
   } else {
-    trackTimeVisit();
+    window.addEventListener('load', scheduleTimeVisit);
   }
 })();
 

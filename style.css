@@ -1500,8 +1500,9 @@ body.light-theme .map-container {
   background: #fbe9d7;
 }
 body.light-theme .leaflet-tile-pane {
-  filter: invert(92%) hue-rotate(180deg) brightness(1.05) contrast(0.9) saturate(0.7);
+  filter: none;
 }
+
 body.light-theme .leaflet-popup-content-wrapper {
   background: #fffaf3 !important;
   color: #4a2f22 !important;
@@ -1531,7 +1532,7 @@ body.light-theme .battery-bolt {
 body.light-theme .logo-backdrop { fill: rgba(60, 40, 20, 0.55); }
 /* Меняем провайдера карты на более светлый и контрастный */
 .leaflet-tile-pane { 
-  filter: brightness(0.95) contrast(1.1); /* Чуть-чуть подсвечиваем, чтобы улицы были видны */
+  filter: invert(90%) hue-rotate(180deg) brightness(0.95) contrast(0.9);
 }
 
 /* Стилизация всплывающих окон */
@@ -2381,7 +2382,6 @@ body.light-theme .calc-meter-text {
 .tier-gold i, .tier-gold span { color: #fbbf24 !important; }
 .tier-diamond i, .tier-diamond span { color: #b9f2ff !important; text-shadow: 0 0 10px rgba(185,242,255,0.5); }
 .tier-purple i, .tier-purple span { color: #c084fc !important; text-shadow: 0 0 10px rgba(192,132,252,0.5); }
-.tier-diamond.unlocked { }
 
 /* Обновляем рамку под цвет */
 .tier-bronze.unlocked { border-color: rgba(205, 127, 50, 0.3); background: rgba(205, 127, 50, 0.05); }
