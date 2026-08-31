@@ -694,6 +694,7 @@ body {
   box-shadow: 0 20px 40px rgba(0,0,0,0.5);
   opacity: 0; visibility: hidden; transform: translateY(-10px);
   transition: all 0.3s ease; z-index: 100;
+  max-width: calc(100vw - 32px);
 }
 .brand-dropdown.open { opacity: 1; visibility: visible; transform: translateY(0); }
 .brand-option {
@@ -1092,6 +1093,25 @@ nav a:hover {
     transform: translateX(140%) rotate(8deg);
   }
 }
+@media (max-width: 560px) {
+  .brand-filter-wrap {
+    position: static;
+  }
+  .brand-dropdown {
+    position: fixed;
+    left: 50%;
+    right: auto;
+    top: 50%;
+    transform: translate(-50%, -45%);
+    width: calc(100vw - 32px);
+    max-width: 340px;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+  .brand-dropdown.open {
+    transform: translate(-50%, -50%);
+  }
+}
 /*Адаптив*/
 /* ==========================================
    МОБИЛЬНАЯ ВЕРСТКА (ТЕЛЕФОНЫ)
@@ -1485,7 +1505,8 @@ nav a:hover {
 .places-mob i { color: var(--accent); }
 .tiktok-mob i { color: #ff0050; }
 .telegram-mob i { color: #29a9eb; }
-
+.mobile-link-btn.latest-mob i { color: #22d3ee !important; }
+.coffee-mob i { color: #a86f4c; }
 /* === МАГИЯ УМЕНЬШЕНИЯ ЯРКОСТИ === */
 .mobile-link-btn i {
   /* 1. Уменьшаем непрозрачность до 60% */

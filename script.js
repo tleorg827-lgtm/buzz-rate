@@ -1012,7 +1012,7 @@ function createCard(drink) {
   const isNewDrink = drinks.indexOf(drink) >= drinks.length - 5;
   card.innerHTML = `
     <div class="card-strip"></div><div class="card-glare"></div>
-    ${drink.badge ? `<div class="card-badge"><i class="fa-solid fa-fire"></i> ${t('card_hit_badge')}</div>` : (isNewDrink ? `<div class="card-badge card-badge-new"><i class="fa-solid fa-sparkles"></i> ${t('card_new_badge')}</div>` : '')}
+    ${drink.badge ? `<div class="card-badge"><i class="fa-solid fa-fire"></i> ${t('card_hit_badge')}</div>` : (isNewDrink ? `<div class="card-badge card-badge-new"><i class="fa-solid fa-star"></i> ${t('card_new_badge')}</div>` : '')}
     <button class="fav-btn ${isFav ? 'active' : ''}" aria-label="В избранное">
       <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
     </button>
