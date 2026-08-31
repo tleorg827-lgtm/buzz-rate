@@ -4,6 +4,220 @@
 history.scrollRestoration = 'manual';
 window.scrollTo(0, 0);
 // ==========================================
+// I18N: ДВИЖОК ПЕРЕВОДА (RU / EN)
+// ==========================================
+const I18N = {
+  ru: {
+    nav_about: 'Обо мне', nav_reviews: 'Обзоры', nav_latest: 'Новинки', nav_soon: 'Скоро', nav_calc: 'Калькулятор', nav_places: 'Места', nav_key: 'Ключ',
+    section_reviews_tag: 'Топ обзоры', section_reviews_title: 'Лучшие Напитки', section_reviews_sub: 'Честные рейтинги, состав и вкусовые впечатления',
+    filter_all: 'Все', filter_high: '8 — 10', filter_mid: '6 — 7', filter_low: 'Ниже 6', filter_fav: 'Избранное',
+    toggle_volume: 'Объём', toggle_caffeine: 'Кофеин', toggle_brand: 'Марка', toggle_sort: 'Сортировка',
+    btn_random: 'Случайный Напиток', btn_reset_filters: 'Сброс фильтров',
+    search_placeholder: 'Поиск по названию...',
+    section_latest_tag: 'Новинки', section_latest_title: 'Последние обзоры', section_latest_sub: 'Свежедобавленные напитки — самые новые сверху',
+    section_top10_tag: 'Топ-10', section_top10_title: 'Лучшие из лучших', section_top10_sub: 'Самые высокооценённые напитки по версии Buzz Rate',
+    section_stats_tag: 'Статистика', section_stats_title: 'Цифры по брендам', section_stats_sub: 'Средние рейтинги и характеристики',
+    section_soon_title: 'Скоро в обзоре', section_soon_sub: 'Уже тестируем эти напитки',
+    section_map_tag: 'Где купить', section_map_title: 'Карта покупок', section_map_sub: 'Отмеченные точки — магазины, где мы брали напитки для обзоров',
+    map_filter_brand: 'Фильтр по марке',
+    footer_tagline: 'Честные обзоры энергетических напитков.<br>Состав, вкус, эффект — без прикрас.',
+    btn_suggest: 'Предложить напиток', btn_key_footer: 'Ввести код', footer_copy: '© 2026 Buzz Rate. Все права защищены.',
+    details_fav: 'В избранное', details_compare: 'Сравнить', details_share: 'Поделиться', details_video: 'Обзор', details_drank: 'Я выпил', details_report: 'Сообщить об ошибке',
+    details_history: 'Недавно просмотренные', details_similar: 'Похожие напитки',
+    card_caffeine: 'Кофеин', card_sugar: 'Сахар', card_calories: 'Калории', card_ph: 'pH', card_watch_review: 'Смотреть обзор',
+    card_new_badge: 'Новинка', card_hit_badge: 'Хит',
+    toast_added_fav: 'в избранном', toast_removed_fav: 'Убрано из избранного',
+    details_no_data: '—', details_no_taste: 'Вкус ещё не описан', details_price_tbd: 'Цена уточняется',
+    details_price_disclaimer: 'Цена ориентировочная — уточняй в конкретном магазине.',
+    details_fav_active: 'В избранном', details_fav_inactive: 'В избранное',
+    details_no_video: 'Обзор пока нет', details_no_video_sub: 'Скоро добавим',
+    details_drank_done: 'Учтено', details_daily_caffeine: 'мг сегодня',
+    details_no_country: 'Нет проверенных данных о бренде', details_since: 'бренд с', details_year: 'года',
+    toast_link_copied: 'Ссылка скопирована!', toast_report_added: 'Спасибо! Разберёмся.',
+    report_title: 'Сообщить об ошибке', report_prompt: 'Что не так с этим напитком?', report_placeholder: 'Опиши проблему: неверные данные, битое видео, опечатка...',
+    report_default_label: 'Что не так с этим напитком?', report_problem_with: 'Проблема с',
+    calc_title: 'СИСТЕМНЫЙ МОНИТОР: КАФЕИН', calc_search_placeholder: 'Введи название...', calc_level: 'УРОВЕНЬ ЗАГРУЗКИ', calc_waiting: 'Система в ожидании...',
+    calc_note: 'Цифры — наши, выводы — твои. Просто знай свою норму — остальное на твой вкус.',
+    calc_not_found: 'Ничего не найдено', calc_reset: 'Сбросить', calc_reset_confirm: 'Сбросить счётчик кофеина за сегодня?',
+    calc_normal: ['Система в норме','Кофеин распределён равномерно','Бодрость активна','Можно ещё чуть-чуть','Сердце стабильно','Энергия в балансе'],
+    calc_warn: ['Внимание: повышенная нагрузка','Сердце ускоряется','Кофеин на пределе','Рекомендую притормозить','Пульс выше нормы'],
+    calc_danger: ['ОПАСНОСТЬ: ПРЕВЫШЕН ДОПУСТИМЫЙ ЛИМИТ','СТОП! Хватит на сегодня','Ты переусердствовал','Завязывай с кофеином','Сердце не железное'],
+    compare_title: 'ПРОТОКОЛ СТОЛКНОВЕНИЯ', compare_price_tbd: 'Цена уточняется',
+    compare_notice: '⚠️ Цены в карточках напитков ориентировочные и могут отличаться в зависимости от магазина.',
+    compare_volume: 'ОБЪЕМ (МЛ)', compare_caffeine: 'КОФЕИН (МГ)', compare_sugar: 'САХАР (Г)', compare_calories: 'КАЛОРИИ (ККАЛ)', compare_ph: 'PH (КИСЛОТНОСТЬ)',
+    compare_btn: 'Сравнить',
+    suggest_title: 'Предложить напиток', suggest_prompt: 'Пришли название напитка, который хочешь увидеть в обзоре',
+    suggest_name_placeholder: 'Название энергетика...', suggest_comment_placeholder: 'Почему его стоит обзять? (необязательно)',
+    suggest_cancel: 'Отмена', suggest_send: 'Отправить', suggest_sending: 'Отправка...',
+    suggest_name_required: 'Введи название', toast_suggest_sent: 'отправлен на обзор!', toast_error_send: 'Ошибка отправки. Попробуй позже.', toast_no_connection: 'Нет соединения. Попробуй позже.',
+    toast_slow_down: 'Не так быстро — подожди', toast_seconds: 'сек.',
+    calc_title: 'СИСТЕМНЫЙ МОНИТОР: КАФЕИН', calc_search_placeholder: 'Введи название...', calc_level: 'УРОВЕНЬ ЗАГРУЗКИ', calc_waiting: 'Система в ожидании...',
+    calc_note: 'Цифры — наши, выводы — твои. Просто знай свою норму — остальное на твой вкус.',
+    calc_not_found: 'Ничего не найдено', calc_reset: 'Сбросить', calc_reset_confirm: 'Сбросить счётчик кофеина за сегодня?',
+    calc_normal: ['Система в норме','Кофеин распределён равномерно','Бодрость активна','Можно ещё чуть-чуть','Сердце стабильно','Энергия в балансе'],
+    calc_warn: ['Внимание: повышенная нагрузка','Сердце ускоряется','Кофеин на пределе','Рекомендую притормозить','Пульс выше нормы'],
+    calc_danger: ['ОПАСНОСТЬ: ПРЕВЫШЕН ДОПУСТИМЫЙ ЛИМИТ','СТОП! Хватит на сегодня','Ты переусердствовал','Завязывай с кофеином','Сердце не железное'],
+    compare_title: 'ПРОТОКОЛ СТОЛКНОВЕНИЯ', compare_price_tbd: 'Цена уточняется',
+    compare_notice: '⚠️ Цены в карточках напитков ориентировочные и могут отличаться в зависимости от магазина.',
+    compare_volume: 'ОБЪЕМ (МЛ)', compare_caffeine: 'КОФЕИН (МГ)', compare_sugar: 'САХАР (Г)', compare_calories: 'КАЛОРИИ (ККАЛ)', compare_ph: 'PH (КИСЛОТНОСТЬ)',
+    compare_btn: 'Сравнить',
+    suggest_title: 'Предложить напиток', suggest_prompt: 'Пришли название напитка, который хочешь увидеть в обзоре',
+    suggest_name_placeholder: 'Название энергетика...', suggest_comment_placeholder: 'Почему его стоит обзять? (необязательно)',
+    suggest_cancel: 'Отмена', suggest_send: 'Отправить', suggest_sending: 'Отправка...',
+    suggest_name_required: 'Введи название', toast_suggest_sent: 'отправлен на обзор!', toast_error_send: 'Ошибка отправки. Попробуй позже.', toast_no_connection: 'Нет соединения. Попробуй позже.',
+    toast_slow_down: 'Не так быстро — подожди', toast_seconds: 'сек.',
+    bb_logo: 'BUZZ BLAST', bb_score: 'ОЧКИ', bb_best: 'РЕКОРД', bb_restart: 'Заново', bb_change_mode: 'Сменить режим',
+    bb_hint: 'Перетащите фигуру на поле. Для силы — нажми кнопку, затем клетку.',
+    bb_hint_wall: 'Красные клетки — стена. Линия очищается, только если в ней нет стен — собирай по центру.',
+    bb_game_over: 'ИГРА ОКОНЧЕНА! Счёт:', bb_restart_hint: 'Нажмите "Заново"',
+    bb_mode_classic: 'Классика', bb_mode_classic_desc: '8×8, без ограничений',
+    bb_mode_mini: 'Мини', bb_mode_mini_desc: '6×6, компактно и быстро',
+    bb_mode_cross: 'Крест', bb_mode_cross_desc: '9×9, углы закрыты',
+    bb_bomb: 'Бомба', bb_firework: 'Салют', bb_rocket: 'Ракета',
+    bb_no_charges: 'Нет зарядов — новый придёт со следующим визитом',
+    bb_rocket_tip: 'Крест на весь экран — нажми на клетку', bb_firework_tip: 'Правый клик — сменить строку/столбец, левый — очистить', bb_bomb_tip: 'Квадрат 2×2 — нажми на клетку',
+    bb_legend_bomb: 'Бомба — квадрат 2×2 от клетки', bb_legend_firework: 'Салют — строка или столбец (ПКМ — переключить)', bb_legend_rocket: 'Ракета — крест через всё поле, нажми на клетку',
+    bb_legend_empty: 'Способности появятся с первыми достижениями',
+    profile_title: 'ДОСЬЕ АГЕНТА', profile_auto_theme: 'Авто-тема (день/ночь)',
+    profile_agent_id: 'AGENT_ID', profile_rank: 'КЛАСС АГЕНТА', profile_missions: 'МИССИЙ (ВИЗИТОВ)', profile_fav_brand: 'ЛЮБИМЫЙ БРЕНД', profile_max_dose: 'МАКС. ДОЗА КАФЕИНА',
+    profile_achievements: 'ДОСТИЖЕНИЯ', profile_no_data: 'Нет данных',
+    profile_diary_btn: 'Дневник напитков', profile_calendar_btn: 'Календарь',
+    profile_locked_desc: 'Достижение ещё не получено. Продолжайте взаимодействовать с сайтом.',
+    key_title: 'Секретный ключ', key_prompt: 'Если ты нашёл код — введи его сюда', key_placeholder: 'Введи код...',
+    key_cancel: 'Отмена', key_activate: 'Активировать', key_enter_code: 'Введи код', key_wrong_code: 'Неверный код',
+    key_congrats: 'Поздравляю!', key_first: 'Ты первый нашёл его!', key_hint: 'Сделай скриншот и отправь мне в Telegram',
+    key_activated_btn: 'Ключ активирован', key_activated_toast: 'Ключ активирован!',
+    achievement_unlocked: 'ДОСТИЖЕНИЕ РАЗБЛОКИРОВАНО!',
+    diary_title: 'ДНЕВНИК НАПИТКОВ', diary_empty: 'Пока пусто', diary_empty_hint: 'Жми "Я выпил" в карточке напитка',
+    calendar_title: 'КАЛЕНДАРЬ', calendar_total: 'Всего отмечено дней:', calendar_warning: 'Это не соревнование. Пить каждый день не нужно — дай себе передышку.',
+    cal_weekdays: ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],
+    cal_months: ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
+    nav_coffee: 'Кофе', section_coffee_tag: 'Не только энергетики', section_coffee_title: 'Кофе и другое', section_coffee_sub: 'Обычные напитки на каждый день — тоже считаем кофеин',
+    nav_achievements: 'Достижения', achievements_only_title: 'ДОСТИЖЕНИЯ',
+  },
+  en: {
+    nav_about: 'About', nav_reviews: 'Reviews', nav_latest: 'Latest', nav_soon: 'Coming Soon', nav_calc: 'Calculator', nav_places: 'Places', nav_key: 'Key',
+    section_reviews_tag: 'Top Reviews', section_reviews_title: 'Best Drinks', section_reviews_sub: 'Honest ratings, ingredients and taste impressions',
+    filter_all: 'All', filter_high: '8 — 10', filter_mid: '6 — 7', filter_low: 'Below 6', filter_fav: 'Favorites',
+    toggle_volume: 'Volume', toggle_caffeine: 'Caffeine', toggle_brand: 'Brand', toggle_sort: 'Sort',
+    btn_random: 'Random Drink', btn_reset_filters: 'Reset Filters',
+    search_placeholder: 'Search by name...',
+    section_latest_tag: 'New', section_latest_title: 'Latest Reviews', section_latest_sub: 'Newly added drinks — most recent first',
+    section_top10_tag: 'Top 10', section_top10_title: 'Best of the Best', section_top10_sub: 'The highest-rated drinks according to Buzz Rate',
+    section_stats_tag: 'Stats', section_stats_title: 'Brand Numbers', section_stats_sub: 'Average ratings and characteristics',
+    section_soon_title: 'Coming Soon', section_soon_sub: "We're already testing these drinks",
+    section_map_tag: 'Where to Buy', section_map_title: 'Store Map', section_map_sub: 'Marked spots — stores where we picked up drinks for reviews',
+    map_filter_brand: 'Filter by brand',
+    footer_tagline: 'Honest energy drink reviews.<br>Ingredients, taste, effect — no filter.',
+    btn_suggest: 'Suggest a Drink', btn_key_footer: 'Enter Code', footer_copy: '© 2026 Buzz Rate. All rights reserved.',
+    details_fav: 'Add to favorites', details_compare: 'Compare', details_share: 'Share', details_video: 'Review', details_drank: 'I drank it', details_report: 'Report an issue',
+    details_history: 'Recently viewed', details_similar: 'Similar drinks',
+    card_caffeine: 'Caffeine', card_sugar: 'Sugar', card_calories: 'Calories', card_ph: 'pH', card_watch_review: 'Watch review',
+    card_new_badge: 'New', card_hit_badge: 'Hit',
+    toast_added_fav: 'added to favorites', toast_removed_fav: 'Removed from favorites',
+    details_no_data: '—', details_no_taste: 'Taste not described yet', details_price_tbd: 'Price TBD',
+    details_price_disclaimer: 'Price is approximate — check with the specific store.',
+    details_fav_active: 'In favorites', details_fav_inactive: 'Add to favorites',
+    details_no_video: 'No review yet', details_no_video_sub: 'Coming soon',
+    details_drank_done: 'Logged', details_daily_caffeine: 'mg today',
+    details_no_country: 'No verified brand data', details_since: 'brand since', details_year: '',
+    toast_link_copied: 'Link copied!', toast_report_added: 'Thanks! We\'ll look into it.',
+    report_title: 'Report an issue', report_prompt: "What's wrong with this drink?", report_placeholder: 'Describe the issue: wrong data, broken video, typo...',
+    report_default_label: "What's wrong with this drink?", report_problem_with: 'Issue with',
+    calc_title: 'SYSTEM MONITOR: CAFFEINE', calc_search_placeholder: 'Enter a name...', calc_level: 'LOAD LEVEL', calc_waiting: 'System standing by...',
+    calc_note: 'The numbers are ours, the conclusions are yours. Just know your limit — the rest is up to you.',
+    calc_not_found: 'Nothing found', calc_reset: 'Reset', calc_reset_confirm: "Reset today's caffeine counter?",
+    calc_normal: ['System nominal','Caffeine evenly distributed','Alertness active','You can have a bit more','Heart stable','Energy balanced'],
+    calc_warn: ['Warning: elevated load','Heart rate rising','Caffeine near the limit','Recommend slowing down','Pulse above normal'],
+    calc_danger: ['DANGER: DAILY LIMIT EXCEEDED',"STOP! That's enough for today","You've overdone it",'Cut back on caffeine',"Your heart isn't made of steel"],
+    compare_title: 'COLLISION PROTOCOL', compare_price_tbd: 'Price TBD',
+    compare_notice: '⚠️ Prices shown on drink cards are approximate and may vary by store.',
+    compare_volume: 'VOLUME (ML)', compare_caffeine: 'CAFFEINE (MG)', compare_sugar: 'SUGAR (G)', compare_calories: 'CALORIES (KCAL)', compare_ph: 'PH (ACIDITY)',
+    compare_btn: 'Compare',
+    suggest_title: 'Suggest a Drink', suggest_prompt: "Send the name of a drink you'd like to see reviewed",
+    suggest_name_placeholder: 'Energy drink name...', suggest_comment_placeholder: 'Why is it worth reviewing? (optional)',
+    suggest_cancel: 'Cancel', suggest_send: 'Send', suggest_sending: 'Sending...',
+    suggest_name_required: 'Enter a name', toast_suggest_sent: 'sent for review!', toast_error_send: 'Send error. Try again later.', toast_no_connection: 'No connection. Try again later.',
+    toast_slow_down: 'Slow down — wait', toast_seconds: 'sec.',
+    bb_logo: 'BUZZ BLAST', bb_score: 'SCORE', bb_best: 'BEST', bb_restart: 'Restart', bb_change_mode: 'Change mode',
+    bb_hint: 'Drag a piece onto the board. For a power — press the button, then tap a cell.',
+    bb_hint_wall: 'Red cells are a wall. A line only clears if it has no walls — build around the center.',
+    bb_game_over: 'GAME OVER! Score:', bb_restart_hint: 'Press "Restart"',
+    bb_mode_classic: 'Classic', bb_mode_classic_desc: '8×8, no restrictions',
+    bb_mode_mini: 'Mini', bb_mode_mini_desc: '6×6, compact and fast',
+    bb_mode_cross: 'Cross', bb_mode_cross_desc: '9×9, corners blocked',
+    bb_bomb: 'Bomb', bb_firework: 'Firework', bb_rocket: 'Rocket',
+    bb_no_charges: 'No charges left — a new one arrives on your next visit',
+    bb_rocket_tip: 'Cross across the whole board — tap a cell', bb_firework_tip: 'Right-click to switch row/column, left-click to clear', bb_bomb_tip: '2×2 square — tap a cell',
+    bb_legend_bomb: 'Bomb — 2×2 square from the cell', bb_legend_firework: 'Firework — a row or column (right-click to switch)', bb_legend_rocket: 'Rocket — cross through the whole board, tap a cell',
+    bb_legend_empty: 'Powers unlock with your first achievements',
+    profile_title: 'AGENT FILE', profile_auto_theme: 'Auto theme (day/night)',
+    profile_agent_id: 'AGENT_ID', profile_rank: 'AGENT RANK', profile_missions: 'MISSIONS (VISITS)', profile_fav_brand: 'FAVORITE BRAND', profile_max_dose: 'MAX CAFFEINE DOSE',
+    profile_achievements: 'ACHIEVEMENTS', profile_no_data: 'No data',
+    profile_diary_btn: 'Drink diary', profile_calendar_btn: 'Calendar',
+    profile_locked_desc: 'Achievement not unlocked yet. Keep interacting with the site.',
+    key_title: 'Secret Key', key_prompt: "If you found a code — enter it here", key_placeholder: 'Enter code...',
+    key_cancel: 'Cancel', key_activate: 'Activate', key_enter_code: 'Enter a code', key_wrong_code: 'Wrong code',
+    key_congrats: 'Congratulations!', key_first: 'You found it first!', key_hint: 'Take a screenshot and send it to me on Telegram',
+    key_activated_btn: 'Key activated', key_activated_toast: 'Key activated!',
+    achievement_unlocked: 'ACHIEVEMENT UNLOCKED!',
+    diary_title: 'DRINK DIARY', diary_empty: 'Nothing here yet', diary_empty_hint: 'Tap "I drank it" on a drink card',
+    calendar_title: 'CALENDAR', calendar_total: 'Total days marked:', calendar_warning: "This isn't a competition. You don't need to drink every day — give yourself a break.",
+    cal_weekdays: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+    cal_months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
+    nav_coffee: 'Coffee', section_coffee_tag: 'Not just energy drinks', section_coffee_title: 'Coffee & More', section_coffee_sub: 'Everyday drinks — we count their caffeine too',
+    nav_achievements: 'Achievements', achievements_only_title: 'ACHIEVEMENTS',
+  }
+};
+
+function getLang() { return safeLSGet('buzz_lang', null) || 'ru'; }
+function t(key) { const lang = getLang(); return (I18N[lang] && I18N[lang][key]) || I18N.ru[key] || key; }
+
+function applyTranslations() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    const val = t(key);
+    if (el.dataset.i18nAttr) {
+      el.setAttribute(el.dataset.i18nAttr, val);
+    } else {
+      el.innerHTML = val;
+    }
+  });
+  document.documentElement.lang = getLang();
+  const btn = document.getElementById('langToggle');
+  if (btn) btn.textContent = getLang() === 'ru' ? 'RU' : 'EN';
+  const mobLabel = document.getElementById('langToggleMobileLabel');
+  if (mobLabel) mobLabel.textContent = getLang() === 'ru' ? 'English' : 'Русский';
+  if (typeof renderCards === 'function') renderCards();
+  if (typeof renderTop10 === 'function') renderTop10();
+  if (typeof renderLatest === 'function') renderLatest();
+  if (typeof renderStats === 'function') renderStats();
+  if (typeof renderBrandDropdown === 'function') renderBrandDropdown();
+  if (typeof renderVolumeDropdown === 'function') renderVolumeDropdown();
+  if (typeof renderCaffeineDropdown === 'function') renderCaffeineDropdown();
+  if (typeof generateSortDropdown === 'function') generateSortDropdown();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const langBtn = document.getElementById('langToggle');
+  const langBtnMobile = document.getElementById('langToggleMobileLabel');
+  let isRuVisual = true;
+  if (langBtn) langBtn.textContent = 'RU';
+  if (langBtnMobile) langBtnMobile.textContent = 'Русский';
+
+  function toggleLang() {
+    if (typeof AudioSys !== 'undefined') AudioSys.play('click');
+    if (typeof showToast === 'function') showToast('🌍 Перевод сайта скоро появится!', 'fa-solid fa-language');
+    isRuVisual = !isRuVisual;
+    if (langBtn) langBtn.textContent = isRuVisual ? 'RU' : 'EN';
+    if (langBtnMobile) langBtnMobile.textContent = isRuVisual ? 'Русский' : 'English';
+  }
+  const langBtnEl = document.getElementById('langToggle');
+  if (langBtnEl) langBtnEl.addEventListener('click', toggleLang);
+  const langBtnMobileEl = document.getElementById('langToggleMobile');
+  if (langBtnMobileEl) langBtnMobileEl.addEventListener('click', (e) => { e.preventDefault(); toggleLang(); });
+});
+// ==========================================
 // -1. ЗВУКОВОЙ ДИЗАЙН (СИНТЕЗАТОР V.2)
 // ==========================================
 const AudioSys = (function() {
@@ -264,29 +478,34 @@ document.addEventListener('click', function(e) {
 // 0.5 СИСТЕМА ДОСТИЖЕНИЙ
 // ==========================================
 const achievements = {
-  random: { name: 'Фатализм', icon: 'fa-dice', desc: 'Доверился воле случая. Колесо Фортуны выбрало за тебя.', tier: 'bronze' },
-  fav3: { name: 'Коллекционер', icon: 'fa-heart', desc: 'Три напитка в коллекции. Сердце не железное.', tier: 'silver' },
-  matrix: { name: 'Проснулся', icon: 'fa-terminal', desc: 'Системный сбой. Реальность под вопросом.', tier: 'gold' },
-  caffeine: { name: 'Сердце-мотор', icon: 'fa-heart-crack', desc: 'Сердце работает на пределе. Пульс выше нормы.', tier: 'diamond' },
-  key: { name: 'Мастер взлома', icon: 'fa-key', desc: 'Секретный код принят системой. Доступ расширен.', tier: 'purple' },
-  godmode: { name: 'Режим Бога', icon: 'fa-crown', desc: 'Привилегии активированы. Система подчиняется.', tier: 'purple' },
-  mobile: { name: 'Мобильный снайпер', icon: 'fa-mobile-screen', desc: 'Найдено только касанием. Мобильный детектив.', tier: 'gold' },
-  konami: { name: 'Код Разблокировки', icon: 'fa-gamepad', desc: 'Древний код пробуждения. Использовался ещё во времена NES.', tier: 'gold' },
-  doom: { name: 'Жнец', icon: 'fa-skull', desc: 'Жатва собрана. Души подсчитаны. Смерть не отступит.', tier: 'diamond' },
-  doom_slayer: { name: 'Убийца всех', icon: 'fa-skull-crossbones', desc: 'Все банки уничтожены. Жатва завершена. Ничего не осталось.', tier: 'purple' },
-  phone_hacker: { name: 'Phone Hacker', icon: 'fa-fingerprint', desc: 'Взлом через прикосновение. Цифровой Мидас?', tier: 'gold' },
-  resurrected: { name: 'Восставший из мёртвых', icon: 'fa-cross', desc: 'Прошёл через Death и вернулся. Прогресс сброшен.', tier: 'diamond' },
-  hacker: { name: 'Хакер', icon: 'fa-code', desc: 'Доступ к терминалу  получен. Взлом системы начать.', tier: 'gold' },
-    coin_click: { name: 'Жадина', icon: 'fa-coins', desc: 'Нашёл спрятанную монету с черепом в логотипе.', tier: 'gold' },
-  hell_package: { name: 'Посылка в АД', icon: 'fa-box', desc: 'Бля, и куда мне её доставить?', tier: 'purple' },
-  coronation: { name: 'Коронованный', icon: 'fa-crown', desc: 'Собрал 10+ достижений. Система признала тебя королём.', tier: 'gold' },
-    co_owner: { name: 'Свой человек', icon: 'fa-people-arrows', desc: 'Этот сайт немного и твой тоже.', tier: 'diamond' },
-    mode_master: { name: 'Владыка режимов', icon: 'fa-hat-wizard', desc: 'Активировал все секретные режимы: Матрицу, DOOM и Buzz Blast через Konami-код.', tier: 'gold' },
-    terminal_master: { name: 'Любознательный', icon: 'fa-terminal', desc: 'Ввёл в терминале все обычные команды до единой. Ничего не оставил без внимания.', tier: 'silver' },
-    night_owl: { name: 'Ночь', icon: 'fa-moon', desc: 'Кажется, ты сова. Или просто не спится — бывает.', tier: 'bronze' },
-    early_bird: { name: 'Ранняя пташка', icon: 'fa-sun', desc: 'Кто-то встал раньше будильника. Уважение.', tier: 'bronze' },
-    sunrise_found: { name: 'Утренняя находка', icon: 'fa-cloud-sun', desc: 'Нашёл Monster Ultra Sunrise в светлой теме и ввёл его в терминал.', tier: 'gold' },
-    sea_secret: { name: 'Зов глубин', icon: 'fa-water', desc: 'Море значит отпуск? Ага, конечно. Радуйся тому, что плещется в банке — на настоящее ты не заработал.', tier: 'purple' }
+  random: { name: 'Фатализм', icon: 'fa-dice', desc: 'Доверился воле случая. Колесо Фортуны выбрало за тебя.', tier: 'bronze', howTo: 'Нажми кнопку "Случайный Напиток" в разделе обзоров.' },
+  fav3: { name: 'Коллекционер', icon: 'fa-heart', desc: 'Три напитка в коллекции. Сердце не железное.', tier: 'silver', howTo: 'Добавь 3 напитка в избранное (сердечко на карточке).' },
+  matrix: { name: 'Проснулся', icon: 'fa-terminal', desc: 'Системный сбой. Реальность под вопросом.', tier: 'gold', howTo: '5 раз быстро подряд нажми на кнопку смены темы (луна/солнце).' },
+  caffeine: { name: 'Сердце-мотор', icon: 'fa-heart-crack', desc: 'Сердце работает на пределе. Пульс выше нормы.', tier: 'diamond', howTo: 'Превысь суточную норму кофеина 400 мг через калькулятор или кнопку "Я выпил".' },
+  key: { name: 'Мастер взлома', icon: 'fa-key', desc: 'Секретный код принят системой. Доступ расширен.', tier: 'purple', howTo: 'Введи правильный секретный код в модалке "Ключ" (код: BUZZ2025).' },
+  godmode: { name: 'Режим Бога', icon: 'fa-crown', desc: 'Привилегии активированы. Система подчиняется.', tier: 'purple', howTo: 'Дважды кликни по нику "Varna 23 live", в терминале введи по очереди my → name → v0x, затем команду 1.' },
+  mobile: { name: 'Мобильный снайпер', icon: 'fa-mobile-screen', desc: 'Найдено только касанием. Мобильный детектив.', tier: 'gold', howTo: 'На телефоне сделай долгий тап (3 сек) по логотипу в шапке.' },
+  konami: { name: 'Код Разблокировки', icon: 'fa-gamepad', desc: 'Древний код пробуждения. Использовался ещё во времена NES.', tier: 'gold', howTo: 'Введи классический Konami-код: ↑↑↓↓←→←→BA (на клавиатуре или через D-pad после долгого тапа по лого на мобиле).' },
+  doom: { name: 'Жнец', icon: 'fa-skull', desc: 'Жатва собрана. Души подсчитаны. Смерть не отступит.', tier: 'diamond', howTo: 'Введи зеркальный код: ↓↓↑↑→←→←BA.' },
+  doom_slayer: { name: 'Убийца всех', icon: 'fa-skull-crossbones', desc: 'Все банки уничтожены. Жатва завершена. Ничего не осталось.', tier: 'purple', howTo: 'В режиме DOOM уничтожь кликами абсолютно все карточки напитков на странице.' },
+  phone_hacker: { name: 'Phone Hacker', icon: 'fa-fingerprint', desc: 'Взлом через прикосновение. Цифровой Мидас?', tier: 'gold', howTo: 'Активируй DOOM Mode или Konami-код на мобильном устройстве через долгий тап по лого.' },
+  resurrected: { name: 'Восставший из мёртвых', icon: 'fa-cross', desc: 'Прошёл через Death и вернулся. Прогресс сброшен.', tier: 'diamond', howTo: 'Дай таймеру DOOM Mode дойти до нуля — сработает Death-экран со сбросом прогресса.' },
+  hacker: { name: 'Хакер', icon: 'fa-code', desc: 'Доступ к терминалу получен. Взлом системы начать.', tier: 'gold', howTo: 'Дважды кликни по нику "Varna 23 live" в шапке сайта — откроется терминал.' },
+  coin_click: { name: 'Жадина', icon: 'fa-coins', desc: 'Нашёл спрятанную монету с черепом.', tier: 'gold', howTo: '4 раза быстро подряд кликни по логотипу в шапке, затем нажми на появившуюся монету.' },
+  hell_package: { name: 'Посылка в АД', icon: 'fa-box', desc: 'Бля, и куда мне её доставить?', tier: 'purple', howTo: 'В терминале найди спрятанный банкомат/монету, затем купи все марки командой "buy [марка]" и оплати покупку.' },
+  coronation: { name: 'Коронованный', icon: 'fa-crown', desc: 'Система признала тебя королём.', tier: 'gold', howTo: 'Разблокируй 10+ достижений и прими корону в открывшемся тронном зале.' },
+  co_owner: { name: 'Свой человек', icon: 'fa-people-arrows', desc: 'Этот сайт немного и твой тоже.', tier: 'diamond', howTo: 'В терминале введи оба позывных: "callsign v0x" и "callsign Varna 23 live" (в любом порядке).' },
+  mode_master: { name: 'Владыка режимов', icon: 'fa-hat-wizard', desc: 'Собрал все ключи от системы воедино.', tier: 'gold', howTo: 'Разблокируй ачивки за Матрицу, DOOM и Konami-код — все три вместе.' },
+  terminal_master: { name: 'Любознательный', icon: 'fa-terminal', desc: 'Ничего не оставил без внимания.', tier: 'silver', howTo: 'В терминале введи все обычные команды: help, ls, scan, analyze, track, hack, buy, whoami, whois chief, date, coffee, sudo drink, cat classified.txt, top secret, status, rumors.' },
+  night_owl: { name: 'Ночь', icon: 'fa-moon', desc: 'Кажется, ты сова. Или просто не спится — бывает.', tier: 'bronze', howTo: 'Зайди на сайт между 23:00 и 2:00 несколько разных дней подряд.' },
+  early_bird: { name: 'Ранняя пташка', icon: 'fa-sun', desc: 'Кто-то встал раньше будильника. Уважение.', tier: 'bronze', howTo: 'Зайди на сайт между 3:00 и 7:00 несколько разных дней подряд.' },
+  sunrise_found: { name: 'Утренняя находка', icon: 'fa-cloud-sun', desc: 'Кто-то встретил рассвет вместе с этим сайтом.', tier: 'gold', howTo: 'Включи светлую тему вручную (не авто), найди Monster Ultra Sunrise в начале списка и введи в терминале команду "sunrise".' },
+  sea_secret: { name: 'Зов глубин', icon: 'fa-water', desc: 'Море значит отпуск? Ага, конечно. Радуйся тому, что плещется в банке — на настоящее ты не заработал.', tier: 'purple', howTo: 'Открой карточку Monster Juiced Aussie Style Lemonade и 4 раза быстро кликни по картинке банки.' },
+  dead_owl: { name: 'Мёртвая сова', icon: 'fa-skull', desc: 'Сова уже даже не ухает — молча смотрит.', tier: 'gold', howTo: 'Отметь напитками 15 разных дней в календаре (кнопка "Я выпил").' },
+  jungle_secret: { name: 'Зов джунглей', icon: 'fa-leaf', desc: 'Где-то там, за лианами, кто-то ухмыльнулся в ответ.', tier: 'purple', howTo: 'Включи светлую тему, открой карточку Monster Rio Punsh и 4 раза быстро кликни по картинке банки.' },
+  blockblast_win: { name: 'Взрывной результат', icon: 'fa-bolt', desc: 'Настоящий мастер поля.', tier: 'gold', howTo: 'Набери 1500 очков за один заход в Buzz Blast.' },
+  blockblast_master: { name: 'Мастер взрыва', icon: 'fa-crown', desc: 'Никто не остановит.', tier: 'diamond', howTo: 'Набери 3000 очков за один заход в Buzz Blast.' },
+  blockblast_combo: { name: 'Тройной удар', icon: 'fa-burst', desc: 'Три в один момент.', tier: 'silver', howTo: 'Очисти 3 линии одним ходом в Buzz Blast.' }
 };
 
 
@@ -317,7 +536,7 @@ function unlockAchievement(id) {
   const c = document.getElementById('toastContainer');
   const t = document.createElement('div');
   t.className = 'toast achievement-toast';
-  t.innerHTML = '<i class="fa-solid ' + ach.icon + '" style="color: #fbbf24; font-size: 20px;"></i><div><span style="color:#fbbf24; font-weight:bold; display:block; margin-bottom:2px; font-size:13px;">ДОСТИЖЕНИЕ РАЗБЛОКИРОВАНО!</span><span style="font-size:15px;">' + ach.name + '</span></div>';
+  t.innerHTML = '<i class="fa-solid ' + ach.icon + '" style="color: #fbbf24; font-size: 20px;"></i><div><span style="color:#fbbf24; font-weight:bold; display:block; margin-bottom:2px; font-size:13px;">' + window.t('achievement_unlocked') + '</span><span style="font-size:15px;">' + ach.name + '</span></div>';
   c.appendChild(t);
   requestAnimationFrame(() => requestAnimationFrame(() => t.classList.add('show')));
   setTimeout(() => { t.classList.remove('show'); t.classList.add('hide'); t.addEventListener('transitionend', () => t.remove()); }, 4000);
@@ -386,68 +605,68 @@ setTimeout(checkForUpdates, 2000);
 // ==========================================
 const drinks = [
   // --- MONSTER (скопируй 22 раза, у тебя уже 1 оригинал) ---
-  { brand: "Monster Energy - Nitro", key: "monster", flavor: "500 мл", rating: 8, img: "images/image_2.webp", caffeine: "160 мг", sugar: "54 г", cal: "223 kcal", ph: "3.5", video: "7659733737701166358", taste: " Сухой, невероятно освежающий и ярко выраженный цитрусовый вкус (микс лайма, лимона и грейпфрута) с легкой кремовой текстурой. Он не приторный и оставляет сухое послевкусие.", price:"2.20 €" },
+  { brand: "Monster Energy - Nitro", key: "monster", flavor: "500 мл", rating: 8, img: "images/image_2.webp", caffeine: "160 мг", sugar: "54 г", cal: "223 kcal", ph: "3.5", video: "7659733737701166358", taste: " Сухой, невероятно освежающий и ярко выраженный цитрусовый вкус (микс лайма, лимона и грейпфрута) с легкой кремовой текстурой. Он не приторный и оставляет сухое послевкусие.", tasteEn: "A dry, incredibly refreshing citrus flavor (a mix of lime, lemon, and grapefruit) with a light creamy texture. It's not overly sweet and leaves a dry aftertaste.", price:"2.20 €" },
 
-  { brand: "Monster Energy ", key: "monster", flavor: "500 мл", rating: 8, img: "images/monster-standart.webp", caffeine: "160 мг", sugar: "55 г", cal: "235 kcal", ph: "3.0", video: "7669155756666621206", taste:"Сладкий, насыщенный ягодно-цитрусовый вкус с легкой кислинкой и терпким конфетным послевкусием (многим он напоминает классический кисло-сладкий мармелад или барбарис).",price:"1.70 €" },
+  { brand: "Monster Energy ", key: "monster", flavor: "500 мл", rating: 8, img: "images/monster-standart.webp", caffeine: "160 мг", sugar: "55 г", cal: "235 kcal", ph: "3.0", video: "7669155756666621206", taste:"Сладкий, насыщенный ягодно-цитрусовый вкус с легкой кислинкой и терпким конфетным послевкусием (многим он напоминает классический кисло-сладкий мармелад или барбарис).", tasteEn: "A sweet, rich berry-citrus flavor with a light tanginess and a tart candy-like aftertaste (many compare it to classic sour-sweet gummy candy).", price:"1.70 €" },
 
-  { brand: "Monster Energy - Ultra blue", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra-blue.webp", caffeine: "150 мг", sugar: "0 г", cal: "11 kcal", ph: "3.4", video: "", taste:"Тонкий, прохладный и чистый вкус ледяной голубики и малины с легкими цитрусовыми нотками. Он совсем не приторный, пьется очень легко и оставляет приятную ягодную свежесть.", price:"2.20 €"},
+  { brand: "Monster Energy - Ultra blue", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra-blue.webp", caffeine: "150 мг", sugar: "0 г", cal: "11 kcal", ph: "3.4", video: "", taste:"Тонкий, прохладный и чистый вкус ледяной голубики и малины с легкими цитрусовыми нотками. Он совсем не приторный, пьется очень легко и оставляет приятную ягодную свежесть.", tasteEn: "A subtle, cool, and clean flavor of icy blueberry and raspberry with light citrus notes. It's not overly sweet at all, goes down very easily, and leaves a pleasant berry freshness.", price:"2.20 €"},
 
-  { brand: "Monster Energy - Ultra black", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra-black.webp", caffeine: "150 мг", sugar: "0 г", cal: "15 kcal", ph: "3.6", video: "", taste:"Глубокий, терпкий и невероятно сочный вкус спелой черной череши (с легкими нотками ежевики и смородины). Напиток обладает приятной ягодной кислинкой, он не приторный и отлично освежает в холодном виде.", price:"2,30 €" },
+  { brand: "Monster Energy - Ultra black", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra-black.webp", caffeine: "150 мг", sugar: "0 г", cal: "15 kcal", ph: "3.6", video: "", taste:"Глубокий, терпкий и невероятно сочный вкус спелой черной череши (с легкими нотками ежевики и смородины). Напиток обладает приятной ягодной кислинкой, он не приторный и отлично освежает в холодном виде.", tasteEn: "A deep, tart, and incredibly juicy flavor of ripe black cherry (with light notes of blackberry and currant). The drink has a pleasant berry tartness, isn't overly sweet, and is very refreshing served cold.", price:"2,30 €" },
 
-  { brand: "Monster Energy - Juiced Viking", key: "monster", flavor: "500 мл", rating: 8, img: "images/monster_viking.webp", caffeine: "160 мг", sugar: "54 г", cal: "215 kcal", ph: "3.7", video: "7633076505349852438", taste:" Глубокий, насыщенный вкус диких северных ягод (смесь черники, ежевики, малины и терпкой черноплодной рябины/аронии). Напиток содержит 5% натурального сока, благодаря чему вкус получается очень плотным, с идеальным балансом сочной сладости и приятной ягодной кислинки. Он напоминает густой премиальный ягодный морс, но с мощным энергетическим зарядом." , price:"2,70 €"},
+  { brand: "Monster Energy - Juiced Viking", key: "monster", flavor: "500 мл", rating: 8, img: "images/monster_viking.webp", caffeine: "160 мг", sugar: "54 г", cal: "215 kcal", ph: "3.7", video: "7633076505349852438", taste:" Глубокий, насыщенный вкус диких северных ягод (смесь черники, ежевики, малины и терпкой черноплодной рябины/аронии). Напиток содержит 5% натурального сока, благодаря чему вкус получается очень плотным, с идеальным балансом сочной сладости и приятной ягодной кислинки. Он напоминает густой премиальный ягодный морс, но с мощным энергетическим зарядом.", tasteEn: "A deep, rich flavor of wild northern berries (a mix of blueberry, blackberry, raspberry, and tart chokeberry). The drink contains 5% real juice, giving it a very full-bodied taste with a perfect balance of juicy sweetness and pleasant berry tartness. It resembles a thick premium berry cordial, but with a powerful energy kick.", price:"2,70 €"},
 
- { brand: "Monster Energy - Rio Punsh", key: "monster", flavor: "500 мл", rating: 8, img: "images/rio-punsh.webp", caffeine: "150 мг", sugar: "35 г", cal: "152 kcal", ph: "3.8", video: "", taste:"Официальный профиль — сладкая папайя, ванильное мороженое и легкая нотка касья (черной смородины). Производитель вдохновлялся популярным бразильским десертом Creme de Papaya. Напиток содержит натуральный сок (пюре папайи, манго, концентрат яблока и белого винограда). На вкус он ощущается как густой фруктовый пунш с мягким сливочно-кремовым послевкусием и едва уловимой пикантной ноткой пряностей.", price:"1,55 €" },
+ { brand: "Monster Energy - Rio Punsh", key: "monster", flavor: "500 мл", rating: 8, img: "images/rio-punsh.webp", caffeine: "150 мг", sugar: "35 г", cal: "152 kcal", ph: "3.8", video: "", taste:"Официальный профиль — сладкая папайя, ванильное мороженое и легкая нотка касья (черной смородины). Производитель вдохновлялся популярным бразильским десертом Creme de Papaya. Напиток содержит натуральный сок (пюре папайи, манго, концентрат яблока и белого винограда). На вкус он ощущается как густой фруктовый пунш с мягким сливочно-кремовым послевкусием и едва уловимой пикантной ноткой пряностей.", tasteEn: "The official profile is sweet papaya, vanilla ice cream, and a light note of cassis (black currant). The producer drew inspiration from the popular Brazilian dessert Creme de Papaya. The drink contains real juice (papaya and mango puree, apple and white grape concentrate). It tastes like a thick fruit punch with a soft creamy aftertaste and a barely noticeable hint of spice.", price:"1,55 €" },
 
- { brand: "Monster Energy - Ultra Gold (lando Norris)", key: "monster", flavor: "500 мл", rating: 8, img: "images/lando_noris.webp", caffeine: "160 мг", sugar: "0 г", cal: "10 kcal", ph: "3.3", video: "", taste:" Освежающий, сочный и очень необычный микс спелой дыни и цитруса юдзу. Юдзу придает напитку легкую терпкость и благородную кислинку, которая идеально балансирует сладкую и мягкую основу дыни. Напиток без сахара, пьется легко и имеет свежее фруктовое послевкусие.", price:"1,65 €" },
+ { brand: "Monster Energy - Ultra Gold (lando Norris)", key: "monster", flavor: "500 мл", rating: 8, img: "images/lando_noris.webp", caffeine: "160 мг", sugar: "0 г", cal: "10 kcal", ph: "3.3", video: "", taste:" Освежающий, сочный и очень необычный микс спелой дыни и цитруса юдзу. Юдзу придает напитку легкую терпкость и благородную кислинку, которая идеально балансирует сладкую и мягкую основу дыни. Напиток без сахара, пьется легко и имеет свежее фруктовое послевкусие.", tasteEn: "A refreshing, juicy, and rather unusual mix of ripe melon and yuzu citrus. The yuzu adds a light tartness and refined acidity that perfectly balances the sweet, soft melon base. Sugar-free, it goes down easily and leaves a fresh fruity aftertaste.", price:"1,65 €" },
 
- { brand: "Monster Energy - Nitro Cosmic Peach", key: "monster", flavor: "500 мл", rating: 8, img: "images/nitro-cosmic-peach.webp", caffeine: "160 мг", sugar: "53 г", cal: "200 kcal", ph: "3.5", video: "", taste:" Невероятно нежный, сочный и насыщенный вкус спелого персика с легкими цитрусовыми нотками и оттенком сладкой груши. Благодаря азотной основе у напитка нет резких колющих пузырьков газа — вместо этого получается очень мягкая, бархатистая и кремовая текстура с легкой пенкой, напоминающая нежный персиковый сорбет или коктейль.", price:"2,60 €" },
+ { brand: "Monster Energy - Nitro Cosmic Peach", key: "monster", flavor: "500 мл", rating: 8, img: "images/nitro-cosmic-peach.webp", caffeine: "160 мг", sugar: "53 г", cal: "200 kcal", ph: "3.5", video: "", taste:" Невероятно нежный, сочный и насыщенный вкус спелого персика с легкими цитрусовыми нотками и оттенком сладкой груши. Благодаря азотной основе у напитка нет резких колющих пузырьков газа — вместо этого получается очень мягкая, бархатистая и кремовая текстура с легкой пенкой, напоминающая нежный персиковый сорбет или коктейль.", tasteEn: "An incredibly delicate, juicy, and rich flavor of ripe peach with light citrus notes and a hint of sweet pear. Thanks to the nitro base, the drink has no sharp fizzy bubbles — instead it has a very soft, velvety, creamy texture with a light foam, resembling a delicate peach sorbet or cocktail.", price:"2,60 €" },
 
- { brand: "Monster Energy - Juiced Riper", key: "monster", flavor: "500 мл", rating: 8, img: "images/juiced-riper.webp", caffeine: "160 мг", sugar: "45 г", cal: "175 kcal", ph: "3.5", video: "", taste:" Взрывной, насыщенный тропический микс с упором на ананас и гуаву, дополненный нотами маракуйи, апельсина, яблока и лимона. Напиток содержит целых 20% натурального сока, благодаря чему он имеет плотный фруктовый профиль, приятную кислинку и напоминает освежающий летний мультифруктовый нектар, замиксованный с классической базой Monster.",price:"1,70 €" },
+ { brand: "Monster Energy - Juiced Riper", key: "monster", flavor: "500 мл", rating: 8, img: "images/juiced-riper.webp", caffeine: "160 мг", sugar: "45 г", cal: "175 kcal", ph: "3.5", video: "", taste:" Взрывной, насыщенный тропический микс с упором на ананас и гуаву, дополненный нотами маракуйи, апельсина, яблока и лимона. Напиток содержит целых 20% натурального сока, благодаря чему он имеет плотный фруктовый профиль, приятную кислинку и напоминает освежающий летний мультифруктовый нектар, замиксованный с классической базой Monster.", tasteEn: "An explosive, rich tropical mix centered on pineapple and guava, rounded out with notes of passionfruit, orange, apple, and lemon. The drink contains a full 20% real juice, giving it a full-bodied fruit profile, pleasant acidity, and the feel of a refreshing summer multi-fruit nectar mixed with the classic Monster base.", price:"1,70 €" },
 
- { brand: "Monster Energy - Mixxd Punsh", key: "monster", flavor: "500 мл", rating: 8, img: "images/mixxd-punsh.webp", caffeine: "160 мг", sugar: "45 г", cal: "190 kcal", ph: "3.7", video: "", taste:" Плотный, сладкий и многогранный ягодно-тропический фруктовый пунш. Напиток содержит 5,3% натурального сока, в котором переплетаются ноты вишни, черешни, яблока, клюквы, манго и банана. Банан и манго придают напитку мягкую, округлую сладость, а вишня и клюква добавляют легкую кислинку на финише. Он не имеет классического горьковатого привкуса энергетика и пьется как праздничный газированный морс.", price:"2,20 €" },
+ { brand: "Monster Energy - Mixxd Punsh", key: "monster", flavor: "500 мл", rating: 8, img: "images/mixxd-punsh.webp", caffeine: "160 мг", sugar: "45 г", cal: "190 kcal", ph: "3.7", video: "", taste:" Плотный, сладкий и многогранный ягодно-тропический фруктовый пунш. Напиток содержит 5,3% натурального сока, в котором переплетаются ноты вишни, черешни, яблока, клюквы, манго и банана. Банан и манго придают напитку мягкую, округлую сладость, а вишня и клюква добавляют легкую кислинку на финише. Он не имеет классического горьковатого привкуса энергетика и пьется как праздничный газированный морс.", tasteEn: "A full-bodied, sweet, and multi-layered berry-tropical fruit punch. The drink contains 5.3% real juice, blending notes of cherry, sweet cherry, apple, cranberry, mango, and banana. Banana and mango give it a soft, round sweetness, while cherry and cranberry add a light tartness on the finish. It lacks the classic bitter energy-drink aftertaste and drinks like a festive sparkling cordial.", price:"2,20 €" },
 
- { brand: "Monster Energy - Ultra Rosa", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra-rosa.webp", caffeine: "150 мг", sugar: "0 г", cal: "11 kcal", ph: "3.5", video: "", taste:" Тонкий и сложный ягодно-цветочный микс с освежающими нотками. Производитель вдохновлялся легкими оттенками розового вина (Rosé). Во вкусе отчетливо угадываются спелая малина, клубника и сочный розовый грейпфрут, переходящие в благородное, едва уловимое цветочное послевкусие (напоминающее розу). Напиток абсолютно не приторный, пьется мягко и оставляет приятную кислинку.", price:"1,75 €" },
+ { brand: "Monster Energy - Ultra Rosa", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra-rosa.webp", caffeine: "150 мг", sugar: "0 г", cal: "11 kcal", ph: "3.5", video: "", taste:" Тонкий и сложный ягодно-цветочный микс с освежающими нотками. Производитель вдохновлялся легкими оттенками розового вина (Rosé). Во вкусе отчетливо угадываются спелая малина, клубника и сочный розовый грейпфрут, переходящие в благородное, едва уловимое цветочное послевкусие (напоминающее розу). Напиток абсолютно не приторный, пьется мягко и оставляет приятную кислинку.", tasteEn: "A subtle and complex berry-floral mix with refreshing notes. The producer took inspiration from the light tones of rosé wine. The flavor clearly features ripe raspberry, strawberry, and juicy pink grapefruit, giving way to a refined, barely-there floral aftertaste (reminiscent of rose). Not overly sweet at all, it drinks smoothly and leaves a pleasant tartness.", price:"1,75 €" },
 
- { brand: "Monster Energy - Rehab Green Tea", key: "monster", flavor: "500 мл", rating: 8, img: "images/rehab-green-tea.webp", caffeine: "160 мг", sugar: "9.5 г", cal: "50 kcal", ph: "4.6", video: "7558385802955476227", taste:" Очень мягкий, натуральный и освежающий вкус холодного зеленого чая с легкими фруктовыми и травяными оттенками. Он умеренно сладкий (значительно менее приторный, чем классические газированные энергетики). Многим по вкусовому профилю он напоминает знаменитый холодный чай AriZona Green Tea, но со скрытым внутри мощным энергетическим зарядом.", price:" 3,10 €" },
+ { brand: "Monster Energy - Rehab Green Tea", key: "monster", flavor: "500 мл", rating: 8, img: "images/rehab-green-tea.webp", caffeine: "160 мг", sugar: "9.5 г", cal: "50 kcal", ph: "4.6", video: "7558385802955476227", taste:" Очень мягкий, натуральный и освежающий вкус холодного зеленого чая с легкими фруктовыми и травяными оттенками. Он умеренно сладкий (значительно менее приторный, чем классические газированные энергетики). Многим по вкусовому профилю он напоминает знаменитый холодный чай AriZona Green Tea, но со скрытым внутри мощным энергетическим зарядом.", tasteEn: "A very smooth, natural, and refreshing iced green tea flavor with light fruity and herbal undertones. Moderately sweet (much less sickly than classic sparkling energy drinks). Many find its flavor profile reminiscent of the famous AriZona Green Tea, but with a powerful energy kick hidden inside.", price:" 3,10 €" },
 
- { brand: "Monster Energy - Rehab Tea + Lemonade", key: "monster", flavor: "500 мл", rating: 8, img: "images/tea-lemonade.webp", caffeine: "160 мг", sugar: "9.5 г", cal: "55 kcal", ph: "4.4", video: "", taste:"Классический, идеально сбалансированный вкус домашнего чайного лимонада (знаменитый рецепт Arnold Palmer). В нем идеально сочетаются насыщенный натуральный заваренный черный чай и кислинка спелого лимона. Напиток содержит всего 25 калорий на банку, электролиты и кокосовую воду, поэтому он совершенно не приторный и обладает легким, освежающим фруктово-чайным профилем.", price:"2,30 €"},
+ { brand: "Monster Energy - Rehab Tea + Lemonade", key: "monster", flavor: "500 мл", rating: 8, img: "images/tea-lemonade.webp", caffeine: "160 мг", sugar: "9.5 г", cal: "55 kcal", ph: "4.4", video: "", taste:"Классический, идеально сбалансированный вкус домашнего чайного лимонада (знаменитый рецепт Arnold Palmer). В нем идеально сочетаются насыщенный натуральный заваренный черный чай и кислинка спелого лимона. Напиток содержит всего 25 калорий на банку, электролиты и кокосовую воду, поэтому он совершенно не приторный и обладает легким, освежающим фруктово-чайным профилем.", tasteEn: "A classic, perfectly balanced homemade iced tea lemonade flavor (the famous Arnold Palmer recipe). It perfectly blends rich brewed black tea with the tartness of ripe lemon. The drink has only 25 calories per can along with electrolytes and coconut water, giving it a completely non-sickly, light, refreshing fruity-tea profile.", price:"2,30 €"},
 
- { brand: "Monster Energy - Rehab Tea + Peach", key: "monster", flavor: "500 мл", rating: 9, img: "images/rehab-tea-peach.webp", caffeine: "160 мг", sugar: "12 г", cal: "59 kcal", ph: "4.4", video: "", taste:" Максимально натуральный, мягкий и сочный вкус прохладного домашнего чая с персиком. За счет добавления 3,2% настоящего персикового сока вкус получается объемным и глубоким, но при этом легким. Напиток низкокалорийный (всего 25 калорий на всю банку) и совершенно не приторный, что делает его похожим на премиальный холодный чай с приятной фруктовой свежестью на финише.", price:"2,40 €" },
+ { brand: "Monster Energy - Rehab Tea + Peach", key: "monster", flavor: "500 мл", rating: 9, img: "images/rehab-tea-peach.webp", caffeine: "160 мг", sugar: "12 г", cal: "59 kcal", ph: "4.4", video: "", taste:" Максимально натуральный, мягкий и сочный вкус прохладного домашнего чая с персиком. За счет добавления 3,2% настоящего персикового сока вкус получается объемным и глубоким, но при этом легким. Напиток низкокалорийный (всего 25 калорий на всю банку) и совершенно не приторный, что делает его похожим на премиальный холодный чай с приятной фруктовой свежестью на финише.", tasteEn: "An extremely natural, smooth, and juicy flavor of chilled homemade peach iced tea. Thanks to 3.2% real peach juice, the taste is full-bodied and deep yet still light. Low in calories (just 25 per can) and completely non-sickly, it feels like a premium iced tea with a pleasant fruity freshness on the finish.", price:"2,40 €" },
 
- { brand: "Monster Energy - Ultra Sunrise", key: "monster", flavor: "473 мл", rating: 8, img: "images/ultra-sunrise.webp", caffeine: "155 мг", sugar: "0 г", cal: "10 kcal", ph: "3.3", video: "", taste:" Легкий, искрящийся и очень освежающий вкус спелого апельсина и сладкого мандарина с выраженными нотками других цитрусовых. Он напоминает газировку Fanta или газированный апельсиновый сок, но абсолютно без сахара, без тяжелой приторности и с чистым, слегка терпким финишем на выдохе. Отлично заменяет утренний апельсиновый сок, но при этом дает мощный заряд энергии.", price:"2,60 €" },
+ { brand: "Monster Energy - Ultra Sunrise", key: "monster", flavor: "473 мл", rating: 8, img: "images/ultra-sunrise.webp", caffeine: "155 мг", sugar: "0 г", cal: "10 kcal", ph: "3.3", video: "", taste:" Легкий, искрящийся и очень освежающий вкус спелого апельсина и сладкого мандарина с выраженными нотками других цитрусовых. Он напоминает газировку Fanta или газированный апельсиновый сок, но абсолютно без сахара, без тяжелой приторности и с чистым, слегка терпким финишем на выдохе. Отлично заменяет утренний апельсиновый сок, но при этом дает мощный заряд энергии.", tasteEn: "A light, sparkling, and very refreshing flavor of ripe orange and sweet tangerine with pronounced notes of other citrus fruits. It resembles Fanta or sparkling orange juice, but completely sugar-free, without heavy sweetness, and with a clean, slightly tart finish. A great replacement for morning orange juice, while still delivering a powerful energy kick.", price:"2,60 €" },
 
- { brand: "Monster Energy - Reserve White Pineapple Flavour", key: "monster", flavor: "500 мл", rating: 8, img: "images/reserve-white-pineapple.webp", caffeine: "160 мг", sugar: "30 г", cal: "135 kcal", ph: "3.6", video: "", taste:" Безупречный, чистый и глубокий вкус спелого сахарного ананаса (вкус «отборной центральной части» фрукта). Напиток сладкий, но сбалансирован легкой цитрусовой кислинкой. В отличие от серии Ultra Gold, этот вариант содержит сахар, за счет чего ананасовый профиль ощущается очень насыщенным, натуральным и сочным. Многим по вкусу он напоминает белые мармеладные мишки Haribo.", price:"3,00 €" },
+ { brand: "Monster Energy - Reserve White Pineapple Flavour", key: "monster", flavor: "500 мл", rating: 8, img: "images/reserve-white-pineapple.webp", caffeine: "160 мг", sugar: "30 г", cal: "135 kcal", ph: "3.6", video: "", taste:" Безупречный, чистый и глубокий вкус спелого сахарного ананаса (вкус «отборной центральной части» фрукта). Напиток сладкий, но сбалансирован легкой цитрусовой кислинкой. В отличие от серии Ultra Gold, этот вариант содержит сахар, за счет чего ананасовый профиль ощущается очень насыщенным, натуральным и сочным. Многим по вкусу он напоминает белые мармеладные мишки Haribo.", tasteEn: "An impeccable, clean, and deep flavor of ripe sugar pineapple (the taste of the fruit's 'select core'). The drink is sweet but balanced with a light citrus tartness. Unlike the Ultra Gold line, this version contains sugar, making the pineapple profile feel very rich, natural, and juicy. Many find it reminiscent of white Haribo gummy bears.", price:"3,00 €" },
 
- { brand: "Monster Energy - Reserve Peaches n' Crème", key: "monster", flavor: "473 мл", rating: 8, img: "images/reserve-peaches-creme.webp", caffeine: "175 мг", sugar: "28 г", cal: "120 kcal", ph: "3.7", video: "7584185459459312918", taste:" Сладкий, насыщенный и бархатистый десертный профиль. Он идеально передает вкус спелого сочного персика в сочетании с густыми ванильными сливками. Напиток напоминает жидкие персиковые конфеты-мармеладки или нежное сливочно-персиковое мороженое. Вкус очень плотный и сладкий, без привычной кислинки или горького послевкусия энергетика.", price:"4,30 €" },
+ { brand: "Monster Energy - Reserve Peaches n' Crème", key: "monster", flavor: "473 мл", rating: 8, img: "images/reserve-peaches-creme.webp", caffeine: "175 мг", sugar: "28 г", cal: "120 kcal", ph: "3.7", video: "7584185459459312918", taste:" Сладкий, насыщенный и бархатистый десертный профиль. Он идеально передает вкус спелого сочного персика в сочетании с густыми ванильными сливками. Напиток напоминает жидкие персиковые конфеты-мармеладки или нежное сливочно-персиковое мороженое. Вкус очень плотный и сладкий, без привычной кислинки или горького послевкусия энергетика.", tasteEn: "A sweet, rich, velvety dessert profile. It perfectly captures the taste of ripe juicy peach paired with thick vanilla cream. The drink resembles liquid peach gummy candy or delicate peaches-and-cream ice cream. Very full-bodied and sweet, without the usual tartness or bitter energy-drink aftertaste.", price:"4,30 €" },
 
- { brand: "Monster Energy - Ultra Fantasy Ruby Red", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra-fantasy-ruby-red.webp", caffeine: "160 мг", sugar: "0 г", cal: "14 kcal", ph: "3.4", video: "7532186692233596182", taste:" Сочный, невероятно освежающий и чистый вкус спелого розового/красного грейпфрута с деликатным цитрусовым финишем. Напиток идеально сбалансирован: он не слишком сладкий и не имеет сильной грейпфрутовой горечи. По вкусу он очень напоминает премиальный грейпфрутовый тоник или газировку вроде Fresca/Squirt, но с фирменным энергетическим комплексом Monster.", price:"2,00 €" },
+ { brand: "Monster Energy - Ultra Fantasy Ruby Red", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra-fantasy-ruby-red.webp", caffeine: "160 мг", sugar: "0 г", cal: "14 kcal", ph: "3.4", video: "7532186692233596182", taste:" Сочный, невероятно освежающий и чистый вкус спелого розового/красного грейпфрута с деликатным цитрусовым финишем. Напиток идеально сбалансирован: он не слишком сладкий и не имеет сильной грейпфрутовой горечи. По вкусу он очень напоминает премиальный грейпфрутовый тоник или газировку вроде Fresca/Squirt, но с фирменным энергетическим комплексом Monster.", tasteEn: "A juicy, incredibly refreshing, and clean flavor of ripe pink/red grapefruit with a delicate citrus finish. The drink is perfectly balanced: not too sweet and without strong grapefruit bitterness. It closely resembles a premium grapefruit tonic or a soda like Fresca/Squirt, but with Monster's signature energy blend.", price:"2,00 €" },
 
- { brand: "Monster Energy - Ultra Peachy Keen", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra-peach-keen.webp", caffeine: "150 мг", sugar: "0 г", cal: "11 kcal", ph: "3.2", video: "", taste:" Яркий, сочный и очень натуральный вкус спелой южной прасковы. В отличие от линейки Rehab Peach (где персик идет с негазированным чаем), здесь вас ждет классическая мягкая газация. Напиток умеренно сладкий, с легкой фруктовой кислинкой, а по вкусовому профилю многим очень сильно напоминает популярные жевательные мармеладки в виде персиковых колечек.", price:"2,30 €" },
+ { brand: "Monster Energy - Ultra Peachy Keen", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra-peach-keen.webp", caffeine: "150 мг", sugar: "0 г", cal: "11 kcal", ph: "3.2", video: "", taste:" Яркий, сочный и очень натуральный вкус спелой южной прасковы. В отличие от линейки Rehab Peach (где персик идет с негазированным чаем), здесь вас ждет классическая мягкая газация. Напиток умеренно сладкий, с легкой фруктовой кислинкой, а по вкусовому профилю многим очень сильно напоминает популярные жевательные мармеладки в виде персиковых колечек.", tasteEn: "A bright, juicy, and very natural ripe southern peach flavor. Unlike the Rehab Peach line (which pairs peach with unsweetened iced tea), this one has classic gentle carbonation. Moderately sweet with a light fruity tartness, its flavor profile strongly resembles popular gummy peach rings.", price:"2,30 €" },
 
- { brand: "Monster Energy - Ultra Blue Hawaiian", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra-blue-hawaiian.webp", caffeine: "150 мг", sugar: "0 г", cal: "10 kcal", ph: "3.5", video: "7631582942761962774", taste:" Освежающий, легкий и сбалансированный микс экзотических полинезийских фруктов. Основной профиль — это сочный ананас, спелый мандарин/цитрусы и легкий, деликатный оттенок кокоса. Многие описывают его как более мягкую, не приторную версию классического коктейля Пина Колада или как облегченный вариант старого вкуса Ultra Gold, но с приятным кокосово-цитрусовым шлейфом.", price:"4,50 €" },
+ { brand: "Monster Energy - Ultra Blue Hawaiian", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra-blue-hawaiian.webp", caffeine: "150 мг", sugar: "0 г", cal: "10 kcal", ph: "3.5", video: "7631582942761962774", taste:" Освежающий, легкий и сбалансированный микс экзотических полинезийских фруктов. Основной профиль — это сочный ананас, спелый мандарин/цитрусы и легкий, деликатный оттенок кокоса. Многие описывают его как более мягкую, не приторную версию классического коктейля Пина Колада или как облегченный вариант старого вкуса Ultra Gold, но с приятным кокосово-цитрусовым шлейфом.", tasteEn: "A refreshing, light, and balanced mix of exotic Polynesian fruits. The main profile is juicy pineapple, ripe tangerine/citrus, and a subtle, delicate hint of coconut. Many describe it as a softer, less sickly version of a classic Piña Colada, or a lighter take on the old Ultra Gold flavor with a pleasant coconut-citrus trail.", price:"4,50 €" },
 
- { brand: "Monster Energy - M3 Extra Strength", key: "monster", flavor: "150 мл", rating: 8, img: "images/m3-extra-strength.webp", caffeine: "140 мг", sugar: "10 г", cal: "65 kcal", ph: "3.7", video: "7532190064059763990", taste:" По сути, это гиперконцентрированная версия классического Monster Energy, но с важным технологическим нюансом. За счет использования особой азотной технологии газации (Nitrous Oxide), напиток не бьет в нос резкими пузырьками. Текстура у него невероятно мягкая, гладкая и мелкопузырчатая, напоминающая дорогое шампанское. Сам вкус чистый, плотный, сладко-цитрусовый, с очень мощной фирменной «монстровской» кислинкой", price:"4,00 €"
+ { brand: "Monster Energy - M3 Extra Strength", key: "monster", flavor: "150 мл", rating: 8, img: "images/m3-extra-strength.webp", caffeine: "140 мг", sugar: "10 г", cal: "65 kcal", ph: "3.7", video: "7532190064059763990", taste:" По сути, это гиперконцентрированная версия классического Monster Energy, но с важным технологическим нюансом. За счет использования особой азотной технологии газации (Nitrous Oxide), напиток не бьет в нос резкими пузырьками. Текстура у него невероятно мягкая, гладкая и мелкопузырчатая, напоминающая дорогое шампанское. Сам вкус чистый, плотный, сладко-цитрусовый, с очень мощной фирменной «монстровской» кислинкой", tasteEn: "Essentially a hyper-concentrated version of classic Monster Energy, but with an important technological twist. Thanks to a special nitro carbonation technology (Nitrous Oxide), the drink doesn't hit you with sharp fizzy bubbles. The texture is incredibly smooth, soft, and finely bubbled, reminiscent of expensive champagne. The taste itself is clean, full-bodied, sweet-citrus, with a very strong signature Monster tartness.", price:"4,00 €"
   },
 
- { brand: "Monster Energy - Ultra Vice Guava", key: "monster", flavor: "473 мл", rating: 9, img: "images/ultra-vice-guava.webp", caffeine: "150 мг", sugar: "0 г", cal: "10 kcal", ph: "3.5", video: "", taste:" Легкий, освежающий и слегка терпкий вкус спелой тропической гуавы с деликатными оттенками карамболы (звездного фрукта) и сладкой клубники. Напиток обладает мягкой цитрусовой кислинкой и очень чистым финишем. Фанаты часто сравнивают его базу с классическим Ultra White, но с добавлением нежного, ненавязчивого фруктового аромата гуавы.",price:"2,50 €" },
+ { brand: "Monster Energy - Ultra Vice Guava", key: "monster", flavor: "473 мл", rating: 9, img: "images/ultra-vice-guava.webp", caffeine: "150 мг", sugar: "0 г", cal: "10 kcal", ph: "3.5", video: "", taste:" Легкий, освежающий и слегка терпкий вкус спелой тропической гуавы с деликатными оттенками карамболы (звездного фрукта) и сладкой клубники. Напиток обладает мягкой цитрусовой кислинкой и очень чистым финишем. Фанаты часто сравнивают его базу с классическим Ultra White, но с добавлением нежного, ненавязчивого фруктового аромата гуавы.", tasteEn: "A light, refreshing, slightly tart flavor of ripe tropical guava with delicate notes of star fruit and sweet strawberry. The drink has a mild citrus acidity and a very clean finish. Fans often compare its base to the classic Ultra White, with the addition of a soft, subtle guava fruit aroma.", price:"2,50 €" },
 
- { brand: "Monster Energy - Ultra Violet", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra-violet.webp", caffeine: "150 мг", sugar: "0 г", cal: "13 kcal", ph: "3.6", video: "", taste:" Освежающий, легкий и искрящийся вкус сочного темного винограда с приятными цитрусовыми нотками и деликатной кислинкой на финише. Производитель описывает его профиль как «вкус волшебной пыльцы» (pixie dust flavor), так как он напоминает популярные в США виноградные конфеты-порошки ручной работы. Напиток пьется очень мягко, он абсолютно не приторный и оставляет приятную ягодную свежесть.", price:"2,25 €" },
+ { brand: "Monster Energy - Ultra Violet", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra-violet.webp", caffeine: "150 мг", sugar: "0 г", cal: "13 kcal", ph: "3.6", video: "", taste:" Освежающий, легкий и искрящийся вкус сочного темного винограда с приятными цитрусовыми нотками и деликатной кислинкой на финише. Производитель описывает его профиль как «вкус волшебной пыльцы» (pixie dust flavor), так как он напоминает популярные в США виноградные конфеты-порошки ручной работы. Напиток пьется очень мягко, он абсолютно не приторный и оставляет приятную ягодную свежесть.", tasteEn: "A refreshing, light, sparkling flavor of juicy dark grape with pleasant citrus notes and a delicate tartness on the finish. The producer describes its profile as a 'pixie dust flavor', as it resembles popular US grape powder candies. The drink is very smooth to sip, not sickly at all, and leaves a pleasant berry freshness.", price:"2,25 €" },
 
- { brand: "Monster Energy - Ultra Wild Passion", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra_wild_passion.webp", caffeine: "150 мг", sugar: "0 г", cal: "10 kcal", ph: "3.5", video: "7671963390838918422",taste:" Яркий, сочный и тропический вкус спелой маракуйи (passionfruit) с легким цитрусовым акцентом. Он имеет идеальный баланс кислого и сладкого. Несмотря на полное отсутствие сахара, этот вкус отлично скрывает подсластители, пьется легко, приятно освежает и напоминает легкий летний коктейль из тропических фруктов. Его часто сравнивают по легкости с классическим белым Ultra White, но с насыщенным ароматом маракуйи.", price:"3,50 €" },
+ { brand: "Monster Energy - Ultra Wild Passion", key: "monster", flavor: "500 мл", rating: 8, img: "images/ultra_wild_passion.webp", caffeine: "150 мг", sugar: "0 г", cal: "10 kcal", ph: "3.5", video: "7671963390838918422",taste:" Яркий, сочный и тропический вкус спелой маракуйи (passionfruit) с легким цитрусовым акцентом. Он имеет идеальный баланс кислого и сладкого. Несмотря на полное отсутствие сахара, этот вкус отлично скрывает подсластители, пьется легко, приятно освежает и напоминает легкий летний коктейль из тропических фруктов. Его часто сравнивают по легкости с классическим белым Ultra White, но с насыщенным ароматом маракуйи.", tasteEn: "A bright, juicy, tropical flavor of ripe passionfruit with a light citrus accent, offering a perfect sweet-tart balance. Despite being completely sugar-free, it hides its sweeteners well, goes down easily, refreshes pleasantly, and feels like a light summer tropical fruit cocktail. Often compared in lightness to the classic Ultra White, but with a rich passionfruit aroma.", price:"3,50 €" },
 
-{ brand: "Monster Energy - Juice Voodoo Grape", key: "monster", flavor: "473 мл", rating: 8, img: "images/juice_voodoo.webp", caffeine: "160 мг", sugar: "36 г", cal: "150 kcal", ph: "2.7", video: "7678420816043822358",taste:"Плотный, насыщенный и десертный вкус темного винограда с глубоким фруктовым профилем. Напиток имеет тяжелую соковую текстуру с преобладанием экстремальной сладости, которую на финише пытается уравновесить резкая ягодная кислинка. Несмотря на высокую плотность, он пьется как газированный нектар, оставляя долгое и приторное послевкусие, напоминающее виноградный Чупа-Чупс или жевательную резинку. Его часто сравнивают по вкусовому направлению с Ultra Violet, но за счет добавления натурального сока Voodoo Grape гораздо гуще, слаще и имеет специфический аптечный оттенок американского сиропа от кашля.", price:"3,50 €" },
+{ brand: "Monster Energy - Juiced Voodoo Grape", key: "monster", flavor: "473 мл", rating: 8, img: "images/juice_voodoo.webp", caffeine: "160 мг", sugar: "36 г", cal: "150 kcal", ph: "2.7", video: "7678420816043822358",taste:"Плотный, насыщенный и десертный вкус темного винограда с глубоким фруктовым профилем. Напиток имеет тяжелую соковую текстуру с преобладанием экстремальной сладости, которую на финише пытается уравновесить резкая ягодная кислинка. Несмотря на высокую плотность, он пьется как газированный нектар, оставляя долгое и приторное послевкусие, напоминающее виноградный Чупа-Чупс или жевательную резинку. Его часто сравнивают по вкусовому направлению с Ultra Violet, но за счет добавления натурального сока Voodoo Grape гораздо гуще, слаще и имеет специфический аптечный оттенок американского сиропа от кашля.", tasteEn: "A full-bodied, rich, dessert-like dark grape flavor with a deep fruity profile. The drink has a heavy juice-like texture dominated by extreme sweetness, which a sharp berry tartness tries to balance on the finish. Despite its thickness, it drinks like a carbonated nectar, leaving a long, sickly-sweet aftertaste reminiscent of grape lollipops or bubble gum. Often compared in flavor direction to Ultra Violet, but thanks to real Voodoo Grape juice it's much thicker, sweeter, and has a distinct medicinal note similar to American cough syrup.", price:"3,50 €" },
 
- { brand: "Monster Energy - The Doctor VR46", key: "monster", flavor: "500 мл", rating: 8, img: "images/vr-46.webp", caffeine: "160 мг", sugar: "52 г", cal: "219 kcal", ph: "3", video: "7674675530762816790", taste:" Максимально свежий, искрящийся и бодрящий вкус спелых цитрусовых с акцентом на лимон, апельсин и легкую мандариновую сладость. Он абсолютно не похож на классические «химические» энергетики, пьется легко, обладает умеренной газацией и оставляет приятную кислинку.",price:" 2,65 €" },
+ { brand: "Monster Energy - The Doctor VR46", key: "monster", flavor: "500 мл", rating: 8, img: "images/vr-46.webp", caffeine: "160 мг", sugar: "52 г", cal: "219 kcal", ph: "3", video: "7674675530762816790", taste:" Максимально свежий, искрящийся и бодрящий вкус спелых цитрусовых с акцентом на лимон, апельсин и легкую мандариновую сладость. Он абсолютно не похож на классические «химические» энергетики, пьется легко, обладает умеренной газацией и оставляет приятную кислинку.", tasteEn: "An extremely fresh, sparkling, and invigorating flavor of ripe citrus, with an emphasis on lemon, orange, and light tangerine sweetness. Nothing like the classic 'chemical' energy drink taste — it goes down easily, has moderate carbonation, and leaves a pleasant tartness.", price:" 2,65 €" },
   
- { brand: "Monster Energy - Juiced Aussie Style Lemonade", key: "monster", flavor: "500 мл", rating: 5, img: "images/juced-juce.webp", caffeine: "160 мг", sugar: "49 г", cal: "211 kcal", ph: "3.4", video: "7598063208871628054", taste:"Это идеальная интерпретация классического домашнего лимонада. В отличие от обычных химозных лимонных газировок, здесь используется концентрат сока спелых австралийских цитрусов. Вкус имеет идеальный баланс: он одновременно сладкий, интенсивно-кислый, очень сочный и освежающий. Напоминает натуральный лимонад со льдом, который сбивает любую жажду.",price:"2,35 €" },
+ { brand: "Monster Energy - Juiced Aussie Style Lemonade", key: "monster", flavor: "500 мл", rating: 5, img: "images/juced-juce.webp", caffeine: "160 мг", sugar: "49 г", cal: "211 kcal", ph: "3.4", video: "7598063208871628054", taste:"Это идеальная интерпретация классического домашнего лимонада. В отличие от обычных химозных лимонных газировок, здесь используется концентрат сока спелых австралийских цитрусов. Вкус имеет идеальный баланс: он одновременно сладкий, интенсивно-кислый, очень сочный и освежающий. Напоминает натуральный лимонад со льдом, который сбивает любую жажду.", tasteEn: "This is a perfect take on classic homemade lemonade. Unlike typical artificial-tasting lemon sodas, this one uses concentrate from ripe Australian citrus. The flavor is perfectly balanced: sweet, intensely tart, very juicy, and refreshing all at once. It resembles a real iced lemonade that quenches any thirst.", price:"2,35 €" },
   // --- HELL (скопируй 11 раз, у тебя 1 оригинал) ---
-  { brand: "Hell Energy - The summer edition", key: "hell", flavor: "250 мл", rating: 7, img: "images/image_4.webp", caffeine: "80 мг", sugar: "27 г", cal: "115 kcal", ph: "3.1", video: "7659733345500171542", badge: "hit",  },
+  { brand: "Hell Energy - The summer edition", key: "hell", flavor: "250 мл", rating: 7, img: "images/image_4.webp", caffeine: "80 мг", sugar: "27 г", cal: "115 kcal", ph: "3.1", video: "7659733345500171542", badge: "hit", tasteEn: "A bright summer citrus-fruit flavor — light, sweet, and refreshing, with a juicy fruity finish typical of Hell's seasonal editions." },
 
-  { brand: "Hell Energy - The Strong Appel", key: "hell", flavor: "250 мл", rating: 6, img: "images/the_strong_appel.webp", caffeine: "96 мг", sugar: "27 г", cal: "115 kcal", ph: "3.1", video: "7530127178420391191", badge: "hit" },
+  { brand: "Hell Energy - The Strong Appel", key: "hell", flavor: "250 мл", rating: 6, img: "images/the_strong_appel.webp", caffeine: "96 мг", sugar: "27 г", cal: "115 kcal", ph: "3.1", video: "7530127178420391191", badge: "hit", tasteEn: "A rich, sweet green apple flavor with a slightly sour, candy-like edge — bold and straightforward, true to the 'Strong' in its name." },
 
-  { brand: "Hell Ice Coffee - Choco Raspberry", key: "hell", flavor: "250 мл", rating: 10, img: "images/choco_raspberry.webp", caffeine: "80 мг", sugar: "27 г", cal: "115 kcal", ph: "3.1", video: "7620187284603718934", badge: "hit" },
+  { brand: "Hell Ice Coffee - Choco Raspberry", key: "hell", flavor: "250 мл", rating: 10, img: "images/choco_raspberry.webp", caffeine: "80 мг", sugar: "27 г", cal: "115 kcal", ph: "3.1", video: "7620187284603718934", badge: "hit", tasteEn: "A smooth iced coffee base with rich chocolate and a tart raspberry twist — a dessert-like combination of coffee, cocoa, and berry sweetness." },
 
-  { brand: "Hell Ice Coffee - Dark range", key: "hell", flavor: "250 мл", rating: 8, img: "images/hell_coffe_orange.webp", caffeine: "80 мг", sugar: "27 г", cal: "145 kcal", ph: "3.1", video: "7584161789407923478", badge: "hit" },
+  { brand: "Hell Ice Coffee - Dark range", key: "hell", flavor: "250 мл", rating: 8, img: "images/hell_coffe_orange.webp", caffeine: "80 мг", sugar: "27 г", cal: "145 kcal", ph: "3.1", video: "7584161789407923478", badge: "hit", tasteEn: "A bold, dark roast iced coffee flavor — intense and slightly bitter, closer to a real espresso-based drink than a sweet coffee soda." },
 
   // --- RED BULL (скопируй 5 раз, у тебя 1 оригинал) ---
   { brand: "Red Bull", key: "redbull", flavor: "250 мл", rating: 6, img: "images/image_3.webp", caffeine: "80 мг", sugar: "27 г", cal: "112 kcal", ph: "3.4", video: "7659734438976294166" },
@@ -464,14 +683,14 @@ const drinks = [
 
   { brand: "Red Bull - The Pink Edition", key: "redbull", flavor: "250 мл", rating: 6, img: "images/redbull-pink-edition.webp", caffeine: "80 мг", sugar: "27 г", cal: "112 kcal", ph: "3.3", video: "" },
 
-  { brand: "Red Bull - The Peach Edition", key: "redbull", flavor: "Original, 250 мл", rating: 6, img: "images/redbull-peach.webp", caffeine: "80 мг", sugar: "27.5 г", cal: "115 kcal", ph: "3.2", video: "7659734438976294166" },
+  { brand: "Red Bull - The Peach Edition", key: "redbull", flavor: " 250 мл", rating: 6, img: "images/redbull-peach.webp", caffeine: "80 мг", sugar: "27.5 г", cal: "115 kcal", ph: "3.2", video: "7659734438976294166" },
 
   // --- BATTERY (скопируй 4 раза) ---
 
   { brand: "Battery Energy - Exotic", key: "battery", flavor: "500 мл", rating: 7, img: "images/battery_exotic.webp", caffeine: "160 мг", sugar: "57 г", cal: "250 kcal", ph: "2.5", video: "7595499648903613718" },
 
   // --- NON STOP (скопируй 3 раза) ---
-  { brand: "Non Stop", key: "nonstop", flavor: "Original, 450 мл", rating: 6, img: "", caffeine: "87 мг", sugar: "25 г", cal: "102 kcal", ph: "3.0", video: "7593795836908260630" },
+  { brand: "Non Stop", key: "nonstop", flavor: "250 мл", rating: 6, img: "images/non_stop.webp", caffeine: "87 мг", sugar: "25 г", cal: "102 kcal", ph: "2.8", video: "7593795836908260630" },
 
   // --- BURN (скопируй 5 раз, у тебя 1 оригинал) ---
   { brand: "Burn", key: "burn", flavor: "Cherry, 250 мл", rating: 7, img: "images/image_5.webp", caffeine: "75 мг", sugar: "28 г", cal: "118 kcal", ph: "3.6", video: "7361838290757873979" },
@@ -481,7 +700,30 @@ const drinks = [
 
 
   // --- C4 (1 раз) ---
-  { brand: "C4", key: "c4", flavor: " 500 мл", rating: 8, img: "images/c4.webp", caffeine: "200 мг", sugar: "0 г", cal: "10 kcal", ph: "3.5", video: "" }
+  { brand: "C4", key: "c4", flavor: " 500 мл", rating: 8, img: "images/c4.webp", caffeine: "200 мг", sugar: "0 г", cal: "10 kcal", ph: "3.5", video: "" },
+
+  // --- COFFEE & MORE (обычные напитки на каждый день) ---
+  { brand: "Coffee & More - Эспрессо", key: "coffee", flavor: "30 мл", rating: 8, img: "images/espresso.webp", caffeine: "63 мг", sugar: "0 г", cal: "3 kcal", ph: "5.0", video: "", taste: "Насыщенный, крепкий и слегка горьковатый вкус с плотной кремовой пенкой (крема) сверху. Короткий и концентрированный — классическая основа для всех остальных кофейных напитков.", tasteEn: "A rich, strong, slightly bitter flavor with a thick creamy foam (crema) on top. Short and concentrated — the classic base for all other coffee drinks.", price: "2,00 €" },
+
+  { brand: "Coffee & More - Латте", key: "coffee", flavor: "350 мл", rating: 8, img: "images/latte.webp", caffeine: "77 мг", sugar: "12 г", cal: "150 kcal", ph: "6.4", video: "", taste: "Мягкий, кремовый и сбалансированный вкус эспрессо с большим количеством вспененного молока. Сладковатый и нежный, легко пьётся, кофе ощущается на фоне, а не доминирует.", tasteEn: "A soft, creamy, balanced espresso flavor with plenty of steamed milk. Slightly sweet and gentle, easy to drink, with the coffee sitting in the background rather than dominating.", price: "3,20 €" },
+
+  { brand: "Coffee & More - Капучино", key: "coffee", flavor: "200 мл", rating: 8, img: "images/cappuccino.webp", caffeine: "68 мг", sugar: "8 г", cal: "110 kcal", ph: "6.3", video: "", taste: "Классический баланс трети эспрессо, трети горячего молока и трети густой молочной пены. Вкус более выраженно кофейный, чем у латте, с бархатистой текстурой пены сверху.", tasteEn: "A classic balance of one-third espresso, one-third steamed milk, and one-third thick milk foam. More pronounced coffee flavor than a latte, with a velvety foam texture on top.", price: "3,00 €" },
+
+  { brand: "Coffee & More - Айс-латте", key: "coffee", flavor: "400 мл", rating: 8, img: "images/iced_latte.webp", caffeine: "77 мг", sugar: "14 г", cal: "140 kcal", ph: "6.2", video: "", taste: "Холодный, освежающий и лёгкий вкус эспрессо с молоком и льдом. Более разбавленный и не такой насыщенный, как горячий латте, идеален в жару.", tasteEn: "A cold, refreshing, light espresso-and-milk flavor served over ice. More diluted and less intense than a hot latte, perfect for warm weather.", price: "3,50 €" },
+
+  { brand: "Coffee & More - Матча-латте", key: "coffee", flavor: "350 мл", rating: 7, img: "images/macha_latte.webp", caffeine: "45 мг", sugar: "16 г", cal: "160 kcal", ph: "6.5", video: "", taste: "Травянистый, слегка землистый вкус японского зелёного чая матча в сочетании со сливочным молоком. Мягкая сладость, без кофейной горечи, с характерным «зелёным» послевкусием.", tasteEn: "A grassy, slightly earthy Japanese matcha green tea flavor combined with creamy milk. Mildly sweet, without any coffee bitterness, with a distinctive 'green' aftertaste.", price: "3,80 €" },
+
+  { brand: "Coffee & More - Черный чай", key: "coffee", flavor: "300 мл", rating: 7, img: "images/black_tea.webp", caffeine: "40 мг", sugar: "0 г", cal: "2 kcal", ph: "5.5", video: "", taste: "Терпкий, насыщенный и слегка вяжущий вкус классического заваренного чёрного чая без добавок. Бодрит мягче, чем кофе, но заметно.", tasteEn: "A brisk, rich, slightly astringent flavor of classic brewed black tea with no additives. A gentler pick-me-up than coffee, but noticeable.", price: "2,20 €" },
+
+  { brand: "Coffee & More - Зелёный чай", key: "coffee", flavor: "300 мл", rating: 7, img: "images/green_tea.webp", caffeine: "28 мг", sugar: "0 г", cal: "1 kcal", ph: "6.0", video: "", taste: "Лёгкий, травянистый и слегка сладковатый вкус зелёного чая с деликатной горчинкой на финише. Самый мягкий по бодрящему эффекту напиток в линейке.", tasteEn: "A light, grassy, slightly sweet green tea flavor with a delicate bitterness on the finish. The gentlest energizing drink in the lineup.", price: "2,20 €" },
+
+  { brand: "Coffee & More - Какао", key: "coffee", flavor: "300 мл", rating: 8, img: "images/kakao.webp", caffeine: "5 мг", sugar: "22 г", cal: "190 kcal", ph: "7.0", video: "", taste: "Густой, сладкий и насыщенный шоколадный вкус горячего какао на молоке. Кофеина почти нет — скорее десерт, чем бодрящий напиток.", tasteEn: "A thick, sweet, rich chocolate flavor of hot cocoa made with milk. Almost no caffeine — more of a dessert than an energizing drink.", price: "2,80 €" },
+
+  { brand: "Coffee & More - Черный чай с лимоном", key: "coffee", flavor: "300 мл", rating: 7, img: "images/black_tea_with_lemon.webp", caffeine: "38 мг", sugar: "10 г", cal: "45 kcal", ph: "3.8", video: "", taste: "Терпкий, насыщенный чёрный чай с яркой лимонной кислинкой и лёгкой сладостью. Освежает лучше, чем чистый чёрный чай, за счёт цитрусовой ноты.", tasteEn: "A brisk, rich black tea with a bright lemon tartness and light sweetness. More refreshing than plain black tea thanks to the citrus note.", price: "2,40 €" },
+
+  { brand: "Coffee & More - Фруктовый чай", key: "coffee", flavor: "300 мл", rating: 7, img: "images/fruit_tea.webp", caffeine: "0 мг", sugar: "18 г", cal: "70 kcal", ph: "3.5", video: "", taste: "Яркий, сладкий и сочный микс из нескольких фруктов (яблоко, апельсин, шиповник) без чайной основы. Кофеина нет вообще — чистый фруктовый вкус.", tasteEn: "A bright, sweet, juicy blend of several fruits (apple, orange, rosehip) with no tea base. Zero caffeine — pure fruity flavor.", price: "2,30 €" },
+
+  { brand: "Coffee & More - Клюквенный чай", key: "coffee", flavor: "300 мл", rating: 8, img: "images/cranberry_tea.webp", caffeine: "0 мг", sugar: "16 г", cal: "65 kcal", ph: "3.3", video: "", taste: "Кисло-сладкий, ягодный вкус клюквенного морса с лёгкой терпкостью. Без кофеина, отлично освежает и бодрит без стимуляторов.", tasteEn: "A tart-sweet, berry flavor of cranberry cordial with a light tartness. Caffeine-free, very refreshing without any stimulants.", price: "2,40 €" }
 ];
 
 // ==========================================
@@ -490,18 +732,18 @@ const drinks = [
 const bColors = {
   monster:'#00c850', redbull:'#1e6fff', hell:'#e03020', 
   burn:'#ff6a00', battery:'#ffd700', nonstop:'#00ccff', 
-  rockstar:'#a855f7', c4:'#f43f5e'
+  rockstar:'#a855f7', c4:'#f43f5e', coffee:'#a86f4c'
 };
 const bInit = {
   monster:'M', redbull:'R', hell:'H', burn:'Bu', 
-  battery:'Ba', nonstop:'N', rockstar:'Rs', c4:'C4'
+  battery:'Ba', nonstop:'N', rockstar:'Rs', c4:'C4', coffee:'Co'
 };
 
 // ДОБАВИТЬ ЭТО:
 const bNames = {
   monster:'Monster Energy', redbull:'Red Bull', hell:'Hell Energy',
   burn:'Burn', battery:'Battery', nonstop:'Non Stop',
-  rockstar:'Rockstar', c4:'C4'
+  rockstar:'Rockstar', c4:'C4', coffee:'Coffee & More'
 };
 
 // Общие факты о брендах (страна, год основания компании).
@@ -536,7 +778,8 @@ const bLineColors = {
   rio: '#ffb347',
   mixxd: '#ff3b5c',
   m3: '#c084fc',
-  doctor: '#ffd700'
+  doctor: '#ffd700',
+  'coffee & more': '#a86f4c'
 };
 
 const bLineInfo = {
@@ -583,6 +826,10 @@ const bLineInfo = {
   doctor: {
     title: 'О линейке The Doctor VR46',
     desc: 'The Doctor VR46 — совместный вкус с пилотом MotoGP Валентино Росси (позывной "The Doctor"), сделанный на цитрусовой базе. По сути это имиджевый вкус под конкретное имя, а не отдельная широкая линейка. Впиши сюда своё мнение: чувствуется ли в этом что-то особенное или это обычный цитрусовый Monster с другой этикеткой.'
+  },
+  'coffee & more': {
+    title: 'О разделе Coffee & More',
+    desc: 'Этот раздел появился, потому что не все дни начинаются с энергетика. Здесь собраны обычные напитки, которые люди пьют утром или в течение дня — латте, капучино, чай в разных вариациях, какао. Кофеина здесь заметно меньше, чем в классических энергетиках, но мы всё равно считаем его честно, чтобы суточная норма не терялась из виду, даже если ты не притрагивался к банке весь день.'
   }
 };
 // Небольшой сдвиг оттенка цвета точки для конкретной линейки внутри
@@ -659,6 +906,7 @@ function getDrinkLine(drink) {
   // он сам попадёт в нужную линию без правок кода.
   if (drink.key === 'redbull' && /Edition/i.test(drink.brand)) return 'Editions';
   if (drink.key === 'hell' && /^Hell Ice Coffee/i.test(drink.brand)) return 'Ice Coffee';
+  if (drink.key === 'coffee') return 'Coffee & More';
 
   const parts = drink.brand.split(' - ');
   if (parts.length < 2) return null;
@@ -726,6 +974,12 @@ let brandDropdownSelectedBrand = null;
 let noSugarOnly = false;
 let searchQuery = '';
 let activeVolumeFilter = 'all';
+let activeCaffeineFilter = 'all';
+function caffeineBucket(mg) {
+  if (mg < 100) return 'low';
+  if (mg <= 160) return 'mid';
+  return 'high';
+}
 
 function parseCardVolumeMl(flavorStr) {
   const m = String(flavorStr || '').match(/(\d+)\s*мл/);
@@ -737,7 +991,8 @@ function createCard(drink) {
   card.dataset.brand = drink.key;
   card.dataset.rating = drink.rating;
     card.dataset.video = drink.video;
-    card.dataset.volume = parseCardVolumeMl(drink.flavor) || '';
+  card.dataset.volume = parseCardVolumeMl(drink.flavor) || '';
+  card.dataset.caffeine = parseCaffeineMg(drink.caffeine) || '';
   card.dataset.drinkIndex = drinks.indexOf(drink);
     card.dataset.line = getDrinkLine(drink) || '';
   // FIX 3: ключ избранного — по индексу (уникально для каждого напитка)
@@ -757,7 +1012,7 @@ function createCard(drink) {
   const isNewDrink = drinks.indexOf(drink) >= drinks.length - 5;
   card.innerHTML = `
     <div class="card-strip"></div><div class="card-glare"></div>
-    ${drink.badge ? `<div class="card-badge"><i class="fa-solid fa-fire"></i> Хит</div>` : (isNewDrink ? `<div class="card-badge card-badge-new"><i class="fa-solid fa-sparkles"></i> Новинка</div>` : '')}
+    ${drink.badge ? `<div class="card-badge"><i class="fa-solid fa-fire"></i> ${t('card_hit_badge')}</div>` : (isNewDrink ? `<div class="card-badge card-badge-new"><i class="fa-solid fa-sparkles"></i> ${t('card_new_badge')}</div>` : '')}
     <button class="fav-btn ${isFav ? 'active' : ''}" aria-label="В избранное">
       <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
     </button>
@@ -766,13 +1021,14 @@ function createCard(drink) {
      <h3 class="card-brand ${isSunriseGlow ? 'sunrise-glow' : ''}">${drink.brand}</h3>
       <p class="card-flavor">${flavorText}</p>
       <div class="card-rating"><div class="stars"></div><div class="rating-counter" data-target="${drink.rating}"></div></div>
+      ${getPricePerLiter(drink) ? `<div class="card-price-per-liter">${getPricePerLiter(drink)} €/л</div>` : ''}
             <div class="card-stats">
-        <div class="stat" style="background:rgba(0, 229, 255, 0.15); border-color:rgba(0, 229, 255, 0.7); box-shadow: 0 0 12px rgba(0, 229, 255, 0.25)"><div class="stat-value">${drink.caffeine}</div><div class="stat-label">Кофеин</div></div>
-        <div class="stat" style="background:rgba(255, 64, 129, 0.15); border-color:rgba(255, 64, 129, 0.7); box-shadow: 0 0 12px rgba(255, 64, 129, 0.25)"><div class="stat-value">${drink.sugar}</div><div class="stat-label">Сахар</div></div>
-        <div class="stat" style="background:rgba(255, 171, 0, 0.15); border-color:rgba(255, 171, 0, 0.7); box-shadow: 0 0 12px rgba(255, 171, 0, 0.25)"><div class="stat-value">${drink.cal}</div><div class="stat-label">Калории</div></div>
-        <div class="stat" style="background:rgba(179, 136, 255, 0.15); border-color:rgba(179, 136, 255, 0.7); box-shadow: 0 0 12px rgba(179, 136, 255, 0.25)"><div class="stat-value">${drink.ph}</div><div class="stat-label">pH</div></div>
+        <div class="stat" style="background:rgba(0, 229, 255, 0.15); border-color:rgba(0, 229, 255, 0.7); box-shadow: 0 0 12px rgba(0, 229, 255, 0.25)"><div class="stat-value">${drink.caffeine}</div><div class="stat-label">${t('card_caffeine')}</div></div>
+        <div class="stat" style="background:rgba(255, 64, 129, 0.15); border-color:rgba(255, 64, 129, 0.7); box-shadow: 0 0 12px rgba(255, 64, 129, 0.25)"><div class="stat-value">${drink.sugar}</div><div class="stat-label">${t('card_sugar')}</div></div>
+        <div class="stat" style="background:rgba(255, 171, 0, 0.15); border-color:rgba(255, 171, 0, 0.7); box-shadow: 0 0 12px rgba(255, 171, 0, 0.25)"><div class="stat-value">${drink.cal}</div><div class="stat-label">${t('card_calories')}</div></div>
+        <div class="stat" style="background:rgba(179, 136, 255, 0.15); border-color:rgba(179, 136, 255, 0.7); box-shadow: 0 0 12px rgba(179, 136, 255, 0.25)"><div class="stat-value">${drink.ph}</div><div class="stat-label">${t('card_ph')}</div></div>
       </div>
-      <button class="card-btn" data-open-video><span>Смотреть обзор</span><i class="fa-solid fa-arrow-right"></i></button>
+      <button class="card-btn" data-open-video><span>${t('card_watch_review')}</span><i class="fa-solid fa-arrow-right"></i></button>
     </div>
   `;
   const imageEl = card.querySelector('img[data-fallback="true"]');
@@ -792,7 +1048,8 @@ let activeSortMode = 'rating';
 
 function getSortedDrinks() {
   // Индекс в массиве drinks = порядок добавления (последние строки — новее)
-  const withIndex = drinks.map((d, i) => ({ d, i }));
+  // Кофе исключаем — у него своя отдельная секция ниже, чтобы не дублировать карточки
+  const withIndex = drinks.map((d, i) => ({ d, i })).filter(x => x.d.key !== 'coffee');
 
   if (activeSortMode === 'new') {
     withIndex.sort((a, b) => b.i - a.i); // последние добавленные — первыми
@@ -800,6 +1057,12 @@ function getSortedDrinks() {
     withIndex.sort((a, b) => a.i - b.i); // самые старые — первыми
   } else if (activeSortMode === 'az') {
     withIndex.sort((a, b) => a.d.brand.localeCompare(b.d.brand, 'ru')); // А-Я
+  } else if (activeSortMode === 'cheap') {
+    withIndex.sort((a, b) => {
+      const pa = parseFloat(getPricePerLiter(a.d)) || Infinity;
+      const pb = parseFloat(getPricePerLiter(b.d)) || Infinity;
+      return pa - pb;
+    });
   } else {
     withIndex.sort((a, b) => +b.d.rating - +a.d.rating); // по рейтингу (по умолчанию)
   }
@@ -863,12 +1126,12 @@ function initCardEffects() {
         favs = favs.filter(f => f !== drinkId);
         newBtn.classList.remove('active');
         newBtn.querySelector('i').className = 'fa-regular fa-heart';
-        showToast('Убрано из избранного', 'fa-regular fa-heart');
+        showToast(t('toast_removed_fav'), 'fa-regular fa-heart');
       } else {
         favs.push(drinkId);
         newBtn.classList.add('active');
         newBtn.querySelector('i').className = 'fa-solid fa-heart';
-        showToast(name + ' в избранном', 'fa-solid fa-heart');
+        showToast(name + ' ' + t('toast_added_fav'), 'fa-solid fa-heart');
         if (favs.length >= 3) unlockAchievement('fav3');
       }
       saveFavs(favs);
@@ -1185,12 +1448,13 @@ function renderBrandDropdown() {
     return;
   }
 
-  // Верхний уровень — список марок
+  // Верхний уровень — список марок (кофе не входит — у него своя секция)
   const counts = {};
-  drinks.forEach(d => { counts[d.key] = (counts[d.key] || 0) + 1; });
+  drinks.forEach(d => { if (d.key === 'coffee') return; counts[d.key] = (counts[d.key] || 0) + 1; });
+  const nonCoffeeTotal = drinks.filter(d => d.key !== 'coffee').length;
 
   const allActive = activeBrandFilter === 'all';
-  let html = `<div class="brand-option ${allActive ? 'active' : ''}" data-brand="all"><div class="brand-dot" style="background:var(--accent)"></div>Все марки<div class="brand-count">${drinks.length}</div></div>`;
+  let html = `<div class="brand-option ${allActive ? 'active' : ''}" data-brand="all"><div class="brand-dot" style="background:var(--accent)"></div>Все марки<div class="brand-count">${nonCoffeeTotal}</div></div>`;
 
   for (const key in counts) {
     const name = bNames[key] || key;
@@ -1250,12 +1514,59 @@ document.getElementById('volumeToggle').addEventListener('click', (e) => {
   document.getElementById('brandToggle').classList.remove('open');
   document.getElementById('sortDropdown').classList.remove('open');
   document.getElementById('sortToggle').classList.remove('open');
+  document.getElementById('caffeineDropdown').classList.remove('open');
+  document.getElementById('caffeineToggle').classList.remove('open');
   document.getElementById('volumeDropdown').classList.toggle('open');
   document.getElementById('volumeToggle').classList.toggle('open');
 });
 document.addEventListener('click', () => {
   document.getElementById('volumeDropdown').classList.remove('open');
   document.getElementById('volumeToggle').classList.remove('open');
+});
+
+function renderCaffeineDropdown() {
+  const dropdown = document.getElementById('caffeineDropdown');
+  if (!dropdown) return;
+  const buckets = [
+    { key: 'all', label: 'Любой кофеин' },
+    { key: 'low', label: 'До 100 мг' },
+    { key: 'mid', label: '100–160 мг' },
+    { key: 'high', label: 'Более 160 мг' }
+  ];
+  let html = '';
+  buckets.forEach(b => {
+    const count = b.key === 'all' ? drinks.length : drinks.filter(d => caffeineBucket(parseCaffeineMg(d.caffeine) || 0) === b.key).length;
+    html += `<div class="brand-option ${activeCaffeineFilter === b.key ? 'active' : ''}" data-caffeine="${b.key}"><div class="brand-dot" style="background:${b.key === 'all' ? 'var(--accent)' : '#888'}"></div>${b.label}<div class="brand-count">${count}</div></div>`;
+  });
+  dropdown.innerHTML = html;
+
+  dropdown.querySelectorAll('.brand-option').forEach(opt => {
+    opt.addEventListener('click', (e) => {
+      e.stopPropagation();
+      activeCaffeineFilter = opt.dataset.caffeine;
+      dropdown.classList.remove('open');
+      document.getElementById('caffeineToggle').classList.remove('open');
+      renderCaffeineDropdown();
+      applyFilters();
+    });
+  });
+}
+renderCaffeineDropdown();
+
+document.getElementById('caffeineToggle').addEventListener('click', (e) => {
+  e.stopPropagation();
+  document.getElementById('brandDropdown').classList.remove('open');
+  document.getElementById('brandToggle').classList.remove('open');
+  document.getElementById('sortDropdown').classList.remove('open');
+  document.getElementById('sortToggle').classList.remove('open');
+  document.getElementById('volumeDropdown').classList.remove('open');
+  document.getElementById('volumeToggle').classList.remove('open');
+  document.getElementById('caffeineDropdown').classList.toggle('open');
+  document.getElementById('caffeineToggle').classList.toggle('open');
+});
+document.addEventListener('click', () => {
+  document.getElementById('caffeineDropdown').classList.remove('open');
+  document.getElementById('caffeineToggle').classList.remove('open');
 });
 
 // Тоггл выпадающего меню
@@ -1283,7 +1594,8 @@ function generateSortDropdown() {
     { key: 'rating', label: 'По рейтингу' },
     { key: 'new', label: 'Сначала новые' },
     { key: 'old', label: 'Сначала старые' },
-    { key: 'az', label: 'А — Я' }
+    { key: 'az', label: 'А — Я' },
+    { key: 'cheap', label: 'Дешевле за литр' }
   ];
   let html = `<div class="brand-option ${noSugarOnly ? 'active' : ''}" data-nosugar="1">
       <div class="brand-dot" style="background:#00e5ff"></div>Без сахара
@@ -1348,7 +1660,7 @@ function highlightSearchMatches() {
 }
 
 function refreshResultsMeta() {
-  const total = drinks.length;
+  const total = drinks.filter(d => d.key !== 'coffee').length;
   const cards = document.querySelectorAll('#cardsGrid .energy-card');
   let visible = 0;
   cards.forEach(c => { if (c.style.display !== 'none' && !c.classList.contains('card-hidden')) visible++; });
@@ -1387,6 +1699,9 @@ function resetAllFilters() {
   activeBrandFilter = 'all';
   activeLineFilter = null;
   noSugarOnly = false;
+  activeVolumeFilter = 'all';
+  activeCaffeineFilter = 'all';
+  searchQuery = '';
   const drinkSearch = document.getElementById('drinkSearch');
   if (drinkSearch) drinkSearch.value = '';
   const clearBtn = document.getElementById('clearSearch');
@@ -1395,6 +1710,8 @@ function resetAllFilters() {
   const allBtn = document.querySelector('.filter-btn[data-filter="all"]');
   if (allBtn) allBtn.classList.add('active');
   if (typeof renderBrandDropdown === 'function') renderBrandDropdown();
+  if (typeof renderVolumeDropdown === 'function') renderVolumeDropdown();
+  if (typeof renderCaffeineDropdown === 'function') renderCaffeineDropdown();
   if (typeof generateSortDropdown === 'function') generateSortDropdown();
   document.querySelectorAll('.energy-card').forEach(c => { c.style.display = ''; c.classList.remove('card-hidden'); });
   applyFilters();
@@ -1439,7 +1756,12 @@ function applyFilters() {
       showByVolume = card.dataset.volume === activeVolumeFilter;
     }
 
-    if (showByRating && showByBrand && showBySearch && showByVolume) {
+    let showByCaffeine = true;
+    if (activeCaffeineFilter !== 'all') {
+      showByCaffeine = caffeineBucket(parseInt(card.dataset.caffeine, 10) || 0) === activeCaffeineFilter;
+    }
+
+    if (showByRating && showByBrand && showBySearch && showByVolume && showByCaffeine) {
       card.classList.remove('card-hidden'); 
       card.style.display = ''; 
     } else { 
@@ -1449,7 +1771,19 @@ function applyFilters() {
   });
   refreshResultsMeta();
   highlightSearchMatches();
+  updateFiltersResetBtn();
 }
+
+function updateFiltersResetBtn() {
+  const btn = document.getElementById('filtersResetBtn');
+  if (!btn) return;
+  const activeRatingFilter = document.querySelector('.filter-btn.active:not(.brand-toggle)')?.dataset.filter || 'all';
+  const isActive = activeRatingFilter !== 'all' || activeBrandFilter !== 'all' || noSugarOnly || activeVolumeFilter !== 'all' || activeCaffeineFilter !== 'all' || !!searchQuery;
+  btn.classList.toggle('show', isActive);
+}
+
+const filtersResetBtn = document.getElementById('filtersResetBtn');
+if (filtersResetBtn) filtersResetBtn.addEventListener('click', resetAllFilters);
 
 filterBtns.forEach(btn => {
   btn.addEventListener('click', () => {
@@ -1524,12 +1858,12 @@ const SUGGEST_WORKER_URL = 'https://buzzrate-suggest.tleorg827.workers.dev';
     const sinceLast = Date.now() - lastSent;
     if (sinceLast < SUGGEST_COOLDOWN_MS) {
       const waitSec = Math.ceil((SUGGEST_COOLDOWN_MS - sinceLast) / 1000);
-      showToast(`Не так быстро — подожди ${waitSec} сек.`, 'fa-solid fa-clock');
+      showToast(`${t('toast_slow_down')} ${waitSec} ${t('toast_seconds')}`, 'fa-solid fa-clock');
       return;
     }
 
     sendSuggestBtn.disabled = true;
-    sendSuggestBtn.textContent = 'Отправка...';
+    sendSuggestBtn.textContent = t('suggest_sending');
 
     fetch(SUGGEST_WORKER_URL, {
       method: 'POST',
@@ -1539,22 +1873,22 @@ const SUGGEST_WORKER_URL = 'https://buzzrate-suggest.tleorg827.workers.dev';
       .then(res => res.json())
       .then(data => {
         sendSuggestBtn.disabled = false;
-        sendSuggestBtn.textContent = 'Отправить';
+        sendSuggestBtn.textContent = t('suggest_send');
         if (data.ok) {
           safeLSSet('buzz_last_suggest_ts', String(Date.now()));
           suggestModal.classList.remove('open');
           drinkNameInput.value = ''; drinkCommentInput.value = '';
           if (nameCounter) nameCounter.textContent = '0 / 80';
           if (commentCounter) commentCounter.textContent = '0 / 300';
-          showToast(`"${name}" отправлен на обзор!`, 'fa-solid fa-check');
+          showToast(`"${name}" ${t('toast_suggest_sent')}`, 'fa-solid fa-check');
         } else {
-          showToast('Ошибка отправки. Попробуй позже.', 'fa-solid fa-triangle-exclamation');
+          showToast(t('toast_error_send'), 'fa-solid fa-triangle-exclamation');
         }
       })
       .catch(() => {
         sendSuggestBtn.disabled = false;
-        sendSuggestBtn.textContent = 'Отправить';
-        showToast('Нет соединения. Попробуй позже.', 'fa-solid fa-triangle-exclamation');
+        sendSuggestBtn.textContent = t('suggest_send');
+        showToast(t('toast_no_connection'), 'fa-solid fa-triangle-exclamation');
       });
   });
 }
@@ -1603,8 +1937,8 @@ function openVideoModal(card) {
     modalVideoWrap.insertAdjacentHTML('beforeend',
       `<div class="no-video-msg">
         <div class="no-video-face">(╥﹏╥)</div>
-        <p>ОБЗОР ПОКА НЕТ</p>
-        <span class="no-video-sub">Скоро добавим</span>
+        <p>${t('details_no_video').toUpperCase()}</p>
+        <span class="no-video-sub">${t('details_no_video_sub')}</span>
       </div>`);
     return;
   }
@@ -1691,7 +2025,7 @@ if (modalTiktokBtn) {
       let link = `https://www.tiktok.com/@varna.23.live/video/${currentVideoId}`;
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(link).then(() => {
-          showToast(`Ссылка скопирована!`, 'fa-solid fa-link');
+          showToast(t('toast_link_copied'), 'fa-solid fa-link');
         }).catch(() => {
           showToast(`Ссылка: ${link}`, 'fa-brands fa-tiktok');
         });
@@ -1731,7 +2065,7 @@ document.querySelectorAll('.mobile-link-btn').forEach(link => {
   link.addEventListener('click', (e) => {
     const targetId = link.getAttribute('href'); // Узнаем, куда нажали (например #mapSection)
 
-    if (!targetId || targetId.charAt(0) !== '#') {
+    if (!targetId || targetId.charAt(0) !== '#' || targetId.length <= 1) {
       // Внешняя ссылка (TikTok, Telegram и т.п.) — НЕ вызываем preventDefault,
       // даём браузеру самому её открыть (target="_blank" уже в разметке),
       // только закрываем выезжающую панель.
@@ -1764,8 +2098,8 @@ const mapLocations = [
     name: "Grand Mall Varna", 
     lat: 43.2040, 
     lng: 27.9140, 
-    img: "https://images.unsplash.com/photo-1567449303078-57ad995bd329?w=600&q=80", // Замени на фото фасада
-    inventory: ["hell", "redbull", "monster"] // <--- ЗДЕСЬ УКАЗЫВАЕШЬ ЧТО ПРОДАЕТСЯ
+    img: "https://images.unsplash.com/photo-1567449303078-57ad995bd329?w=600&q=80",
+    inventory: ["hell", "redbull", "monster"]
   },
   { 
     id: 2, 
@@ -1789,15 +2123,15 @@ const mapLocations = [
     lat: 43.2150, 
     lng: 27.9050, 
     img: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&q=80",
-    inventory: ["redbull", "rockstar"] 
+    inventory: ["redbull"] 
   },
   { 
     id: 5, 
     name: "Кауфланд (Център)", 
     lat: 43.2090, 
     lng: 27.9110, 
-    img: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&q=80",
-    inventory: ["hell", "monster", "redbull", "burn", "c4"] // Если много брендов - просто пиши их через запятую
+    img: "https://images.unsplash.com/photo-1601599963565-b7f49dbf6e35?w=600&q=80",
+    inventory: ["hell", "monster", "redbull"]
   },
       { 
     id: 6, 
@@ -1816,7 +2150,39 @@ const mapLocations = [
         </p>
       </div>
     `
-  }
+  },
+ { 
+    id: 7, 
+    name: "Jo Market", 
+    lat: 43.210583, 
+    lng: 27.930139, 
+    img: "https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=600&q=80",
+    inventory: ["hell", "monster", "redbull"]
+  },
+  { 
+    id: 8, 
+    name: "Tobacco & liquor shop", 
+    lat: 43.204110, 
+    lng: 27.912922, 
+    img: "https://images.unsplash.com/photo-1550989460-0adf9ea622e2?w=600&q=80",
+    inventory: ["monster", "redbull"]
+  },
+  { 
+    id: 9, 
+    name: "Супермаркет Одесос", 
+    lat: 43.1992950, 
+    lng: 27.9181750, 
+    img: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&q=80",
+    inventory: ["monster", "redbull"]
+  },
+  { 
+    id: 10, 
+    name: "IQOS", 
+    lat: 43.2052570, 
+    lng: 27.9204730, 
+    img: "https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd?w=600&q=80",
+    inventory: ["hell", "monster", "redbull"]
+  },
 ];
 
 // ==========================================
@@ -2143,7 +2509,7 @@ document.addEventListener('DOMContentLoaded', () => { if (typeof updateThemeColo
   if (safeLSGet('buzz_key_activated', null)) {
     var kbtn = document.getElementById('openKeyModal');
     if (kbtn) {
-      kbtn.innerHTML = '<i class="fa-solid fa-check"></i> Ключ активирован';
+      kbtn.innerHTML = '<i class="fa-solid fa-check"></i> ' + t('key_activated_btn');
       kbtn.style.pointerEvents = 'none';
       kbtn.style.opacity = '0.4';
     }
@@ -2164,7 +2530,7 @@ document.addEventListener('DOMContentLoaded', () => { if (typeof updateThemeColo
     var kh = keyModal.querySelector('h2');
     if (kp) kp.style.display = '';
     if (ki) ki.style.display = '';
-    if (kh) kh.textContent = 'Секретный ключ';
+    if (kh) kh.textContent = t('key_title');
     setTimeout(function() { keyInput.focus(); }, 300);
   });
 
@@ -2179,7 +2545,7 @@ document.addEventListener('DOMContentLoaded', () => { if (typeof updateThemeColo
     var entered = keyInput.value.trim().toUpperCase();
 
     if (!entered) {
-      keyError.textContent = 'Введи код';
+      keyError.textContent = t('key_enter_code');
       keyInput.style.borderColor = '#ff3b5c';
       setTimeout(function() { keyInput.style.borderColor = ''; }, 1500);
       return;
@@ -2200,7 +2566,7 @@ document.addEventListener('DOMContentLoaded', () => { if (typeof updateThemeColo
 
       var btn = document.getElementById('openKeyModal');
       if (btn) {
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> Ключ активирован';
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> ' + t('key_activated_btn');
         btn.style.pointerEvents = 'none';
         btn.style.opacity = '0.4';
       }
@@ -2208,12 +2574,12 @@ document.addEventListener('DOMContentLoaded', () => { if (typeof updateThemeColo
       var desktopKeyBtn = document.getElementById('openKeyModalDesktop');
       if (desktopKeyBtn) {
         desktopKeyBtn.classList.add('activated');
-        desktopKeyBtn.innerHTML = '<i class="fa-solid fa-key"></i> Код активирован';
+        desktopKeyBtn.innerHTML = '<i class="fa-solid fa-key"></i> ' + t('key_activated_btn');
       }
-      showToast('Ключ активирован!', 'fa-solid fa-trophy');
+      showToast(t('key_activated_toast'), 'fa-solid fa-trophy');
       unlockAchievement('key');
     } else {
-      keyError.textContent = 'Неверный код';
+      keyError.textContent = t('key_wrong_code');
       keyInput.style.borderColor = '#ff3b5c';
       keyInput.value = '';
       setTimeout(function() { keyInput.style.borderColor = ''; keyError.textContent = ''; }, 2000);
@@ -2229,7 +2595,7 @@ document.addEventListener('DOMContentLoaded', () => { if (typeof updateThemeColo
   if (desktopKeyBtn) {
     if (safeLSGet('buzz_key_activated', null)) {
       desktopKeyBtn.classList.add('activated');
-      desktopKeyBtn.innerHTML = '<i class="fa-solid fa-key"></i> Код активирован';
+      desktopKeyBtn.innerHTML = '<i class="fa-solid fa-key"></i> ' + t('key_activated_btn');
     }
     desktopKeyBtn.addEventListener('click', function() {
       if (safeLSGet('buzz_key_activated', null)) return;
@@ -2244,7 +2610,7 @@ document.addEventListener('DOMContentLoaded', () => { if (typeof updateThemeColo
       var kh = keyModal.querySelector('h2');
       if (kp) kp.style.display = '';
       if (ki) ki.style.display = '';
-      if (kh) kh.textContent = 'Секретный ключ';
+      if (kh) kh.textContent = t('key_title');
       setTimeout(function() { keyInput.focus(); }, 300);
     });
   }
@@ -2355,16 +2721,16 @@ function getAchievementDisplay(id) {
 
   if (id === 'night_owl') {
     const stage = getNightOwlStage();
-    if (stage >= 3) return { name: 'Дитя ночи', icon: 'fa-star-and-crescent', desc: 'Луна тебя уже узнаёт в лицо. Может, поспишь иногда?', tier: 'purple', color: '#a78bfa' };
-    if (stage === 2) return { name: 'Ночь', icon: 'fa-moon', desc: 'Опять ты. Второй раз подряд — это уже не случайность.', tier: 'silver' };
-    return { name: 'Ночь', icon: 'fa-moon', desc: 'Кажется, ты сова. Или просто не спится — бывает.', tier: 'bronze' };
+    if (stage >= 3) return { name: 'Дитя ночи', icon: 'fa-star-and-crescent', desc: 'Луна тебя уже узнаёт в лицо. Может, поспишь иногда?', tier: 'purple', color: '#a78bfa', howTo: base.howTo };
+    if (stage === 2) return { name: 'Ночь', icon: 'fa-moon', desc: 'Опять ты. Второй раз подряд — это уже не случайность.', tier: 'silver', howTo: base.howTo };
+    return { name: 'Ночь', icon: 'fa-moon', desc: 'Кажется, ты сова. Или просто не спится — бывает.', tier: 'bronze', howTo: base.howTo };
   }
 
   if (id === 'early_bird') {
     const stage = getEarlyBirdStage();
-    if (stage >= 3) return { name: 'Заря', icon: 'fa-sun', desc: 'Ты и рассвет теперь на короткой ноге. Три раза подряд — почти дружба.', tier: 'gold', color: '#f5e6c8' };
-    if (stage === 2) return { name: 'Ранняя пташка', icon: 'fa-sun', desc: 'Второй раз подряд. Это уже не случайность, а диагноз.', tier: 'silver' };
-    return { name: 'Ранняя пташка', icon: 'fa-sun', desc: 'Кто-то встал раньше будильника. Уважение.', tier: 'bronze' };
+    if (stage >= 3) return { name: 'Заря', icon: 'fa-sun', desc: 'Ты и рассвет теперь на короткой ноге. Три раза подряд — почти дружба.', tier: 'gold', color: '#f5e6c8', howTo: base.howTo };
+    if (stage === 2) return { name: 'Ранняя пташка', icon: 'fa-sun', desc: 'Второй раз подряд. Это уже не случайность, а диагноз.', tier: 'silver', howTo: base.howTo };
+    return { name: 'Ранняя пташка', icon: 'fa-sun', desc: 'Кто-то встал раньше будильника. Уважение.', tier: 'bronze', howTo: base.howTo };
   }
 
   return base;
@@ -2390,7 +2756,7 @@ function getAchievementDisplay(id) {
     calcDropdown.innerHTML = '';
     
     if (filtered.length === 0) {
-      calcDropdown.innerHTML = '<div style="padding:12px;color:#555;font-family:Oswald;">Ничего не найдено</div>';
+      calcDropdown.innerHTML = '<div style="padding:12px;color:#555;font-family:Oswald;">' + t('calc_not_found') + '</div>';
       return;
     }
 
@@ -2483,15 +2849,15 @@ function getAchievementDisplay(id) {
 
     if (total <= 200) {
       calcBar.style.background = '#00ff41'; calcText.style.color = '#00ff41';
-      const normalMsgs = ['Система в норме','Кофеин распределён равномерно','Бодрость активна','Можно ещё чуть-чуть','Сердце стабильно','Энергия в балансе'];
+      const normalMsgs = I18N[getLang()].calc_normal || I18N.ru.calc_normal;
 calcStatus.textContent = normalMsgs[Math.floor(Math.random() * normalMsgs.length)]; calcStatus.style.color = '#00ff41';
     } else if (total <= 350) {
       calcBar.style.background = '#ffd700'; calcText.style.color = '#ffd700';
-     const warnMsgs = ['Внимание: повышенная нагрузка','Сердце ускоряется','Кофеин на пределе','Рекомендую притормозить','Пульс выше нормы'];
+     const warnMsgs = I18N[getLang()].calc_warn || I18N.ru.calc_warn;
 calcStatus.textContent = warnMsgs[Math.floor(Math.random() * warnMsgs.length)]; calcStatus.style.color = '#ffd700';
     } else {
       calcBar.style.background = '#ff3b5c'; calcText.style.color = '#ff3b5c';
-      const dangerMsgs = ['ОПАСНОСТЬ: ПРЕВЫШЕН ДОПУСТИМЫЙ ЛИМИТ','СТОП! Хватит на сегодня','Ты переусердствовал','Завязывай с кофеином','Сердце не железное'];
+      const dangerMsgs = I18N[getLang()].calc_danger || I18N.ru.calc_danger;
 calcStatus.textContent = dangerMsgs[Math.floor(Math.random() * dangerMsgs.length)]; calcStatus.style.color = '#ff3b5c';
             unlockAchievement('caffeine');
     }
@@ -2588,7 +2954,7 @@ calcStatus.textContent = dangerMsgs[Math.floor(Math.random() * dangerMsgs.length
   };
 
   function updateCompareUI() {
-    compareFloat.innerHTML = `<i class="fa-solid fa-code-compare"></i> Сравнить (${compareList.length}/2)`;
+    compareFloat.innerHTML = `<i class="fa-solid fa-code-compare"></i> ${t('compare_btn')} (${compareList.length}/2)`;
     
     if (compareList.length === 2) {
       compareFloat.style.transform = 'translateX(-50%) scale(1)';
@@ -2614,17 +2980,17 @@ calcStatus.textContent = dangerMsgs[Math.floor(Math.random() * dangerMsgs.length
     if (!d1 || !d2) return;
 
     const stats = [
-      { label: 'ОБЪЕМ (МЛ)', v1: getNum(d1.flavor), v2: getNum(d2.flavor) },
-      { label: 'КОФЕИН (МГ)', v1: getNum(d1.caffeine), v2: getNum(d2.caffeine) },
-      { label: 'САХАР (Г)', v1: getNum(d1.sugar), v2: getNum(d2.sugar) },
-      { label: 'КАЛОРИИ (ККАЛ)', v1: getNum(d1.cal), v2: getNum(d2.cal) },
-      { label: 'PH (КИСЛОТНОСТЬ)', v1: getNum(d1.ph), v2: getNum(d2.ph) }
+      { label: t('compare_volume'), v1: getNum(d1.flavor), v2: getNum(d2.flavor) },
+      { label: t('compare_caffeine'), v1: getNum(d1.caffeine), v2: getNum(d2.caffeine) },
+      { label: t('compare_sugar'), v1: getNum(d1.sugar), v2: getNum(d2.sugar) },
+      { label: t('compare_calories'), v1: getNum(d1.cal), v2: getNum(d2.cal) },
+      { label: t('compare_ph'), v1: getNum(d1.ph), v2: getNum(d2.ph) }
     ];
 
         let html = '';
     
-    html += `<div class="compare-col"><h3>${d1.brand}</h3><div class="compare-price">${d1.price ? d1.price : 'Цена уточняется'}</div></div>`;
-    html += `<div class="compare-col"><h3>${d2.brand}</h3><div class="compare-price">${d2.price ? d2.price : 'Цена уточняется'}</div></div>`;
+    html += `<div class="compare-col"><h3>${d1.brand}</h3><div class="compare-price">${d1.price ? d1.price : t('compare_price_tbd')}</div></div>`;
+    html += `<div class="compare-col"><h3>${d2.brand}</h3><div class="compare-price">${d2.price ? d2.price : t('compare_price_tbd')}</div></div>`;
 
     stats.forEach(stat => {
       const maxVal = Math.max(stat.v1, stat.v2, 1); 
@@ -2691,14 +3057,22 @@ renderCards();
 document.getElementById('randomBtn').addEventListener('click', function() {
   const cards = document.querySelectorAll('.energy-card');
   if (cards.length === 0) return;
-  
-  // Фаза 1: Быстрый глитч (перемешивание карточек)
+
+  // Фаза 1: визуальный глитч — подсвечиваем случайные карточки классом,
+  // БЕЗ перестановки в DOM (insertBefore на каждый тик грузил layout/repaint
+  // всей сетки и тормозил на слабых устройствах)
   let shuffleCount = 0;
+  let lastHighlighted = null;
   const shuffleInterval = setInterval(() => {
+    if (lastHighlighted) lastHighlighted.classList.remove('roulette-glitch');
     const randomIndex = Math.floor(Math.random() * cards.length);
-    grid.insertBefore(cards[randomIndex], grid.firstChild);
+    lastHighlighted = cards[randomIndex];
+    lastHighlighted.classList.add('roulette-glitch');
     shuffleCount++;
-    if (shuffleCount > 25) clearInterval(shuffleInterval);
+    if (shuffleCount > 25) {
+      clearInterval(shuffleInterval);
+      if (lastHighlighted) lastHighlighted.classList.remove('roulette-glitch');
+    }
   }, 60);
 
   // Фаза 2: Выбор победителя
@@ -3275,15 +3649,18 @@ const BlockBlastGame = (function() {
   const CHARGES_KEY = 'buzz_blockblast_charges';
   const GRANT_KEY = 'buzz_blockblast_last_grant_date'; // последний обработанный день (YYYY-MM-DD)
 
-  const MODES = {
-    classic: { name: 'Классика', grid: 8, desc: '8×8, без ограничений', mask: null },
-    mini:    { name: 'Мини',     grid: 6, desc: '6×6, компактно и быстро', mask: null },
-    cross:   { name: 'Крест',    grid: 9, desc: '9×9, углы закрыты', mask: (r, c, g) => {
+  function getModes() {
+    return {
+      classic: { name: t('bb_mode_classic'), grid: 8, desc: t('bb_mode_classic_desc'), mask: null },
+      mini:    { name: t('bb_mode_mini'),     grid: 6, desc: t('bb_mode_mini_desc'), mask: null },
+      cross:   { name: t('bb_mode_cross'),    grid: 9, desc: t('bb_mode_cross_desc'), mask: (r, c, g) => {
         const q = Math.floor(g / 3);
         const blockedZone = (v) => v < q || v >= g - q;
         return blockedZone(r) && blockedZone(c);
       } }
-  };
+    };
+  }
+  const MODES = getModes();
   let currentModeKey = 'classic';
 
   const EASY_SHAPES = [
@@ -3309,6 +3686,7 @@ const BlockBlastGame = (function() {
   let bestScore = parseInt(safeLSGet('buzz_blockblast_best', '0'), 10) || 0;
   let gameOver = false;
   let hasWon = false;
+  let hasMastered = false;
 
   let overlay = null;
   let canvas = null;
@@ -3443,6 +3821,7 @@ const BlockBlastGame = (function() {
     const linesCleared = rows.length + cols.length;
     score += linesCleared * 100;
     updateScore();
+    if (linesCleared >= 3 && typeof unlockAchievement === 'function') unlockAchievement('blockblast_combo');
   }
 
   function drawFlashCell(col, row, t) {
@@ -3490,7 +3869,7 @@ const BlockBlastGame = (function() {
     if (!hasValidMove()) {
       gameOver = true;
       if (window.AudioSys) { try { AudioSys.play('error'); } catch(e) {} }
-      if (typeof showToast === 'function') showToast('💀 Игра окончена! Счёт: ' + score, 'fa-solid fa-skull');
+      if (typeof showToast === 'function') showToast('💀 ' + t('bb_game_over') + ' ' + score, 'fa-solid fa-skull');
       if (score > bestScore) { bestScore = score; safeLSSet('buzz_blockblast_best', bestScore); }
       updateBestScore();
       renderPowerButtons();
@@ -3503,6 +3882,11 @@ const BlockBlastGame = (function() {
       hasWon = true;
       if (window.AudioSys) { try { AudioSys.play('achievement'); } catch(e) {} }
       if (typeof showToast === 'function') showToast('🏆 ПОБЕДА! ' + WIN_SCORE + ' очков достигнуто — играй дальше на рекорд!', 'fa-solid fa-trophy');
+      if (typeof unlockAchievement === 'function') unlockAchievement('blockblast_win');
+    }
+    if (!hasMastered && score >= 3000) {
+      hasMastered = true;
+      if (typeof unlockAchievement === 'function') unlockAchievement('blockblast_master');
     }
   }
 
@@ -3522,6 +3906,7 @@ const BlockBlastGame = (function() {
     score = 0;
     gameOver = false;
     hasWon = false;
+    hasMastered = false;
     powerActive = null;
     updateScore();
     updateBestScore();
@@ -3618,7 +4003,7 @@ const BlockBlastGame = (function() {
       ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2 - 10);
       ctx.fillStyle = '#fff';
       ctx.font = '14px "Source Sans 3", sans-serif';
-      ctx.fillText('Нажмите "Заново"', canvas.width / 2, canvas.height / 2 + 20);
+      ctx.fillText(t('bb_restart_hint'), canvas.width / 2, canvas.height / 2 + 20);
     }
   }
 
@@ -3681,9 +4066,9 @@ const BlockBlastGame = (function() {
     const achCount = getAchCount();
     wrap.innerHTML = '';
     const defs = [
-      { key: 'bomb', icon: 'fa-explosion', need: 5, label: 'Бомба' },
-      { key: 'firework', icon: 'fa-burst', need: 10, label: 'Салют' },
-      { key: 'rocket', icon: 'fa-rocket', need: 15, label: 'Ракета' }
+      { key: 'bomb', icon: 'fa-explosion', need: 5, label: t('bb_bomb') },
+      { key: 'firework', icon: 'fa-burst', need: 10, label: t('bb_firework') },
+      { key: 'rocket', icon: 'fa-rocket', need: 15, label: t('bb_rocket') }
     ];
     defs.forEach(d => {
       if (!godMode && achCount < d.need) return;
@@ -3695,8 +4080,8 @@ const BlockBlastGame = (function() {
       btn.classList.toggle('active', powerActive === d.key);
       btn.innerHTML = `<i class="fa-solid ${d.icon}"></i><span>${d.label}</span><b class="power-count">${godMode ? '∞' : '×' + count}</b>`;
       btn.title = (!godMode && count <= 0)
-        ? 'Нет зарядов — новый придёт со следующим визитом'
-        : (d.key === 'rocket' ? 'Крест на весь экран — нажми на клетку' : (d.key === 'firework' ? 'Правый клик — сменить строку/столбец, левый — очистить' : 'Квадрат 2×2 — нажми на клетку'));
+        ? t('bb_no_charges')
+        : (d.key === 'rocket' ? t('bb_rocket_tip') : (d.key === 'firework' ? t('bb_firework_tip') : t('bb_bomb_tip')));
       btn.addEventListener('click', () => onPowerButtonClick(d.key));
       wrap.appendChild(btn);
     });
@@ -3707,12 +4092,12 @@ const BlockBlastGame = (function() {
     const legend = document.getElementById('blockblastPowerLegend');
     if (!legend) return;
     const items = [];
-    if (godMode || achCount >= 5) items.push('<i class="fa-solid fa-explosion" style="color:#ff3b5c"></i> Бомба — квадрат 2×2 от клетки');
-    if (godMode || achCount >= 10) items.push('<i class="fa-solid fa-burst" style="color:#fbbf24"></i> Салют — строка или столбец (ПКМ — переключить)');
-    if (godMode || achCount >= 15) items.push('<i class="fa-solid fa-rocket" style="color:#a855f7"></i> Ракета — крест через всё поле, нажми на клетку');
+    if (godMode || achCount >= 5) items.push('<i class="fa-solid fa-explosion" style="color:#ff3b5c"></i> ' + t('bb_legend_bomb'));
+    if (godMode || achCount >= 10) items.push('<i class="fa-solid fa-burst" style="color:#fbbf24"></i> ' + t('bb_legend_firework'));
+    if (godMode || achCount >= 15) items.push('<i class="fa-solid fa-rocket" style="color:#a855f7"></i> ' + t('bb_legend_rocket'));
     legend.innerHTML = items.length
       ? items.map(i => `<div class="power-legend-row">${i}</div>`).join('')
-      : '<div class="power-legend-row" style="color:#555">Способности появятся с первыми достижениями</div>';
+      : '<div class="power-legend-row" style="color:#555">' + t('bb_legend_empty') + '</div>';
   }
 
   function onPowerButtonClick(key) {
@@ -3916,7 +4301,7 @@ const BlockBlastGame = (function() {
       <div class="blockblast-modal blockblast-mode-select">
         <button class="blockblast-close" id="blockblastCloseBtn" aria-label="Закрыть"><i class="fa-solid fa-xmark"></i></button>
         <div class="blockblast-header">
-          <div class="blockblast-logo"><i class="fa-solid fa-bolt"></i> BUZZ BLAST</div>
+          <div class="blockblast-logo"><i class="fa-solid fa-bolt"></i> ${t('bb_logo')}</div>
         </div>
         <div class="blockblast-mode-grid">${modeCards}</div>
       </div>
@@ -3941,7 +4326,7 @@ const BlockBlastGame = (function() {
       <div class="blockblast-modal">
         <button class="blockblast-close" id="blockblastCloseBtn" aria-label="Закрыть"><i class="fa-solid fa-xmark"></i></button>
         <div class="blockblast-header">
-          <div class="blockblast-logo"><i class="fa-solid fa-bolt"></i> BUZZ BLAST</div>
+          <div class="blockblast-logo"><i class="fa-solid fa-bolt"></i> ${t('bb_logo')}</div>
           <div class="blockblast-mode-tag">${MODES[currentModeKey].name}</div>
         </div>
         <div class="blockblast-body">
@@ -3949,21 +4334,21 @@ const BlockBlastGame = (function() {
           <div class="blockblast-side">
             <div class="blockblast-stats">
               <div class="blockblast-block">
-                <div class="blockblast-label">SCORE</div>
+                <div class="blockblast-label">${t('bb_score')}</div>
                 <div class="blockblast-value" id="blockblastScore">0</div>
               </div>
               <div class="blockblast-block">
-                <div class="blockblast-label">BEST</div>
+                <div class="blockblast-label">${t('bb_best')}</div>
                 <div class="blockblast-value" id="blockblastBest">${bestScore}</div>
               </div>
             </div>
             <div class="blockblast-figures" id="blockblastFigures"></div>
             <div class="blockblast-powers" id="blockblastPowers"></div>
             <div class="blockblast-power-legend" id="blockblastPowerLegend"></div>
-            <button class="blockblast-restart" id="blockblastRestart">Заново</button>
-            <button class="blockblast-restart blockblast-changemode" id="blockblastChangeMode">Сменить режим</button>
-           <div class="blockblast-hint">Перетащите фигуру на поле. Для силы — нажми кнопку, затем клетку.</div>
-            ${MODES[currentModeKey].mask ? '<div class="blockblast-hint blockblast-hint-wall"><i class="fa-solid fa-ban"></i> Красные клетки — стена. Линия очищается, только если в ней нет стен — собирай по центру.</div>' : ''}
+            <button class="blockblast-restart" id="blockblastRestart">${t('bb_restart')}</button>
+            <button class="blockblast-restart blockblast-changemode" id="blockblastChangeMode">${t('bb_change_mode')}</button>
+           <div class="blockblast-hint">${t('bb_hint')}</div>
+            ${MODES[currentModeKey].mask ? '<div class="blockblast-hint blockblast-hint-wall"><i class="fa-solid fa-ban"></i> ' + t('bb_hint_wall') + '</div>' : ''}
           </div>
         </div>
       </div>
@@ -4018,6 +4403,7 @@ const BlockBlastGame = (function() {
 
   function open() {
     if (overlay) { close(); return; }
+    Object.assign(MODES, getModes());
     if (window.AudioSys && typeof AudioSys.resume === 'function') { try { AudioSys.resume(); } catch(e) {} }
     loadCharges();
     grantDailyCharges();
@@ -4944,7 +5330,7 @@ const Preacher = (function() {
     }
            else if (command === 'callsign') {
       const name = args.slice(1).join(' ').trim();
-      const PROFANITY_ROOTS = ['хуй', 'хуе', 'хуя', 'бляд', 'пизд', 'ебан', 'ебат', 'ёбан', 'сука', 'мудак', 'мразь', 'долбо', 'fuck', 'shit', 'bitch', 'asshole'];
+      const PROFANITY_ROOTS = ['хуй', 'хуе', 'хуя', 'бляд', 'пизд', 'ебан', 'ебат', 'ёбан', 'сука', 'мудак', 'мразь', 'долбо', 'fuck', 'shit', 'bitch', 'asshole','негр'];
       const nameLower = name.toLowerCase();
       const SPECIAL_CALLSIGN_REPLIES = {
         'черт': 'Привет, сам чёрт.',
@@ -5178,28 +5564,28 @@ const rd = drinks[Math.abs(_seed) % drinks.length];
     const agentCallsign = getAgentCallsign();
     profContent.innerHTML = `
       <div class="profile-stat-row">
-        <span class="profile-stat-label">AGENT_ID</span>
+        <span class="profile-stat-label">${t('profile_agent_id')}</span>
         <span class="profile-stat-val">#${agentId}${agentCallsign ? ' — ' + agentCallsign : ''}</span>
       </div>
       <div class="profile-stat-row">
-        <span class="profile-stat-label">КЛАСС АГЕНТА</span>
-        <span class="profile-stat-val ${rankClass}">${rank} (${score} очков)</span>
+        <span class="profile-stat-label">${t('profile_rank')}</span>
+        <span class="profile-stat-val ${rankClass}">${rank} (${score})</span>
         <button class="rank-history-btn" id="rankHistoryBtn" aria-label="Все ранги"><i class="fa-solid fa-chevron-right"></i></button>
       </div>
       <div class="rank-history-list" id="rankHistoryList"></div>
       <div class="profile-stat-row">
-        <span class="profile-stat-label">МИССИЙ (ВИЗИТОВ)</span>
+        <span class="profile-stat-label">${t('profile_missions')}</span>
         <span class="profile-stat-val">${visits}</span>
       </div>
       <div class="profile-stat-row">
-        <span class="profile-stat-label">ЛЮБИМЫЙ БРЕНД</span>
-        <span class="profile-stat-val">${topBrand}</span>
+        <span class="profile-stat-label">${t('profile_fav_brand')}</span>
+        <span class="profile-stat-val">${topBrand === 'Нет данных' ? t('profile_no_data') : topBrand}</span>
       </div>
       <div class="profile-stat-row">
-        <span class="profile-stat-label">МАКС. ДОЗА КАФЕИНА</span>
+        <span class="profile-stat-label">${t('profile_max_dose')}</span>
         <span class="profile-stat-val" style="color: ${maxCaff > 400 ? '#ff3b5c' : '#fff'}">${maxCaff} мг</span>
       </div>
-    <div style="font-family:'Oswald'; color:#888; margin-top:25px; margin-bottom:10px; letter-spacing:1px;">ДОСТИЖЕНИЯ (${achCount}/${Object.keys(achievements).length})</div>
+    <div style="font-family:'Oswald'; color:#888; margin-top:25px; margin-bottom:10px; letter-spacing:1px;">${t('profile_achievements')} (${achCount}/${Object.keys(achievements).length})</div>
       <div class="profile-ach-grid">${achHtml}</div>
       <div id="achDescriptionBox"></div>
     `;
@@ -5222,16 +5608,23 @@ const rd = drinks[Math.abs(_seed) % drinks.length];
         const ach = getAchievementDisplay(key);
         if (!ach) return;
         const isUnlocked = safeLSGet('ach_' + key, null);
+        const godMode = !!window._buzzGodMode;
+        const showFull = isUnlocked || godMode;
 
         const descBox = profContent.querySelector('#achDescriptionBox');
         if (!descBox) return;
 
+        const howToHtml = godMode && ach.howTo
+          ? `<div class="ach-desc ach-howto"><i class="fa-solid fa-key" style="margin-right:6px;color:#c084fc;"></i>${ach.howTo}</div>`
+          : '';
+
                descBox.innerHTML = `
           <div class="ach-description-box">
-            <i class="fa-solid ${isUnlocked ? ach.icon : 'fa-question'} ach-icon" style="color: ${isUnlocked ? 'var(--accent)' : 'var(--muted)'};"></i>
+            <i class="fa-solid ${showFull ? ach.icon : 'fa-question'} ach-icon" style="color: ${showFull ? 'var(--accent)' : 'var(--muted)'};"></i>
             <div style="flex:1;">
-              <div class="ach-name">${isUnlocked ? ach.name : '???'}</div>
-              <div class="ach-desc">${isUnlocked ? ach.desc : 'Достижение ещё не получено. Продолжайте взаимодействовать с сайтом.'}</div>
+              <div class="ach-name">${showFull ? ach.name : '???'}</div>
+              <div class="ach-desc">${showFull ? ach.desc : t('profile_locked_desc')}</div>
+              ${howToHtml}
             </div>
             <button class="ach-close" onclick="this.parentElement.parentElement.innerHTML='';">✕</button>
           </div>
@@ -5576,6 +5969,7 @@ const DrinkDetails = (function() {
   const ratingEl = document.getElementById('detailsRating');
   let seaClicks = 0, seaClickTimer = null;
   const SEA_TARGET_BRAND = 'Monster Energy - Juiced Aussie Style Lemonade';
+  const JUNGLE_TARGET_BRAND = 'Monster Energy - Rio Punsh';
   function triggerSeaEgg() {
     if (document.body.classList.contains('sea-mode')) return;
     document.body.classList.add('sea-mode');
@@ -5583,7 +5977,17 @@ const DrinkDetails = (function() {
     if (oldOv) oldOv.remove(); // пересоздаём заново — иначе анимация корабля не перезапустится
     const ov = document.createElement('div');
     ov.id = 'seaOverlay';
-    ov.innerHTML = '<div class="sea-wave sea-wave-1"></div><div class="sea-wave sea-wave-2"></div><div class="sea-wave sea-wave-3"></div><div class="sea-foam"></div><div class="sea-boat">⛵</div>';
+      let fishHtml = '';
+      const fishEmojis = ['🐟', '🐠', '🐡'];
+      for (let i = 0; i < 3; i++) {
+        const emoji = fishEmojis[Math.floor(Math.random() * fishEmojis.length)];
+        const top = 92 + Math.random() * 7;
+        const dur = 5 + Math.random() * 4;
+        const delay = Math.random() * 3;
+        const flip = Math.random() > 0.5;
+        fishHtml += `<div class="sea-fish" style="top:${top}vh; animation-duration:${dur}s; animation-delay:-${delay}s; ${flip ? 'transform: scaleX(-1);' : ''}">${emoji}</div>`;
+      }
+      ov.innerHTML = '<div class="sea-wave sea-wave-1"></div><div class="sea-wave sea-wave-2"></div><div class="sea-wave sea-wave-3"></div>' + fishHtml + '<div class="sea-foam"></div><div class="sea-boat">⛵</div>';
     document.body.appendChild(ov);
     requestAnimationFrame(() => ov.classList.add('show'));
     if (window.AudioSys) {
@@ -5601,13 +6005,54 @@ const DrinkDetails = (function() {
       if (el) el.remove();
     }, 8000);
   }
+  let jungleClicks = 0, jungleClickTimer = null;
+  function triggerJungleEgg() {
+    if (document.body.classList.contains('jungle-mode') || !isManualLightTheme()) return;
+    document.body.classList.add('jungle-mode');
+    const oldOv = document.getElementById('jungleOverlay');
+    if (oldOv) oldOv.remove();
+    const ov = document.createElement('div');
+    ov.id = 'jungleOverlay';
+    let vinesHtml = '';
+    const monkeyVineIndex = 6;
+    for (let i = 0; i < 16; i++) {
+      const len = 85 + Math.random() * 35;
+      vinesHtml += `<div class="jungle-vine" style="left:${(i * 6.25) + 1}%; animation-delay:${i * 0.08}s;">
+        <svg viewBox="0 0 40 400" preserveAspectRatio="none" style="height:${len}vh;">
+          <path d="M20 0 Q 5 60 30 120 Q 45 180 15 240 Q 0 300 25 360 Q 35 390 20 400" fill="none" stroke="#2d5a27" stroke-width="6" stroke-linecap="round"/>
+          <path d="M20 0 Q 5 60 30 120 Q 45 180 15 240 Q 0 300 25 360 Q 35 390 20 400" fill="none" stroke="#4a8f3f" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="12" cy="70" r="10" fill="#3d7a34"/><circle cx="32" cy="150" r="9" fill="#4a8f3f"/>
+          <circle cx="8" cy="230" r="10" fill="#3d7a34"/><circle cx="28" cy="310" r="9" fill="#4a8f3f"/>
+        </svg>
+        ${i === monkeyVineIndex ? '<div class="jungle-monkey">🐒</div>' : ''}
+      </div>`;
+    }
+    ov.innerHTML = vinesHtml;
+    document.body.appendChild(ov);
+    requestAnimationFrame(() => ov.classList.add('show'));
+    if (typeof showToast === 'function') showToast('🌿 Джунгли услышали тебя', 'fa-solid fa-leaf');
+    if (typeof unlockAchievement === 'function') unlockAchievement('jungle_secret');
+    setTimeout(() => {
+      document.body.classList.remove('jungle-mode');
+      const el = document.getElementById('jungleOverlay');
+      if (el) el.remove();
+    }, 6000);
+  }
+
   if (img) {
     img.addEventListener('click', () => {
-      if (!currentDrink || currentDrink.brand !== SEA_TARGET_BRAND) return;
-      seaClicks++;
-      clearTimeout(seaClickTimer);
-      seaClickTimer = setTimeout(() => { seaClicks = 0; }, 900);
-      if (seaClicks >= 4) { seaClicks = 0; triggerSeaEgg(); }
+      if (!currentDrink) return;
+      if (currentDrink.brand === SEA_TARGET_BRAND) {
+        seaClicks++;
+        clearTimeout(seaClickTimer);
+        seaClickTimer = setTimeout(() => { seaClicks = 0; }, 900);
+        if (seaClicks >= 4) { seaClicks = 0; triggerSeaEgg(); }
+      } else if (currentDrink.brand === JUNGLE_TARGET_BRAND) {
+        jungleClicks++;
+        clearTimeout(jungleClickTimer);
+        jungleClickTimer = setTimeout(() => { jungleClicks = 0; }, 900);
+        if (jungleClicks >= 4) { jungleClicks = 0; triggerJungleEgg(); }
+      }
     });
   }
   const brandEl = document.getElementById('detailsBrand');
@@ -5741,10 +6186,10 @@ const DrinkDetails = (function() {
 
     // FIX 2: Характеристики с цветовой кодировкой (как в карточках)
     statsGrid.innerHTML = `
-      <div class="details-stat-box" data-type="caffeine"><label>Кофеин</label><span class="stat-value">${drink.caffeine || '—'}</span></div>
-      <div class="details-stat-box" data-type="sugar"><label>Сахар</label><span class="stat-value">${drink.sugar || '—'}</span></div>
-      <div class="details-stat-box" data-type="calories"><label>Калории</label><span class="stat-value">${drink.cal || '—'}</span></div>
-      <div class="details-stat-box" data-type="ph"><label>pH</label><span class="stat-value">${drink.ph || '—'}</span></div>
+      <div class="details-stat-box" data-type="caffeine"><label>${t('card_caffeine')}</label><span class="stat-value">${drink.caffeine || t('details_no_data')}</span></div>
+      <div class="details-stat-box" data-type="sugar"><label>${t('card_sugar')}</label><span class="stat-value">${drink.sugar || t('details_no_data')}</span></div>
+      <div class="details-stat-box" data-type="calories"><label>${t('card_calories')}</label><span class="stat-value">${drink.cal || t('details_no_data')}</span></div>
+      <div class="details-stat-box" data-type="ph"><label>${t('card_ph')}</label><span class="stat-value">${drink.ph || t('details_no_data')}</span></div>
     `;
         // Подробная информация: бренд, вкус, цена
     const brandInfo = bBrandInfo[drink.key] || null;
@@ -5752,16 +6197,16 @@ const DrinkDetails = (function() {
     const lineInfo = bLineInfo[lineKey] || null;
     if (extraInfoEl) {
       const countryLine = brandInfo && brandInfo.country
-        ? brandInfo.country + (brandInfo.founded ? ' • бренд с ' + brandInfo.founded + ' года' : '')
-        : 'Нет проверенных данных о бренде';
+        ? brandInfo.country + (brandInfo.founded ? ' • ' + t('details_since') + ' ' + brandInfo.founded + ' ' + t('details_year') : '')
+        : t('details_no_country');
       const isSunriseLight = /Ultra Sunrise/i.test(drink.brand) && typeof isManualLightTheme === 'function' && isManualLightTheme();
             extraInfoEl.innerHTML = `
         ${lineInfo ? `<div class="line-info-box" style="--line-color:${bLineColors[lineKey] || 'var(--accent)'}"><div class="line-info-title"><i class="fa-solid fa-star"></i> ${lineInfo.title}</div><p>${lineInfo.desc}</p></div>` : ''}
         ${isSunriseLight ? `<div class="line-info-box"><div class="line-info-title"><i class="fa-solid fa-cloud-sun"></i> Рассвет</div><p>Свет сейчас какой-то не такой... будто где-то в системе что-то ждёт, чтобы его нашли. Попробуй заглянуть в терминал.</p></div>` : ''}
         <div class="extra-info-row"><i class="fa-solid fa-earth-europe"></i><span>${countryLine}</span></div>
         ${brandInfo && brandInfo.note ? `<div class="extra-info-row"><i class="fa-solid fa-circle-info"></i><span>${brandInfo.note}</span></div>` : ''}
-                <div class="extra-info-row"><i class="fa-solid fa-comment"></i><span>${drink.taste ? drink.taste : 'Вкус ещё не описан'}</span></div>
-        <div class="extra-info-row"><i class="fa-solid fa-tag"></i><span>${drink.price ? drink.price : 'Цена уточняется'}</span></div>
+                <div class="extra-info-row"><i class="fa-solid fa-comment"></i><span>${(getLang() === 'en' && drink.tasteEn) ? drink.tasteEn : (drink.taste ? drink.taste : t('details_no_taste'))}</span></div>
+        <div class="extra-info-row"><i class="fa-solid fa-tag"></i><span>${drink.price ? drink.price : t('details_price_tbd')}</span></div>
         ${(() => {
           const perLiter = getPricePerLiter(drink);
           const per100mg = getPricePer100mgCaffeine(drink);
@@ -5771,7 +6216,7 @@ const DrinkDetails = (function() {
           if (per100mg) parts.push(`${per100mg} €/100мг кофеина`);
           return `<div class="extra-info-row"><i class="fa-solid fa-calculator"></i><span>${parts.join(' • ')}</span></div>`;
         })()}
-        <div class="price-disclaimer">Цена ориентировочная — уточняй в конкретном магазине.</div>
+        <div class="price-disclaimer">${t('details_price_disclaimer')}</div>
       `;
     }
     
@@ -5796,8 +6241,8 @@ const DrinkDetails = (function() {
     const isFav = favs.includes(favKey);
     favBtn.classList.toggle('active', isFav);
     favBtn.innerHTML = isFav 
-      ? '<i class="fa-solid fa-heart"></i> В избранном'
-      : '<i class="fa-solid fa-heart"></i> В избранное';
+      ? '<i class="fa-solid fa-heart"></i> ' + t('details_fav_active')
+      : '<i class="fa-solid fa-heart"></i> ' + t('details_fav_inactive');
     favBtn.onclick = (e) => {
       e.stopPropagation();
       let curFavs = getFavs();
@@ -5814,8 +6259,8 @@ const DrinkDetails = (function() {
       const finalFav = curFavs.includes(favKey);
       favBtn.classList.toggle('active', finalFav);
       favBtn.innerHTML = finalFav
-        ? '<i class="fa-solid fa-heart"></i> В избранном'
-        : '<i class="fa-solid fa-heart"></i> В избранное';
+        ? '<i class="fa-solid fa-heart"></i> ' + t('details_fav_active')
+        : '<i class="fa-solid fa-heart"></i> ' + t('details_fav_inactive');
       // Обновить сердечко на карточке
       const card = document.querySelector('.energy-card[data-drink-index="' + drinkIndex + '"]');
       if (card) {
@@ -5845,14 +6290,14 @@ const DrinkDetails = (function() {
     // FIX 6: Кнопка "Я выпил" — добавляет в трекер кофеина
     if (drankBtn) {
       drankBtn.classList.remove('active');
-      drankBtn.innerHTML = '<i class="fa-solid fa-mug-hot"></i> Я выпил';
+      drankBtn.innerHTML = '<i class="fa-solid fa-mug-hot"></i> ' + t('details_drank');
       drankBtn.onclick = (e) => {
         e.stopPropagation();
         if (CaffeineTracker) {
           CaffeineTracker.add(drink);
           drankBtn.classList.add('active');
-          drankBtn.innerHTML = '<i class="fa-solid fa-check"></i> Учтено';
-          showToast('+' + (parseInt((drink.caffeine || '').replace(/\D/g, '')) || 0) + ' мг кофеина', 'fa-solid fa-mug-hot');
+          drankBtn.innerHTML = '<i class="fa-solid fa-check"></i> ' + t('details_drank_done');
+          showToast('+' + (parseInt((drink.caffeine || '').replace(/\D/g, '')) || 0) + ' ' + t('card_caffeine').toLowerCase(), 'fa-solid fa-mug-hot');
           const data = CaffeineTracker.getTodayData();
           const total = data.total || 0;
           const pct = Math.min((total / 400) * 100, 100);
@@ -5862,7 +6307,7 @@ const DrinkDetails = (function() {
             barFill.style.width = pct + '%';
             barFill.style.background = total > 400 ? '#ff3b5c' : (total > 300 ? '#ffd700' : 'var(--accent)');
           }
-          if (dcpText) dcpText.textContent = total + ' / 400 мг сегодня';
+          if (dcpText) dcpText.textContent = total + ' / 400 ' + t('details_daily_caffeine');
         }
       };
     }
@@ -5878,7 +6323,7 @@ const DrinkDetails = (function() {
         barFill.style.width = pct + '%';
         barFill.style.background = total > 400 ? '#ff3b5c' : (total > 300 ? '#ffd700' : 'var(--accent)');
       }
-      if (dcpText) dcpText.textContent = total + ' / 400 мг сегодня';
+      if (dcpText) dcpText.textContent = total + ' / 400 ' + t('details_daily_caffeine');
     }
 
     // Похожие напитки
@@ -6196,6 +6641,56 @@ function renderTop10() {
 }
 
 // ============================================================
+// СЕКЦИЯ: КОФЕ И ДРУГОЕ
+// ============================================================
+function renderCoffeeSection() {
+  const grid = document.getElementById('coffeeGrid');
+  if (!grid) return;
+  const coffeeDrinks = drinks.filter(d => d.key === 'coffee');
+  grid.innerHTML = '';
+  const frag = document.createDocumentFragment();
+  coffeeDrinks.forEach(drink => { const card = createCard(drink); if (card) frag.appendChild(card); });
+  grid.appendChild(frag);
+  initCardEffects();
+}
+
+// ============================================================
+// ФИЧА: ПОСЛЕДНИЕ ОБЗОРЫ (лента новинок)
+// ============================================================
+function renderLatest() {
+  const list = document.getElementById('latestList');
+  if (!list) return;
+
+  const withIndex = drinks.map((d, i) => ({ d, i }));
+  const latest = withIndex.sort((a, b) => b.i - a.i).slice(0, 10).map(x => x.d);
+
+  list.innerHTML = latest.map((drink) => `
+    <div class="top10-item" data-brand="${drink.brand}">
+      <div class="top10-rank"><i class="fa-solid fa-sparkles" style="font-size:20px;color:#22d3ee;"></i></div>
+      <img class="top10-image" src="${drink.img || ''}" alt="${drink.brand}" loading="lazy" data-fallback="true">
+      <div class="top10-info">
+        <h4>${drink.brand}</h4>
+        <p>${drink.flavor || ''} • ${drink.caffeine || '—'}</p>
+      </div>
+      <div class="top10-rating">${drink.rating}<small>/10</small></div>
+    </div>
+  `).join('');
+
+  list.querySelectorAll('.top10-item img[data-fallback="true"]').forEach(imgEl => {
+    const brand = imgEl.closest('.top10-item')?.dataset.brand;
+    const drink = drinks.find(d => d.brand === brand);
+    if (drink) setImageWithFallback(imgEl, drink.img || '', 'images/placeholder.svg');
+  });
+
+  list.querySelectorAll('.top10-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const drink = drinks.find(d => d.brand === el.dataset.brand);
+      if (drink && window.openDrinkDetails) window.openDrinkDetails(drink);
+    });
+  });
+}
+
+// ============================================================
 // ФИЧА 6: СТАТИСТИКА ПО БРЕНДАМ
 // ============================================================
 function renderStats() {
@@ -6324,6 +6819,14 @@ const CaffeineTracker = (function() {
     diary.push({ brand: drink.brand, img: drink.img, mg: mg, ts: Date.now() });
     if (diary.length > 300) diary.shift();
     safeLSSetJSON('buzz_diary', diary);
+
+    const todayKey = new Date().toISOString().slice(0, 10);
+    const marks = new Set(safeLSGetJSON('buzz_calendar_marks', []));
+    if (!marks.has(todayKey)) {
+      marks.add(todayKey);
+      safeLSSetJSON('buzz_calendar_marks', Array.from(marks));
+      if (marks.size >= 15 && typeof unlockAchievement === 'function') unlockAchievement('dead_owl');
+    }
     
     if (data.total > MAX_DAILY && !safeLSGet('ach_caffeine', null)) {
       if (typeof unlockAchievement !== 'undefined') unlockAchievement('caffeine');
@@ -6377,10 +6880,10 @@ const CaffeineTracker = (function() {
     if (calcModal && !document.getElementById('calcResetBtn')) {
       const resetBtn = document.createElement('button');
       resetBtn.id = 'calcResetBtn';
-      resetBtn.innerHTML = '<i class="fa-solid fa-rotate-left"></i> Сбросить';
+      resetBtn.innerHTML = '<i class="fa-solid fa-rotate-left"></i> ' + t('calc_reset');
       resetBtn.style.cssText = 'margin-top:15px;width:100%;padding:10px;background:rgba(255,59,92,0.1);border:1px solid rgba(255,59,92,0.3);color:#ff3b5c;border-radius:8px;cursor:pointer;font-family:Oswald;font-size:14px;letter-spacing:1px;';
       resetBtn.onclick = () => {
-        if (confirm('Сбросить счётчик кофеина за сегодня?')) {
+        if (confirm(t('calc_reset_confirm'))) {
           reset();
         }
       };
@@ -6406,7 +6909,7 @@ const CaffeineTracker = (function() {
   function renderDiary() {
     const entries = safeLSGetJSON('buzz_diary', []).slice().reverse();
     if (entries.length === 0) {
-      diaryList.innerHTML = '<div class="diary-empty"><i class="fa-solid fa-book-open"></i><div>Пока пусто</div><div style="font-size:13px;margin-top:8px;">Жми "Я выпил" в карточке напитка</div></div>';
+      diaryList.innerHTML = '<div class="diary-empty"><i class="fa-solid fa-book-open"></i><div>' + t('diary_empty') + '</div><div style="font-size:13px;margin-top:8px;">' + t('diary_empty_hint') + '</div></div>';
       return;
     }
     const groups = {};
@@ -6442,6 +6945,86 @@ const CaffeineTracker = (function() {
   closeDiaryBtn.addEventListener('click', () => { diaryModal.classList.remove('open'); unlockScroll(); });
   diaryModal.addEventListener('click', e => { if (e.target === diaryModal) { diaryModal.classList.remove('open'); unlockScroll(); } });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && diaryModal.classList.contains('open')) { diaryModal.classList.remove('open'); unlockScroll(); } });
+})();
+
+// ==========================================
+// КАЛЕНДАРЬ ОТМЕТОК (не про серии подряд, а про сам факт)
+// ==========================================
+(function() {
+  const calendarModal = document.getElementById('calendarModal');
+  const calendarOpenBtn = document.getElementById('calendarOpenBtn');
+  const closeCalendarBtn = document.getElementById('closeCalendar');
+  const grid = document.getElementById('calendarGrid');
+  const monthLabel = document.getElementById('calMonthLabel');
+  const totalEl = document.getElementById('calendarTotal');
+  if (!calendarModal || !calendarOpenBtn) return;
+
+  let viewDate = new Date();
+
+  function tierClass(total) {
+    if (total >= 30) return 'cal-tier-3';
+    if (total >= 15) return 'cal-tier-2';
+    if (total >= 5) return 'cal-tier-1';
+    return '';
+  }
+
+  function renderCalendar() {
+    const marks = new Set(safeLSGetJSON('buzz_calendar_marks', []));
+    const y = viewDate.getFullYear(), m = viewDate.getMonth();
+    const monthNames = t('cal_months');
+    monthLabel.textContent = monthNames[m] + ' ' + y;
+
+    const firstDay = new Date(y, m, 1);
+    const startOffset = (firstDay.getDay() + 6) % 7; // понедельник первым
+    const daysInMonth = new Date(y, m + 1, 0).getDate();
+    const tier = tierClass(marks.size);
+
+    let html = '';
+    t('cal_weekdays').forEach(d => html += `<div class="cal-weekday">${d}</div>`);
+    for (let i = 0; i < startOffset; i++) html += `<div class="cal-day cal-empty"></div>`;
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dateStr = y + '-' + String(m + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+      const marked = marks.has(dateStr);
+      html += `<div class="cal-day ${marked ? 'cal-marked ' + tier : ''}">${d}</div>`;
+    }
+    grid.innerHTML = html;
+    totalEl.textContent = `${t('calendar_total')} ${marks.size}`;
+  }
+
+  function checkStreakWarning() {
+    const marks = new Set(safeLSGetJSON('buzz_calendar_marks', []));
+    const now = new Date();
+    let streak = 0;
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(now);
+      d.setDate(d.getDate() - i);
+      const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+      if (marks.has(key)) streak++;
+      else break;
+    }
+    const warnEl = document.getElementById('calendarWarning');
+    if (!warnEl) return;
+    const todayKey = now.toISOString().slice(0, 10);
+    const lastShown = safeLSGet('buzz_streak_warning_shown', '');
+    if (streak >= 6 && lastShown !== todayKey) {
+      warnEl.style.display = 'flex';
+      safeLSSet('buzz_streak_warning_shown', todayKey);
+    } else {
+      warnEl.style.display = 'none';
+    }
+  }
+
+  calendarOpenBtn.addEventListener('click', () => {
+    viewDate = new Date();
+    renderCalendar();
+    checkStreakWarning();
+    calendarModal.classList.add('open');
+    lockScroll();
+  });
+  closeCalendarBtn.addEventListener('click', () => { calendarModal.classList.remove('open'); unlockScroll(); });
+  calendarModal.addEventListener('click', e => { if (e.target === calendarModal) { calendarModal.classList.remove('open'); unlockScroll(); } });
+  document.getElementById('calPrevMonth').addEventListener('click', () => { viewDate.setMonth(viewDate.getMonth() - 1); renderCalendar(); });
+  document.getElementById('calNextMonth').addEventListener('click', () => { viewDate.setMonth(viewDate.getMonth() + 1); renderCalendar(); });
 })();
 
 // ВНИМАНИЕ: кофеин больше НЕ добавляется автоматически при просмотре деталей.
@@ -6509,6 +7092,8 @@ const CaffeineTracker = (function() {
 // ИНИЦИАЛИЗАЦИЯ НОВЫХ ФИЧ
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
+  renderCoffeeSection();
+  renderLatest();
   renderTop10();
   renderStats();
   renderDailyDrink();
@@ -6518,9 +7103,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Перехват кликов по карточкам — открываем детали, а не видео сразу
   // (сохраняем видео-кнопку внутри карточки)
-  const cardsGrid = document.getElementById('cardsGrid');
-  if (cardsGrid) {
-    cardsGrid.addEventListener('click', (e) => {
+  function attachCardDetailsClick(gridId) {
+    const gridEl = document.getElementById(gridId);
+    if (!gridEl) return;
+    gridEl.addEventListener('click', (e) => {
       // Если клик на кнопку "Смотреть обзор" или "Избранное" — не перехватываем
       if (e.target.closest('[data-open-video], .fav-btn, .cmp-btn, .share-btn')) return;
       // В Doom Mode — карточки уничтожаются, детали не открываем
@@ -6535,6 +7121,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+  attachCardDetailsClick('cardsGrid');
+  attachCardDetailsClick('coffeeGrid');
 
   // Проверяем hash в URL для шеринга (#drink-N)
   if (location.hash.startsWith('#drink-')) {
@@ -6824,4 +7412,156 @@ document.addEventListener('DOMContentLoaded', () => {
   // Доступ для мобильного D-pad
   window.__buzzProcessSequenceKey = processKey;
   window.__buzzResetSequence = resetAll;
+})();
+// ==========================================
+// СООБЩИТЬ ОБ ОШИБКЕ (репорт по напитку)
+// ==========================================
+(function() {
+  const reportModal = document.getElementById('reportModal');
+  const reportBtn = document.getElementById('detailsReportBtn');
+  const closeReportBtn = document.getElementById('closeReport');
+  const sendReportBtn = document.getElementById('sendReport');
+  const reportComment = document.getElementById('reportComment');
+  const reportCounter = document.getElementById('reportCommentCounter');
+  const reportLabel = document.getElementById('reportDrinkLabel');
+  const reportHoneypot = document.getElementById('reportWebsite');
+  if (!reportModal || !reportBtn) return;
+
+  const REPORT_WORKER_URL = 'https://buzzrate-suggest.tleorg827.workers.dev';
+  const REPORT_COOLDOWN_MS = 60000;
+  let reportTargetBrand = '';
+
+  reportBtn.addEventListener('click', () => {
+    const brandEl = document.getElementById('detailsBrand');
+    reportTargetBrand = brandEl ? brandEl.textContent : '';
+    reportLabel.textContent = reportTargetBrand ? `${t('report_problem_with')}: ${reportTargetBrand}` : t('report_default_label');
+    reportComment.value = '';
+    reportCounter.textContent = '0 / 300';
+    reportModal.classList.add('open');
+  });
+  closeReportBtn.addEventListener('click', () => reportModal.classList.remove('open'));
+  reportModal.addEventListener('click', e => { if (e.target === reportModal) reportModal.classList.remove('open'); });
+
+  reportComment.addEventListener('input', () => {
+    reportCounter.textContent = reportComment.value.length + ' / 300';
+  });
+
+  sendReportBtn.addEventListener('click', () => {
+    const comment = reportComment.value.trim();
+    if (!comment) {
+      reportComment.style.borderColor = '#ff3b5c';
+      setTimeout(() => { reportComment.style.borderColor = ''; }, 1000);
+      return;
+    }
+
+    const lastSent = parseInt(safeLSGet('buzz_last_report_ts', '0'), 10);
+    const sinceLast = Date.now() - lastSent;
+    if (sinceLast < REPORT_COOLDOWN_MS) {
+      const waitSec = Math.ceil((REPORT_COOLDOWN_MS - sinceLast) / 1000);
+      showToast(`Не так быстро — подожди ${waitSec} сек.`, 'fa-solid fa-clock');
+      return;
+    }
+
+    sendReportBtn.disabled = true;
+    sendReportBtn.textContent = 'Отправка...';
+
+    fetch(REPORT_WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: '[ОШИБКА] ' + (reportTargetBrand || 'Без названия'),
+        comment: comment,
+        honeypot: reportHoneypot ? reportHoneypot.value : ''
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        sendReportBtn.disabled = false;
+        sendReportBtn.textContent = 'Отправить';
+        if (data.ok) {
+          safeLSSet('buzz_last_report_ts', String(Date.now()));
+          reportModal.classList.remove('open');
+          showToast(t('toast_report_added'), 'fa-solid fa-check');
+        } else {
+          showToast('Ошибка отправки. Попробуй позже.', 'fa-solid fa-triangle-exclamation');
+        }
+      })
+      .catch(() => {
+        sendReportBtn.disabled = false;
+        sendReportBtn.textContent = 'Отправить';
+        showToast('Нет соединения. Попробуй позже.', 'fa-solid fa-triangle-exclamation');
+      });
+  });
+})();
+// ==========================================
+// ДОСТИЖЕНИЯ (упрощённая модалка для мобилки — без остального досье)
+// ==========================================
+(function() {
+  const achModal = document.getElementById('achievementsModal');
+  const achBtn = document.getElementById('openAchievementsModal');
+  const closeAchBtn = document.getElementById('closeAchievements');
+  const achContent = document.getElementById('achievementsOnlyContent');
+  if (!achModal || !achBtn) return;
+
+  function renderAchievementsOnly() {
+    let achCount = 0;
+    let achHtml = '';
+    for (let key in achievements) {
+      const isUnlocked = safeLSGet('ach_' + key, null);
+      if (isUnlocked) achCount++;
+      const display = getAchievementDisplay(key);
+      const tierClass = isUnlocked ? ('unlocked tier-' + display.tier) : 'locked';
+      achHtml += `
+        <div class="profile-ach-item ${tierClass}" data-ach-key="${key}">
+          <i class="fa-solid ${isUnlocked ? display.icon : 'fa-question'}"></i>
+          <span>${isUnlocked ? display.name : '???'}</span>
+        </div>
+      `;
+    }
+    achContent.innerHTML = `
+      <div style="font-family:'Oswald'; color:#888; margin-bottom:10px; letter-spacing:1px;">${t('profile_achievements')} (${achCount}/${Object.keys(achievements).length})</div>
+      <div class="profile-ach-grid">${achHtml}</div>
+      <div id="achOnlyDescriptionBox"></div>
+    `;
+
+    achContent.querySelectorAll('.profile-ach-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const key = item.dataset.achKey;
+        const ach = getAchievementDisplay(key);
+        if (!ach) return;
+        const isUnlocked = safeLSGet('ach_' + key, null);
+        const godMode = !!window._buzzGodMode;
+        const showFull = isUnlocked || godMode;
+
+        const descBox = achContent.querySelector('#achOnlyDescriptionBox');
+        if (!descBox) return;
+
+        const howToHtml = godMode && ach.howTo
+          ? `<div class="ach-desc ach-howto"><i class="fa-solid fa-key" style="margin-right:6px;color:#c084fc;"></i>${ach.howTo}</div>`
+          : '';
+
+        descBox.innerHTML = `
+          <div class="ach-description-box">
+            <i class="fa-solid ${showFull ? ach.icon : 'fa-question'} ach-icon" style="color: ${showFull ? 'var(--accent)' : 'var(--muted)'};"></i>
+            <div style="flex:1;">
+              <div class="ach-name">${showFull ? ach.name : '???'}</div>
+              <div class="ach-desc">${showFull ? ach.desc : t('profile_locked_desc')}</div>
+              ${howToHtml}
+            </div>
+            <button class="ach-close" onclick="this.parentElement.parentElement.innerHTML='';">✕</button>
+          </div>
+        `;
+      });
+    });
+  }
+
+  achBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    renderAchievementsOnly();
+    achModal.classList.add('open');
+    lockScroll();
+  });
+  closeAchBtn.addEventListener('click', () => { achModal.classList.remove('open'); unlockScroll(); });
+  achModal.addEventListener('click', e => { if (e.target === achModal) { achModal.classList.remove('open'); unlockScroll(); } });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && achModal.classList.contains('open')) { achModal.classList.remove('open'); unlockScroll(); } });
 })();
