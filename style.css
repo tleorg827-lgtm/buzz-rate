@@ -1506,7 +1506,6 @@ nav a:hover {
 .tiktok-mob i { color: #ff0050; }
 .telegram-mob i { color: #29a9eb; }
 .mobile-link-btn.latest-mob i { color: #22d3ee !important; }
-.coffee-mob i { color: #a86f4c; }
 /* === МАГИЯ УМЕНЬШЕНИЯ ЯРКОСТИ === */
 .mobile-link-btn i {
   /* 1. Уменьшаем непрозрачность до 60% */
@@ -5390,6 +5389,22 @@ body.sea-mode .details-image-wrap { box-shadow: inset 0 -40px 60px -20px rgba(0,
   box-shadow: 0 0 16px rgba(251,191,36,0.4);
   border-color: rgba(251,191,36,0.6);
   color: #fbbf24;
+}
+.cal-day.cal-today {
+  border: 2px solid var(--accent) !important;
+  font-weight: 900;
+  position: relative;
+}
+.cal-day.cal-today::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
 }
 .calendar-total {
   text-align: center;

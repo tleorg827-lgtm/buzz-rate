@@ -92,7 +92,6 @@ const I18N = {
     calendar_title: 'КАЛЕНДАРЬ', calendar_total: 'Всего отмечено дней:', calendar_warning: 'Это не соревнование. Пить каждый день не нужно — дай себе передышку.',
     cal_weekdays: ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],
     cal_months: ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
-    nav_coffee: 'Кофе', section_coffee_tag: 'Не только энергетики', section_coffee_title: 'Кофе и другое', section_coffee_sub: 'Обычные напитки на каждый день — тоже считаем кофеин',
     nav_achievements: 'Достижения', achievements_only_title: 'ДОСТИЖЕНИЯ',
   },
   en: {
@@ -165,7 +164,6 @@ const I18N = {
     calendar_title: 'CALENDAR', calendar_total: 'Total days marked:', calendar_warning: "This isn't a competition. You don't need to drink every day — give yourself a break.",
     cal_weekdays: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
     cal_months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
-    nav_coffee: 'Coffee', section_coffee_tag: 'Not just energy drinks', section_coffee_title: 'Coffee & More', section_coffee_sub: 'Everyday drinks — we count their caffeine too',
     nav_achievements: 'Achievements', achievements_only_title: 'ACHIEVEMENTS',
   }
 };
@@ -702,28 +700,6 @@ const drinks = [
   // --- C4 (1 раз) ---
   { brand: "C4", key: "c4", flavor: " 500 мл", rating: 8, img: "images/c4.webp", caffeine: "200 мг", sugar: "0 г", cal: "10 kcal", ph: "3.5", video: "" },
 
-  // --- COFFEE & MORE (обычные напитки на каждый день) ---
-  { brand: "Coffee & More - Эспрессо", key: "coffee", flavor: "30 мл", rating: 8, img: "images/espresso.webp", caffeine: "63 мг", sugar: "0 г", cal: "3 kcal", ph: "5.0", video: "", taste: "Насыщенный, крепкий и слегка горьковатый вкус с плотной кремовой пенкой (крема) сверху. Короткий и концентрированный — классическая основа для всех остальных кофейных напитков.", tasteEn: "A rich, strong, slightly bitter flavor with a thick creamy foam (crema) on top. Short and concentrated — the classic base for all other coffee drinks.", price: "2,00 €" },
-
-  { brand: "Coffee & More - Латте", key: "coffee", flavor: "350 мл", rating: 8, img: "images/latte.webp", caffeine: "77 мг", sugar: "12 г", cal: "150 kcal", ph: "6.4", video: "", taste: "Мягкий, кремовый и сбалансированный вкус эспрессо с большим количеством вспененного молока. Сладковатый и нежный, легко пьётся, кофе ощущается на фоне, а не доминирует.", tasteEn: "A soft, creamy, balanced espresso flavor with plenty of steamed milk. Slightly sweet and gentle, easy to drink, with the coffee sitting in the background rather than dominating.", price: "3,20 €" },
-
-  { brand: "Coffee & More - Капучино", key: "coffee", flavor: "200 мл", rating: 8, img: "images/cappuccino.webp", caffeine: "68 мг", sugar: "8 г", cal: "110 kcal", ph: "6.3", video: "", taste: "Классический баланс трети эспрессо, трети горячего молока и трети густой молочной пены. Вкус более выраженно кофейный, чем у латте, с бархатистой текстурой пены сверху.", tasteEn: "A classic balance of one-third espresso, one-third steamed milk, and one-third thick milk foam. More pronounced coffee flavor than a latte, with a velvety foam texture on top.", price: "3,00 €" },
-
-  { brand: "Coffee & More - Айс-латте", key: "coffee", flavor: "400 мл", rating: 8, img: "images/iced_latte.webp", caffeine: "77 мг", sugar: "14 г", cal: "140 kcal", ph: "6.2", video: "", taste: "Холодный, освежающий и лёгкий вкус эспрессо с молоком и льдом. Более разбавленный и не такой насыщенный, как горячий латте, идеален в жару.", tasteEn: "A cold, refreshing, light espresso-and-milk flavor served over ice. More diluted and less intense than a hot latte, perfect for warm weather.", price: "3,50 €" },
-
-  { brand: "Coffee & More - Матча-латте", key: "coffee", flavor: "350 мл", rating: 7, img: "images/macha_latte.webp", caffeine: "45 мг", sugar: "16 г", cal: "160 kcal", ph: "6.5", video: "", taste: "Травянистый, слегка землистый вкус японского зелёного чая матча в сочетании со сливочным молоком. Мягкая сладость, без кофейной горечи, с характерным «зелёным» послевкусием.", tasteEn: "A grassy, slightly earthy Japanese matcha green tea flavor combined with creamy milk. Mildly sweet, without any coffee bitterness, with a distinctive 'green' aftertaste.", price: "3,80 €" },
-
-  { brand: "Coffee & More - Черный чай", key: "coffee", flavor: "300 мл", rating: 7, img: "images/black_tea.webp", caffeine: "40 мг", sugar: "0 г", cal: "2 kcal", ph: "5.5", video: "", taste: "Терпкий, насыщенный и слегка вяжущий вкус классического заваренного чёрного чая без добавок. Бодрит мягче, чем кофе, но заметно.", tasteEn: "A brisk, rich, slightly astringent flavor of classic brewed black tea with no additives. A gentler pick-me-up than coffee, but noticeable.", price: "2,20 €" },
-
-  { brand: "Coffee & More - Зелёный чай", key: "coffee", flavor: "300 мл", rating: 7, img: "images/green_tea.webp", caffeine: "28 мг", sugar: "0 г", cal: "1 kcal", ph: "6.0", video: "", taste: "Лёгкий, травянистый и слегка сладковатый вкус зелёного чая с деликатной горчинкой на финише. Самый мягкий по бодрящему эффекту напиток в линейке.", tasteEn: "A light, grassy, slightly sweet green tea flavor with a delicate bitterness on the finish. The gentlest energizing drink in the lineup.", price: "2,20 €" },
-
-  { brand: "Coffee & More - Какао", key: "coffee", flavor: "300 мл", rating: 8, img: "images/kakao.webp", caffeine: "5 мг", sugar: "22 г", cal: "190 kcal", ph: "7.0", video: "", taste: "Густой, сладкий и насыщенный шоколадный вкус горячего какао на молоке. Кофеина почти нет — скорее десерт, чем бодрящий напиток.", tasteEn: "A thick, sweet, rich chocolate flavor of hot cocoa made with milk. Almost no caffeine — more of a dessert than an energizing drink.", price: "2,80 €" },
-
-  { brand: "Coffee & More - Черный чай с лимоном", key: "coffee", flavor: "300 мл", rating: 7, img: "images/black_tea_with_lemon.webp", caffeine: "38 мг", sugar: "10 г", cal: "45 kcal", ph: "3.8", video: "", taste: "Терпкий, насыщенный чёрный чай с яркой лимонной кислинкой и лёгкой сладостью. Освежает лучше, чем чистый чёрный чай, за счёт цитрусовой ноты.", tasteEn: "A brisk, rich black tea with a bright lemon tartness and light sweetness. More refreshing than plain black tea thanks to the citrus note.", price: "2,40 €" },
-
-  { brand: "Coffee & More - Фруктовый чай", key: "coffee", flavor: "300 мл", rating: 7, img: "images/fruit_tea.webp", caffeine: "0 мг", sugar: "18 г", cal: "70 kcal", ph: "3.5", video: "", taste: "Яркий, сладкий и сочный микс из нескольких фруктов (яблоко, апельсин, шиповник) без чайной основы. Кофеина нет вообще — чистый фруктовый вкус.", tasteEn: "A bright, sweet, juicy blend of several fruits (apple, orange, rosehip) with no tea base. Zero caffeine — pure fruity flavor.", price: "2,30 €" },
-
-  { brand: "Coffee & More - Клюквенный чай", key: "coffee", flavor: "300 мл", rating: 8, img: "images/cranberry_tea.webp", caffeine: "0 мг", sugar: "16 г", cal: "65 kcal", ph: "3.3", video: "", taste: "Кисло-сладкий, ягодный вкус клюквенного морса с лёгкой терпкостью. Без кофеина, отлично освежает и бодрит без стимуляторов.", tasteEn: "A tart-sweet, berry flavor of cranberry cordial with a light tartness. Caffeine-free, very refreshing without any stimulants.", price: "2,40 €" }
 ];
 
 // ==========================================
@@ -732,18 +708,18 @@ const drinks = [
 const bColors = {
   monster:'#00c850', redbull:'#1e6fff', hell:'#e03020', 
   burn:'#ff6a00', battery:'#ffd700', nonstop:'#00ccff', 
-  rockstar:'#a855f7', c4:'#f43f5e', coffee:'#a86f4c'
+  rockstar:'#a855f7', c4:'#f43f5e'
 };
 const bInit = {
   monster:'M', redbull:'R', hell:'H', burn:'Bu', 
-  battery:'Ba', nonstop:'N', rockstar:'Rs', c4:'C4', coffee:'Co'
+  battery:'Ba', nonstop:'N', rockstar:'Rs', c4:'C4'
 };
 
 // ДОБАВИТЬ ЭТО:
 const bNames = {
   monster:'Monster Energy', redbull:'Red Bull', hell:'Hell Energy',
   burn:'Burn', battery:'Battery', nonstop:'Non Stop',
-  rockstar:'Rockstar', c4:'C4', coffee:'Coffee & More'
+  rockstar:'Rockstar', c4:'C4'
 };
 
 // Общие факты о брендах (страна, год основания компании).
@@ -778,8 +754,7 @@ const bLineColors = {
   rio: '#ffb347',
   mixxd: '#ff3b5c',
   m3: '#c084fc',
-  doctor: '#ffd700',
-  'coffee & more': '#a86f4c'
+  doctor: '#ffd700'
 };
 
 const bLineInfo = {
@@ -827,10 +802,6 @@ const bLineInfo = {
     title: 'О линейке The Doctor VR46',
     desc: 'The Doctor VR46 — совместный вкус с пилотом MotoGP Валентино Росси (позывной "The Doctor"), сделанный на цитрусовой базе. По сути это имиджевый вкус под конкретное имя, а не отдельная широкая линейка. Впиши сюда своё мнение: чувствуется ли в этом что-то особенное или это обычный цитрусовый Monster с другой этикеткой.'
   },
-  'coffee & more': {
-    title: 'О разделе Coffee & More',
-    desc: 'Этот раздел появился, потому что не все дни начинаются с энергетика. Здесь собраны обычные напитки, которые люди пьют утром или в течение дня — латте, капучино, чай в разных вариациях, какао. Кофеина здесь заметно меньше, чем в классических энергетиках, но мы всё равно считаем его честно, чтобы суточная норма не терялась из виду, даже если ты не притрагивался к банке весь день.'
-  }
 };
 // Небольшой сдвиг оттенка цвета точки для конкретной линейки внутри
 // бренда — чтобы Ultra/Rehab/Nitro и т.д. не сливались в одинаковый
@@ -906,7 +877,6 @@ function getDrinkLine(drink) {
   // он сам попадёт в нужную линию без правок кода.
   if (drink.key === 'redbull' && /Edition/i.test(drink.brand)) return 'Editions';
   if (drink.key === 'hell' && /^Hell Ice Coffee/i.test(drink.brand)) return 'Ice Coffee';
-  if (drink.key === 'coffee') return 'Coffee & More';
 
   const parts = drink.brand.split(' - ');
   if (parts.length < 2) return null;
@@ -1048,8 +1018,7 @@ let activeSortMode = 'rating';
 
 function getSortedDrinks() {
   // Индекс в массиве drinks = порядок добавления (последние строки — новее)
-  // Кофе исключаем — у него своя отдельная секция ниже, чтобы не дублировать карточки
-  const withIndex = drinks.map((d, i) => ({ d, i })).filter(x => x.d.key !== 'coffee');
+  const withIndex = drinks.map((d, i) => ({ d, i }));
 
   if (activeSortMode === 'new') {
     withIndex.sort((a, b) => b.i - a.i); // последние добавленные — первыми
@@ -1448,13 +1417,12 @@ function renderBrandDropdown() {
     return;
   }
 
-  // Верхний уровень — список марок (кофе не входит — у него своя секция)
+  // Верхний уровень — список марок
   const counts = {};
-  drinks.forEach(d => { if (d.key === 'coffee') return; counts[d.key] = (counts[d.key] || 0) + 1; });
-  const nonCoffeeTotal = drinks.filter(d => d.key !== 'coffee').length;
+  drinks.forEach(d => { counts[d.key] = (counts[d.key] || 0) + 1; });
 
   const allActive = activeBrandFilter === 'all';
-  let html = `<div class="brand-option ${allActive ? 'active' : ''}" data-brand="all"><div class="brand-dot" style="background:var(--accent)"></div>Все марки<div class="brand-count">${nonCoffeeTotal}</div></div>`;
+  let html = `<div class="brand-option ${allActive ? 'active' : ''}" data-brand="all"><div class="brand-dot" style="background:var(--accent)"></div>Все марки<div class="brand-count">${drinks.length}</div></div>`;
 
   for (const key in counts) {
     const name = bNames[key] || key;
@@ -1660,7 +1628,7 @@ function highlightSearchMatches() {
 }
 
 function refreshResultsMeta() {
-  const total = drinks.filter(d => d.key !== 'coffee').length;
+  const total = drinks.length;
   const cards = document.querySelectorAll('#cardsGrid .energy-card');
   let visible = 0;
   cards.forEach(c => { if (c.style.display !== 'none' && !c.classList.contains('card-hidden')) visible++; });
@@ -6641,20 +6609,6 @@ function renderTop10() {
 }
 
 // ============================================================
-// СЕКЦИЯ: КОФЕ И ДРУГОЕ
-// ============================================================
-function renderCoffeeSection() {
-  const grid = document.getElementById('coffeeGrid');
-  if (!grid) return;
-  const coffeeDrinks = drinks.filter(d => d.key === 'coffee');
-  grid.innerHTML = '';
-  const frag = document.createDocumentFragment();
-  coffeeDrinks.forEach(drink => { const card = createCard(drink); if (card) frag.appendChild(card); });
-  grid.appendChild(frag);
-  initCardEffects();
-}
-
-// ============================================================
 // ФИЧА: ПОСЛЕДНИЕ ОБЗОРЫ (лента новинок)
 // ============================================================
 function renderLatest() {
@@ -6974,6 +6928,9 @@ const CaffeineTracker = (function() {
     const monthNames = t('cal_months');
     monthLabel.textContent = monthNames[m] + ' ' + y;
 
+    const now = new Date();
+    const todayStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+
     const firstDay = new Date(y, m, 1);
     const startOffset = (firstDay.getDay() + 6) % 7; // понедельник первым
     const daysInMonth = new Date(y, m + 1, 0).getDate();
@@ -6985,7 +6942,8 @@ const CaffeineTracker = (function() {
     for (let d = 1; d <= daysInMonth; d++) {
       const dateStr = y + '-' + String(m + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
       const marked = marks.has(dateStr);
-      html += `<div class="cal-day ${marked ? 'cal-marked ' + tier : ''}">${d}</div>`;
+      const isToday = dateStr === todayStr;
+      html += `<div class="cal-day ${marked ? 'cal-marked ' + tier : ''} ${isToday ? 'cal-today' : ''}">${d}</div>`;
     }
     grid.innerHTML = html;
     totalEl.textContent = `${t('calendar_total')} ${marks.size}`;
@@ -7092,7 +7050,6 @@ const CaffeineTracker = (function() {
 // ИНИЦИАЛИЗАЦИЯ НОВЫХ ФИЧ
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
-  renderCoffeeSection();
   renderLatest();
   renderTop10();
   renderStats();
@@ -7122,7 +7079,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   attachCardDetailsClick('cardsGrid');
-  attachCardDetailsClick('coffeeGrid');
 
   // Проверяем hash в URL для шеринга (#drink-N)
   if (location.hash.startsWith('#drink-')) {
