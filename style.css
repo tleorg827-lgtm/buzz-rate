@@ -5395,6 +5395,43 @@ body.sea-mode .details-image-wrap { box-shadow: inset 0 -40px 60px -20px rgba(0,
   font-weight: 900;
   position: relative;
 }
+.rating-distribution {
+  max-width: 700px;
+  margin: 0 auto 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.rating-dist-row {
+  display: grid;
+  grid-template-columns: 70px 1fr 36px;
+  align-items: center;
+  gap: 14px;
+}
+.rating-dist-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 13px;
+  color: var(--muted);
+  text-align: right;
+}
+.rating-dist-bar-bg {
+  height: 14px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 7px;
+  overflow: hidden;
+}
+.rating-dist-bar-fill {
+  height: 100%;
+  border-radius: 7px;
+  width: 0%;
+  transition: width 0.8s ease;
+}
+.rating-dist-count {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  color: var(--fg);
+  font-size: 14px;
+}
 .cal-day.cal-today::after {
   content: '';
   position: absolute;
