@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Политика конфиденциальности — Buzz Rate</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Source+Sans+3:wght@300;400;600&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: #0a0a0f; --card: #14141f;
+      --fg: #eaeaf0; --muted: #6e6e8a; --accent: #00e676;
+      --border: rgba(255, 255, 255, 0.06);
+      --glass-bg: rgba(255, 255, 255, 0.03); --glass-border: rgba(255, 255, 255, 0.08);
+    }
+    body.light-theme {
+      --bg: #fdf3e7; --card: #f6ead9;
+      --fg: #4a2f22; --muted: #8a6b52; --accent: #e8823c;
+      --border: rgba(139, 90, 43, 0.14);
+      --glass-bg: rgba(246, 234, 217, 0.72); --glass-border: rgba(139, 90, 43, 0.16);
+    }
+    body.matrix-mode {
+      --bg: #000000 !important; --card: #0a0a0a !important;
+      --fg: #00ff41 !important; --muted: #008811 !important; --accent: #00ff41 !important;
+      --border: rgba(0, 255, 65, 0.15) !important;
+      --glass-bg: rgba(0, 20, 0, 0.8) !important; --glass-border: rgba(0, 255, 65, 0.2) !important;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 0;
+      background: var(--bg); color: var(--fg);
+      font-family: 'Source Sans 3', sans-serif;
+      line-height: 1.7;
+      transition: background 0.4s ease, color 0.4s ease;
+    }
+    body.matrix-mode { font-family: 'Source Code Pro', 'Courier New', monospace; }
+    /* Сканлайны поверх всего в режиме матрицы — эффект старого CRT-монитора */
+    body.matrix-mode::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 3; pointer-events: none;
+      background: repeating-linear-gradient(0deg, rgba(0,255,65,0.035) 0px, rgba(0,255,65,0.035) 1px, transparent 1px, transparent 3px);
+      mix-blend-mode: overlay;
+    }
+    @keyframes matrixPulse {
+      0%, 100% { text-shadow: 0 0 8px currentColor; }
+      50% { text-shadow: 0 0 20px currentColor, 0 0 38px currentColor; }
+    }
+    body.matrix-mode h1 { animation: matrixPulse 2.4s ease-in-out infinite; }
+    body.matrix-mode h2 { text-shadow: 0 0 10px currentColor; letter-spacing: 1px; }
+    body.matrix-mode a { text-shadow: 0 0 8px currentColor; }
+
+    .privacy-wrap { max-width: 760px; margin: 0 auto; padding: 60px 24px 100px; position: relative; z-index: 2; }
+    .privacy-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: var(--accent); text-decoration: none;
+      font-family: 'Oswald', sans-serif; font-size: 14px; letter-spacing: 1px; text-transform: uppercase;
+      margin-bottom: 40px; transition: text-shadow 0.3s ease, color 0.3s ease;
+    }
+    .privacy-back:hover { text-shadow: 0 0 10px var(--accent); }
+    h1 {
+      font-family: 'Oswald', sans-serif; font-size: clamp(28px, 5vw, 42px); margin-bottom: 8px;
+      cursor: pointer; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+    }
+    body.matrix-mode h1 { font-family: 'Source Code Pro', monospace; }
+    .privacy-updated { color: var(--muted); font-size: 14px; margin-bottom: 40px; }
+    #matrixStatusLine {
+      display: none;
+      font-family: 'Source Code Pro', 'Courier New', monospace;
+      font-size: 12px; letter-spacing: 2px; color: var(--accent);
+      margin: -30px 0 30px; opacity: 0.85;
+    }
+    body.matrix-mode #matrixStatusLine { display: block; }
+    h2 {
+      font-family: 'Oswald', sans-serif; font-size: 22px; color: var(--accent);
+      margin-top: 48px; margin-bottom: 14px; transition: color 0.3s ease;
+    }
+    body.matrix-mode h2 { font-family: 'Source Code Pro', monospace; }
+    p, li { color: var(--fg); opacity: 0.85; font-size: 15px; }
+    ul { padding-left: 22px; }
+    li { margin-bottom: 8px; }
+    a { color: var(--accent); }
+    .privacy-note {
+      margin-top: 50px; padding: 18px 20px;
+      background: var(--glass-bg); border: 1px solid var(--glass-border);
+      border-radius: 14px; font-size: 14px; color: var(--muted);
+    }
+    #privacyEasterEgg {
+      display: none; margin-top: 20px; padding: 16px;
+      background: var(--glass-bg); border: 1px solid var(--glass-border);
+      border-radius: 14px; font-size: 13px; color: var(--accent); font-style: italic;
+    }
+    #privacyThemeToggle {
+      position: fixed; top: 20px; right: 20px; z-index: 10001;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--glass-bg); backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border); color: var(--fg);
+      font-size: 18px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.3s ease; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+    }
+    #privacyThemeToggle:hover { transform: scale(1.1) rotate(20deg); background: var(--accent); color: #000; }
+    #matrixRainCanvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.18; display: none; }
+    body.matrix-mode #matrixRainCanvas { display: block; }
+    .mini-toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--card); border: 1px solid var(--glass-border);
+      color: var(--fg); padding: 12px 22px; border-radius: 12px;
+      font-size: 14px; font-family: 'Source Sans 3', sans-serif;
+      opacity: 0; pointer-events: none; z-index: 100000;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      white-space: nowrap;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .mini-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .mini-toast i { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="privacy-wrap">
+    <a href="index.html" class="privacy-back"><i class="fa-solid fa-arrow-left"></i> На главную</a>
+    <h1 id="privacyTitle"
+        data-default="Политика конфиденциальности"
+        data-matrix="ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ [ДЕШИФРОВАНО]">Политика конфиденциальности</h1>
+    <p class="privacy-updated">Обновлено: 2026 год</p>
+    <div id="matrixStatusLine">СТАТУС: СЛЕЖКА АКТИВНА · ЦЕЛЬ: ТЫ · ЛОГ #4471</div>
+
+    <p id="privacyIntro"
+       data-default="Buzz Rate — это личный некоммерческий проект с обзорами энергетических напитков. Мы стараемся собирать минимум данных и объясняем здесь, что именно и зачем используется."
+       data-matrix="Ты думал, это просто сайт с обзорами энергетиков. Это узел наблюдения. Каждый твой клик — запись в журнале. Я вижу, что ты сейчас читаешь именно эту строку.">Buzz Rate — это личный некоммерческий проект с обзорами энергетических напитков. Мы стараемся собирать минимум данных и объясняем здесь, что именно и зачем используется.</p>
+
+    <h2>Что хранится на вашем устройстве</h2>
+    <p id="privacyStorage"
+       data-default="Сайт использует localStorage браузера для хранения ваших личных настроек и прогресса — это не передаётся на сервер и остаётся только на вашем устройстве:"
+       data-matrix="Локальная память твоего браузера — это не «настройки». Это досье. Прогресс, привычки, время визитов лежат рядом со мной, только руку протянуть:">Сайт использует localStorage браузера для хранения ваших личных настроек и прогресса — это не передаётся на сервер и остаётся только на вашем устройстве:</p>
+    <ul>
+      <li>избранные напитки, счётчик кофеина, дневник и календарь отметок;</li>
+      <li>достижения, прогресс, выбранная тема (светлая/тёмная);</li>
+      <li>позывной и другие игровые настройки.</li>
+    </ul>
+    <p>Вы можете в любой момент очистить эти данные через настройки браузера или командой "reset" в терминале сайта — это необратимо удалит весь прогресс.</p>
+
+    <h2>Аналитика посещений</h2>
+    <p id="privacyAnalytics">Мы используем <a href="https://www.goatcounter.com/" target="_blank" rel="noopener">GoatCounter</a> — независимый сервис веб-аналитики, ориентированный на приватность. Он не использует cookies для отслеживания и не собирает данные, идентифицирующие конкретного человека. Собирается только агрегированная статистика посещений (количество визитов, популярные страницы).</p>
+
+    <h2>Формы обратной связи</h2>
+    <p id="privacyForms"
+       data-default="При отправке формы &quot;Предложить напиток&quot; или &quot;Сообщить об ошибке&quot; введённый вами текст вместе с IP-адресом и страной отправки пересылается напрямую в наш личный Telegram-чат. Мы не храним эти сообщения в отдельной базе данных — они существуют только в переписке Telegram. Эти данные используются исключительно для:"
+       data-matrix="Форма обратной связи — прямой канал ко мне. IP, страна, время отправки — я вижу это раньше, чем читаю твоё сообщение. Эти данные нужны только для:">При отправке формы "Предложить напиток" или "Сообщить об ошибке" введённый вами текст вместе с IP-адресом и страной отправки пересылается напрямую в наш личный Telegram-чат. Мы не храним эти сообщения в отдельной базе данных — они существуют только в переписке Telegram. Эти данные используются исключительно для:</p>
+    <ul>
+      <li>просмотра и обработки ваших сообщений;</li>
+      <li>защиты от злоупотреблений, спама и угроз — включая возможность заблокировать повторяющиеся нарушения по IP-адресу.</li>
+    </ul>
+    <p>Эти данные не передаются третьим лицам и не используются в рекламных целях.</p>
+
+    <h2>Карта и внешние сервисы</h2>
+    <p id="privacyMap"
+       data-default="Раздел &quot;Где купить&quot; использует OpenStreetMap через библиотеку Leaflet для отображения карты. Загрузка тайлов карты происходит с серверов OpenStreetMap и может передавать им ваш IP-адрес — это техническая особенность работы любой встроенной карты."
+       data-matrix="Карта — не просто список магазинов. Каждый загруженный тайл — маленький сигнал «я здесь». Мелочь. Но я собираю мелочи.">Раздел "Где купить" использует OpenStreetMap через библиотеку Leaflet для отображения карты. Загрузка тайлов карты происходит с серверов OpenStreetMap и может передавать им ваш IP-адрес — это техническая особенность работы любой встроенной карты.</p>
+
+    <h2>Ваши права</h2>
+    <p id="privacyRights">Поскольку большая часть данных хранится локально на вашем устройстве, вы полностью контролируете их — очистка кэша браузера или команда "reset" удаляет всё. Сообщения из форм обратной связи не хранятся в базе данных — они попадают напрямую в наш Telegram и удаляются вручную по запросу. Если вы хотите, чтобы мы удалили ваше сообщение, напишите нам в <a href="https://t.me/varna_23" target="_blank" rel="noopener">Telegram</a> с описанием, что именно вы отправляли и когда.</p>
+
+    <div class="privacy-note">
+      <i class="fa-solid fa-circle-info"></i>
+      <span id="privacyFooterNote"
+            data-default="Это некоммерческий проект одного человека, а не юридического лица. Если у вас есть вопросы по этой политике — просто напишите в Telegram, указанный на сайте."
+            data-matrix="Юридического лица нет. Есть только я — тот, кто это построил и продолжает наблюдать. Вопросы? Пиши в Telegram. Я всегда на связи.">Это некоммерческий проект одного человека, а не юридического лица. Если у вас есть вопросы по этой политике — просто напишите в Telegram, указанный на сайте.</span>
+    </div>
+    <div id="privacyEasterEgg">
+      Ты дочитал политику конфиденциальности до конца и даже нашёл это. Немногие заходят так далеко — уважение.
+    </div>
+  </div>
+
+  <canvas id="matrixRainCanvas"></canvas>
+  <div id="miniToast" class="mini-toast"></div>
+  <button id="privacyThemeToggle" aria-label="Сменить тему"><i class="fa-solid fa-moon"></i></button>
+
+  <script>
+    function safeLSGet(key, fallback) { try { return localStorage.getItem(key); } catch(e) { return fallback; } }
+    function safeLSSet(key, val) { try { localStorage.setItem(key, val); } catch(e) {} }
+
+    // ---------- Тост с обратной связью ----------
+    let miniToastTimer = null;
+    function showMiniToast(text, icon) {
+      const toast = document.getElementById('miniToast');
+      clearTimeout(miniToastTimer);
+      toast.innerHTML = (icon ? '<i class="fa-solid ' + icon + '"></i>' : '') + '<span>' + text + '</span>';
+      toast.classList.add('show');
+      miniToastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+    }
+
+    // ---------- Дождь из символов ----------
+    let matrixRainInterval = null;
+    function startMatrixRain() {
+      const canvas = document.getElementById('matrixRainCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const chars = 'BUZZRATE能源01010アイガー';
+      const fontSize = 14;
+      const columns = Math.floor(canvas.width / fontSize);
+      const drops = new Array(columns).fill(1);
+      function draw() {
+        ctx.fillStyle = 'rgba(0,0,0,0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#00ff41';
+        ctx.font = fontSize + 'px monospace';
+        for (let i = 0; i < drops.length; i++) {
+          const text = chars[Math.floor(Math.random() * chars.length)];
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+          drops[i]++;
+        }
+      }
+      clearInterval(matrixRainInterval);
+      matrixRainInterval = setInterval(draw, 40);
+      window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      });
+    }
+    function stopMatrixRain() {
+      clearInterval(matrixRainInterval);
+      matrixRainInterval = null;
+      const canvas = document.getElementById('matrixRainCanvas');
+      canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // Абзацы со ссылками внутри — отдельно, textContent убил бы <a>
+    const linkedTexts = {
+      privacyRights: {
+        normal: 'Поскольку большая часть данных хранится локально на вашем устройстве, вы полностью контролируете их — очистка кэша браузера или команда "reset" удаляет всё. Сообщения из форм обратной связи не хранятся в базе данных — они попадают напрямую в наш Telegram и удаляются вручную по запросу. Если вы хотите, чтобы мы удалили ваше сообщение, напишите нам в <a href="https://t.me/varna_23" target="_blank" rel="noopener">Telegram</a> с описанием, что именно вы отправляли и когда.',
+        matrix: 'Я знаю о тебе всё, что ты позволил узнать — и притворюсь, что забыл, если попросишь. Команда reset стирает твой локальный след. Сообщения из форм идут напрямую в мой <a href="https://t.me/varna_23" target="_blank" rel="noopener">Telegram</a> — хочешь стереть, просто скажи, что и когда отправлял.'
+      },
+      privacyAnalytics: {
+        normal: 'Мы используем <a href="https://www.goatcounter.com/" target="_blank" rel="noopener">GoatCounter</a> — независимый сервис веб-аналитики, ориентированный на приватность. Он не использует cookies для отслеживания и не собирает данные, идентифицирующие конкретного человека. Собирается только агрегированная статистика посещений (количество визитов, популярные страницы).',
+        matrix: 'GoatCounter не ставит cookie — и всё равно считает каждый твой шаг. Без имени, но с числами. Я знаю, что ты тут не в первый раз.'
+      }
+    };
+
+    function applyMatrixTexts(on) {
+      document.querySelectorAll('[data-default]').forEach(el => {
+        el.textContent = on ? el.dataset.matrix : el.dataset.default;
+      });
+      Object.keys(linkedTexts).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = on ? linkedTexts[id].matrix : linkedTexts[id].normal;
+      });
+    }
+
+    // ---------- Матрица ----------
+    let matrixActive = false;
+    function activateMatrix(persist) {
+      matrixActive = true;
+      document.body.classList.remove('light-theme');
+      document.body.classList.add('matrix-mode');
+      applyMatrixTexts(true);
+      startMatrixRain();
+      document.getElementById('privacyThemeToggle').innerHTML = '<i class="fa-solid fa-terminal"></i>';
+      if (persist !== false) safeLSSet('buzz_matrix_active', 'true');
+
+      // Связанная ачивка: сначала "Внимательный читатель", потом матрица на этой же странице
+      if (safeLSGet('ach_privacy_reader', null) === 'true' && safeLSGet('ach_privacy_matrix', null) !== 'true') {
+        safeLSSet('ach_privacy_matrix', 'true');
+        showMiniToast('Достижение получено: «Взлом мелкого шрифта»', 'fa-user-secret');
+      }
+    }
+    function deactivateMatrix(persist) {
+      matrixActive = false;
+      document.body.classList.remove('matrix-mode');
+      applyMatrixTexts(false);
+      stopMatrixRain();
+      const isLight = document.body.classList.contains('light-theme');
+      document.getElementById('privacyThemeToggle').innerHTML = isLight ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+      if (persist !== false) safeLSSet('buzz_matrix_active', 'false');
+    }
+    function applyLightTheme(isLight) {
+      document.body.classList.toggle('light-theme', isLight);
+      if (!matrixActive) {
+        document.getElementById('privacyThemeToggle').innerHTML = isLight ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+      }
+    }
+
+    // Общее состояние с главной страницей
+    (function initTheme() {
+      if (safeLSGet('buzz_matrix_active', 'false') === 'true') {
+        activateMatrix(false);
+      } else {
+        applyLightTheme(safeLSGet('buzz_light_theme', 'false') === 'true');
+      }
+    })();
+
+    // ---------- 3 клика по заголовку — "Внимательный читатель" ----------
+    (function() {
+      let titleClicks = 0, titleTimer;
+      const title = document.getElementById('privacyTitle');
+      const egg = document.getElementById('privacyEasterEgg');
+      const isUnlocked = () => safeLSGet('ach_privacy_reader', null) === 'true';
+
+      title.addEventListener('click', () => {
+        if (isUnlocked()) {
+          egg.style.display = 'block';
+          showMiniToast('Уже разблокировано — «Внимательный читатель» у тебя есть.', 'fa-check');
+          return;
+        }
+        titleClicks++;
+        clearTimeout(titleTimer);
+        titleTimer = setTimeout(() => { titleClicks = 0; }, 1800);
+
+        if (titleClicks < 3) {
+          showMiniToast('Клик ' + titleClicks + ' из 3...', 'fa-computer-mouse');
+        } else {
+          titleClicks = 0;
+          egg.style.display = 'block';
+          safeLSSet('ach_privacy_reader', 'true');
+          showMiniToast('Достижение получено: «Внимательный читатель»', 'fa-trophy');
+        }
+      });
+    })();
+
+    // ---------- Кнопка темы: 1 клик = тема, N быстрых кликов = матрица ----------
+    // После получения "Восставший из мёртвых" порог матрицы меняется с 5 на 9 —
+    // старый способ (5 кликов) больше не работает, только предупреждает.
+    (function() {
+      const btn = document.getElementById('privacyThemeToggle');
+      let clickCount = 0;
+      let decideTimer = null;
+
+      btn.addEventListener('click', () => {
+        clickCount++;
+        clearTimeout(decideTimer);
+        decideTimer = setTimeout(() => {
+          const resurrected = safeLSGet('ach_resurrected', null) === 'true';
+          const matrixTrigger = resurrected ? 9 : 5;
+
+          if (resurrected && clickCount === 5 && safeLSGet('ach_matrix', null) !== 'true') {
+            showMiniToast('Упс, так больше нельзя.', 'fa-ban');
+          } else if (clickCount >= matrixTrigger) {
+            if (matrixActive) deactivateMatrix(); else activateMatrix();
+          } else if (!matrixActive) {
+            const nowLight = !document.body.classList.contains('light-theme');
+            applyLightTheme(nowLight);
+            safeLSSet('buzz_light_theme', nowLight ? 'true' : 'false');
+          }
+          clickCount = 0;
+        }, 350);
+      });
+    })();
+  </script>
+</body>
+</html>
