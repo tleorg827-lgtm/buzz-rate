@@ -3607,10 +3607,61 @@ body.light-theme #detailsImage {
   color: var(--muted);
   font-family: 'Oswald', sans-serif;
   letter-spacing: 0.5px;
-  line-height: 1.2;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+}
+@media (max-width: 480px) {
+  .profile-ach-grid { grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 8px; }
+  .profile-ach-item { padding: 6px; gap: 4px; }
+  .profile-ach-item i { font-size: 22px; }
+  .profile-ach-item span { font-size: 9px; }
 }
 .profile-ach-item.unlocked span { color: var(--fg); }
+.rating-donut-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+  max-width: 700px;
+  margin: 0 auto 50px;
+}
+.rating-donut-svg { width: 180px; height: 180px; flex-shrink: 0; }
+.rating-donut-seg { transition: stroke-dasharray 1s ease, stroke-dashoffset 1s ease; }
+.rating-donut-avg {
+  font-family: 'Oswald', sans-serif;
+  font-size: 34px;
+  font-weight: 900;
+  fill: var(--fg);
+}
+.rating-donut-avg-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 10px;
+  letter-spacing: 2px;
+  fill: var(--muted);
+}
+.rating-donut-legend { display: flex; flex-direction: column; gap: 12px; }
+.rating-donut-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--fg);
+}
+.rating-donut-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+.rating-donut-legend-label { min-width: 60px; color: var(--muted); }
+.rating-donut-legend-val { font-weight: 700; margin-left: auto; }
 
+@media (max-width: 560px) {
+  .rating-donut-wrap { flex-direction: column; gap: 20px; }
+  .rating-donut-svg { width: 150px; height: 150px; }
+}
 /* Блок с описанием */
 .ach-description-box {
   margin-top: 20px;
