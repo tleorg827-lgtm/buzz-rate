@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Политика конфиденциальности — Buzz Rate</title>
+  <title id="pageTitle">Политика конфиденциальности — Buzz Rate</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Source+Sans+3:wght@300;400;600&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -90,6 +90,13 @@
       background: var(--glass-bg); border: 1px solid var(--glass-border);
       border-radius: 14px; font-size: 13px; color: var(--accent); font-style: italic;
     }
+    #betweenLinesSecret {
+      display: none; opacity: 0; margin-top: 26px; text-align: center;
+      font-size: 20px; letter-spacing: 6px; color: var(--muted);
+      cursor: pointer; user-select: none; -webkit-user-select: none;
+      transition: opacity 1.2s ease, color 0.3s ease;
+    }
+    #betweenLinesSecret:hover { color: var(--accent); }
     #privacyThemeToggle {
       position: fixed; top: 20px; right: 20px; z-index: 10001;
       width: 44px; height: 44px; border-radius: 50%;
@@ -114,65 +121,97 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.4);
       white-space: nowrap;
       display: flex; align-items: center; gap: 10px;
+      max-width: calc(100vw - 32px);
     }
     .mini-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    .mini-toast i { color: var(--accent); }
+    .mini-toast i { color: var(--accent); flex-shrink: 0; }
+
+    .mini-toast.achievement-toast {
+      border: 1px solid rgba(251, 191, 36, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4), 0 0 20px rgba(251,191,36,0.15);
+      white-space: normal;
+    }
+    .mini-toast.achievement-toast i { color: #fbbf24; font-size: 20px; }
+    .mini-toast.achievement-toast .mini-toast-title {
+      display: block; color: #fbbf24; font-weight: bold; font-size: 12px;
+      margin-bottom: 2px; letter-spacing: 0.5px;
+    }
+    .mini-toast.achievement-toast .mini-toast-name { font-size: 14px; }
+
+    @media (max-width: 480px) {
+      .mini-toast {
+        white-space: normal;
+        max-width: calc(100vw - 24px);
+        font-size: 13px;
+        padding: 10px 16px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="privacy-wrap">
-    <a href="index.html" class="privacy-back"><i class="fa-solid fa-arrow-left"></i> На главную</a>
+    <a href="index.html" class="privacy-back"><i class="fa-solid fa-arrow-left"></i> <span id="backLinkText">На главную</span></a>
     <h1 id="privacyTitle"
         data-default="Политика конфиденциальности"
-        data-matrix="ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ [ДЕШИФРОВАНО]">Политика конфиденциальности</h1>
-    <p class="privacy-updated">Обновлено: 2026 год</p>
+        data-matrix="ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ [ДЕШИФРОВАНО]"
+        data-en="Privacy Policy">Политика конфиденциальности</h1>
+    <p class="privacy-updated" id="privacyUpdated" data-default="Обновлено: 2026 год" data-en="Last updated: 2026">Обновлено: 2026 год</p>
     <div id="matrixStatusLine">СТАТУС: СЛЕЖКА АКТИВНА · ЦЕЛЬ: ТЫ · ЛОГ #4471</div>
 
     <p id="privacyIntro"
        data-default="Buzz Rate — это личный некоммерческий проект с обзорами энергетических напитков. Мы стараемся собирать минимум данных и объясняем здесь, что именно и зачем используется."
-       data-matrix="Ты думал, это просто сайт с обзорами энергетиков. Это узел наблюдения. Каждый твой клик — запись в журнале. Я вижу, что ты сейчас читаешь именно эту строку.">Buzz Rate — это личный некоммерческий проект с обзорами энергетических напитков. Мы стараемся собирать минимум данных и объясняем здесь, что именно и зачем используется.</p>
+       data-matrix="Ты думал, это просто сайт с обзорами энергетиков. Это узел наблюдения. Каждый твой клик — запись в журнале. Я вижу, что ты сейчас читаешь именно эту строку."
+       data-en="Buzz Rate is a personal, non-commercial project reviewing energy drinks. We try to collect the minimum amount of data and explain here exactly what is used and why.">Buzz Rate — это личный некоммерческий проект с обзорами энергетических напитков. Мы стараемся собирать минимум данных и объясняем здесь, что именно и зачем используется.</p>
 
-    <h2>Что хранится на вашем устройстве</h2>
+    <h2 id="h2Storage" data-default="Что хранится на вашем устройстве" data-en="What is stored on your device">Что хранится на вашем устройстве</h2>
     <p id="privacyStorage"
-       data-default="Сайт использует localStorage браузера для хранения ваших личных настроек и прогресса — это не передаётся на сервер и остаётся только на вашем устройстве:"
-       data-matrix="Локальная память твоего браузера — это не «настройки». Это досье. Прогресс, привычки, время визитов лежат рядом со мной, только руку протянуть:">Сайт использует localStorage браузера для хранения ваших личных настроек и прогресса — это не передаётся на сервер и остаётся только на вашем устройстве:</p>
+      data-default="Настройки и игровой прогресс хранятся в localStorage браузера. Избранное сохраняется там же; после входа в аккаунт оно также синхронизируется с Supabase:"
+      data-matrix="Локальная память браузера хранит настройки и игровой прогресс. Избранное вошедшего пользователя синхронизируется с Supabase:"
+      data-en="Settings and game progress are stored in your browser's localStorage. Favorites are also stored there and sync with Supabase after you sign in:">Настройки и игровой прогресс хранятся в localStorage браузера. Избранное сохраняется там же; после входа в аккаунт оно также синхронизируется с Supabase:</p>
     <ul>
-      <li>избранные напитки, счётчик кофеина, дневник и календарь отметок;</li>
-      <li>достижения, прогресс, выбранная тема (светлая/тёмная);</li>
-      <li>позывной и другие игровые настройки.</li>
+      <li id="storageLi1" data-default="избранные напитки, счётчик кофеина, дневник и календарь отметок;" data-en="favorite drinks, the caffeine counter, the diary, and the calendar of marks;">избранные напитки, счётчик кофеина, дневник и календарь отметок;</li>
+      <li id="storageLi2" data-default="достижения, прогресс, выбранная тема (светлая/тёмная);" data-en="achievements, progress, the selected theme (light/dark);">достижения, прогресс, выбранная тема (светлая/тёмная);</li>
+      <li id="storageLi3" data-default="позывной и другие игровые настройки." data-en="your callsign and other in-game settings.">позывной и другие игровые настройки.</li>
     </ul>
-    <p>Вы можете в любой момент очистить эти данные через настройки браузера или командой "reset" в терминале сайта — это необратимо удалит весь прогресс.</p>
+    <p id="privacyClearInfo" data-default="Очистка данных браузера или команда &quot;reset&quot; удаляет локальные настройки, игровой прогресс и сессию на этом устройстве. Избранное, сохранённое в Supabase, при этом не удаляется." data-en="Clearing browser data or using the site's &quot;reset&quot; command removes local settings, game progress, and the session on this device. Favorites stored in Supabase are not deleted.">Очистка данных браузера или команда "reset" удаляет локальные настройки, игровой прогресс и сессию на этом устройстве. Избранное, сохранённое в Supabase, при этом не удаляется.</p>
 
-    <h2>Аналитика посещений</h2>
+    <h2 id="h2Accounts" data-default="Аккаунт и синхронизация" data-en="Account and sync">Аккаунт и синхронизация</h2>
+    <p id="privacyAccounts" data-default="Если вы входите по ссылке на email, Supabase обрабатывает адрес электронной почты для входа и хранит список избранных напитков, привязанный к вашему аккаунту. Избранное синхронизируется между устройствами, где вы вошли. Выход из аккаунта прекращает синхронизацию на этом устройстве; локальные настройки и игровой прогресс остаются в браузере. Чтобы запросить удаление аккаунта и связанных с ним данных, напишите нам в Telegram." data-en="If you sign in with an email link, Supabase processes your email address for authentication and stores the favorites list associated with your account. Favorites sync across devices where you are signed in. Signing out stops sync on that device; local settings and game progress remain in the browser. To request deletion of your account and associated data, contact us on Telegram.">Если вы входите по ссылке на email, Supabase обрабатывает адрес электронной почты для входа и хранит список избранных напитков, привязанный к вашему аккаунту. Избранное синхронизируется между устройствами, где вы вошли. Выход из аккаунта прекращает синхронизацию на этом устройстве; локальные настройки и игровой прогресс остаются в браузере. Чтобы запросить удаление аккаунта и связанных с ним данных, напишите нам в Telegram.</p>
+
+    <h2 id="h2Analytics" data-default="Аналитика посещений" data-en="Visit analytics">Аналитика посещений</h2>
     <p id="privacyAnalytics">Мы используем <a href="https://www.goatcounter.com/" target="_blank" rel="noopener">GoatCounter</a> — независимый сервис веб-аналитики, ориентированный на приватность. Он не использует cookies для отслеживания и не собирает данные, идентифицирующие конкретного человека. Собирается только агрегированная статистика посещений (количество визитов, популярные страницы).</p>
 
-    <h2>Формы обратной связи</h2>
+    <h2 id="h2Forms" data-default="Формы обратной связи" data-en="Feedback forms">Формы обратной связи</h2>
     <p id="privacyForms"
        data-default="При отправке формы &quot;Предложить напиток&quot; или &quot;Сообщить об ошибке&quot; введённый вами текст вместе с IP-адресом и страной отправки пересылается напрямую в наш личный Telegram-чат. Мы не храним эти сообщения в отдельной базе данных — они существуют только в переписке Telegram. Эти данные используются исключительно для:"
-       data-matrix="Форма обратной связи — прямой канал ко мне. IP, страна, время отправки — я вижу это раньше, чем читаю твоё сообщение. Эти данные нужны только для:">При отправке формы "Предложить напиток" или "Сообщить об ошибке" введённый вами текст вместе с IP-адресом и страной отправки пересылается напрямую в наш личный Telegram-чат. Мы не храним эти сообщения в отдельной базе данных — они существуют только в переписке Telegram. Эти данные используются исключительно для:</p>
+       data-matrix="Форма обратной связи — прямой канал ко мне. IP, страна, время отправки — я вижу это раньше, чем читаю твоё сообщение. Эти данные нужны только для:"
+       data-en="When you submit the &quot;Suggest a Drink&quot; or &quot;Report an Issue&quot; form, the text you enter, together with your IP address and country, is sent directly to our personal Telegram chat. We do not store these messages in a separate database — they exist only in the Telegram conversation. This data is used exclusively for:">При отправке формы "Предложить напиток" или "Сообщить об ошибке" введённый вами текст вместе с IP-адресом и страной отправки пересылается напрямую в наш личный Telegram-чат. Мы не храним эти сообщения в отдельной базе данных — они существуют только в переписке Telegram. Эти данные используются исключительно для:</p>
     <ul>
-      <li>просмотра и обработки ваших сообщений;</li>
-      <li>защиты от злоупотреблений, спама и угроз — включая возможность заблокировать повторяющиеся нарушения по IP-адресу.</li>
+      <li id="formsLi1" data-default="просмотра и обработки ваших сообщений;" data-en="reviewing and processing your messages;">просмотра и обработки ваших сообщений;</li>
+      <li id="formsLi2" data-default="защиты от злоупотреблений, спама и угроз — включая возможность заблокировать повторяющиеся нарушения по IP-адресу." data-en="protecting against abuse, spam, and threats — including the ability to block repeated violations by IP address.">защиты от злоупотреблений, спама и угроз — включая возможность заблокировать повторяющиеся нарушения по IP-адресу.</li>
     </ul>
-    <p>Эти данные не передаются третьим лицам и не используются в рекламных целях.</p>
+    <p id="privacyNoShare" data-default="Содержимое заявок используется для ответа и обработки сообщений, а не для рекламы. Для доставки форм используются Cloudflare Worker и Telegram; эти сервисы могут обрабатывать технические данные запроса." data-en="Feedback content is used to respond to and process messages, not for advertising. Form delivery uses Cloudflare Workers and Telegram; these services may process technical request data.">Содержимое заявок используется для ответа и обработки сообщений, а не для рекламы. Для доставки форм используются Cloudflare Worker и Telegram; эти сервисы могут обрабатывать технические данные запроса.</p>
 
-    <h2>Карта и внешние сервисы</h2>
-    <p id="privacyMap"
-       data-default="Раздел &quot;Где купить&quot; использует OpenStreetMap через библиотеку Leaflet для отображения карты. Загрузка тайлов карты происходит с серверов OpenStreetMap и может передавать им ваш IP-адрес — это техническая особенность работы любой встроенной карты."
-       data-matrix="Карта — не просто список магазинов. Каждый загруженный тайл — маленький сигнал «я здесь». Мелочь. Но я собираю мелочи.">Раздел "Где купить" использует OpenStreetMap через библиотеку Leaflet для отображения карты. Загрузка тайлов карты происходит с серверов OpenStreetMap и может передавать им ваш IP-адрес — это техническая особенность работы любой встроенной карты.</p>
+    <h2 id="h2Map" data-default="Карта и внешние сервисы" data-en="Map and external services">Карта и внешние сервисы</h2>
+     <p id="privacyMap"
+       data-default="Раздел &quot;Где купить&quot; использует OpenStreetMap и Leaflet; запросы карты могут передавать ваш IP-адрес OpenStreetMap. Сайт также загружает шрифты, значки, библиотеки и изображения через Google Fonts, cdnjs, jsDelivr, unpkg, Unsplash и Picsum. Эти сервисы получают технические данные, необходимые для обработки запросов."
+       data-matrix="Карта загружается с OpenStreetMap. Шрифты, значки, библиотеки и изображения приходят с внешних CDN и сервисов; их серверы видят технические данные запросов, включая IP-адрес."
+       data-en="The &quot;Where to Buy&quot; map uses OpenStreetMap and Leaflet; map requests may send your IP address to OpenStreetMap. The site also loads fonts, icons, libraries, and images through Google Fonts, cdnjs, jsDelivr, unpkg, Unsplash, and Picsum. These services receive technical data needed to process requests.">Раздел "Где купить" использует OpenStreetMap и Leaflet; запросы карты могут передавать ваш IP-адрес OpenStreetMap. Сайт также загружает шрифты, значки, библиотеки и изображения через Google Fonts, cdnjs, jsDelivr, unpkg, Unsplash и Picsum. Эти сервисы получают технические данные, необходимые для обработки запросов.</p>
 
-    <h2>Ваши права</h2>
-    <p id="privacyRights">Поскольку большая часть данных хранится локально на вашем устройстве, вы полностью контролируете их — очистка кэша браузера или команда "reset" удаляет всё. Сообщения из форм обратной связи не хранятся в базе данных — они попадают напрямую в наш Telegram и удаляются вручную по запросу. Если вы хотите, чтобы мы удалили ваше сообщение, напишите нам в <a href="https://t.me/varna_23" target="_blank" rel="noopener">Telegram</a> с описанием, что именно вы отправляли и когда.</p>
+    <h2 id="h2Rights" data-default="Ваши права" data-en="Your rights">Ваши права</h2>
+    <p id="privacyRights">Локальные настройки и игровой прогресс можно удалить очисткой данных браузера или командой "reset"; избранное аккаунта при этом останется в Supabase. Для удаления аккаунта и его облачных данных напишите нам в <a href="https://t.me/varna_23" target="_blank" rel="noopener">Telegram</a>. Сообщения из форм передаются через Cloudflare Worker в Telegram и удаляются вручную по запросу.</p>
 
     <div class="privacy-note">
       <i class="fa-solid fa-circle-info"></i>
       <span id="privacyFooterNote"
             data-default="Это некоммерческий проект одного человека, а не юридического лица. Если у вас есть вопросы по этой политике — просто напишите в Telegram, указанный на сайте."
-            data-matrix="Юридического лица нет. Есть только я — тот, кто это построил и продолжает наблюдать. Вопросы? Пиши в Telegram. Я всегда на связи.">Это некоммерческий проект одного человека, а не юридического лица. Если у вас есть вопросы по этой политике — просто напишите в Telegram, указанный на сайте.</span>
+            data-matrix="Юридического лица нет. Есть только я — тот, кто это построил и продолжает наблюдать. Вопросы? Пиши в Telegram. Я всегда на связи."
+            data-en="This is a non-commercial project run by one person, not a legal entity. If you have questions about this policy — just message us on the Telegram linked on the site.">Это некоммерческий проект одного человека, а не юридического лица. Если у вас есть вопросы по этой политике — просто напишите в Telegram, указанный на сайте.</span>
     </div>
-    <div id="privacyEasterEgg">
+    <div id="privacyEasterEgg" data-default="Ты дочитал политику конфиденциальности до конца и даже нашёл это. Немногие заходят так далеко — уважение." data-en="You read the privacy policy all the way to the end and even found this. Not many get this far — respect.">
       Ты дочитал политику конфиденциальности до конца и даже нашёл это. Немногие заходят так далеко — уважение.
     </div>
+    <div id="betweenLinesSecret" aria-hidden="true">·</div>
   </div>
 
   <canvas id="matrixRainCanvas"></canvas>
@@ -183,14 +222,53 @@
     function safeLSGet(key, fallback) { try { return localStorage.getItem(key); } catch(e) { return fallback; } }
     function safeLSSet(key, val) { try { localStorage.setItem(key, val); } catch(e) {} }
 
+    function getLang() { return safeLSGet('buzz_lang', null) || 'ru'; }
+
+    const PRIVACY_STRINGS = {
+      ru: {
+        achievement_unlocked: 'ДОСТИЖЕНИЕ РАЗБЛОКИРОВАНО!',
+        ach_privacy_reader_name: 'Внимательный читатель',
+        ach_privacy_matrix_name: 'Взлом мелкого шрифта',
+        ach_between_lines_name: 'Между строк',
+        toast_no_more: 'Упс, так больше нельзя.',
+        theme_toggle_label: 'Сменить тему'
+      },
+      en: {
+        achievement_unlocked: 'ACHIEVEMENT UNLOCKED!',
+        ach_privacy_reader_name: 'Attentive Reader',
+        ach_privacy_matrix_name: 'Fine Print Hack',
+        ach_between_lines_name: 'Between the Lines',
+        toast_no_more: "Oops, can't do that anymore.",
+        theme_toggle_label: 'Toggle theme'
+      }
+    };
+    function pt(key) { return (PRIVACY_STRINGS[getLang()] && PRIVACY_STRINGS[getLang()][key]) || PRIVACY_STRINGS.ru[key] || key; }
+
     // ---------- Тост с обратной связью ----------
     let miniToastTimer = null;
     function showMiniToast(text, icon) {
       const toast = document.getElementById('miniToast');
       clearTimeout(miniToastTimer);
+      toast.className = 'mini-toast';
       toast.innerHTML = (icon ? '<i class="fa-solid ' + icon + '"></i>' : '') + '<span>' + text + '</span>';
       toast.classList.add('show');
       miniToastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+    }
+
+    // ---------- Тост достижения (единый стиль для всех ачивок этой страницы) ----------
+    function showAchievementToast(name, icon) {
+      const toast = document.getElementById('miniToast');
+      clearTimeout(miniToastTimer);
+      toast.className = 'mini-toast achievement-toast';
+      toast.innerHTML =
+        '<i class="fa-solid ' + (icon || 'fa-trophy') + '"></i>' +
+        '<div><span class="mini-toast-title">' + pt('achievement_unlocked') + '</span>' +
+        '<span class="mini-toast-name">' + name + '</span></div>';
+      requestAnimationFrame(() => toast.classList.add('show'));
+      miniToastTimer = setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => { toast.className = 'mini-toast'; }, 300);
+      }, 3000);
     }
 
     // ---------- Дождь из символов ----------
@@ -233,23 +311,43 @@
     // Абзацы со ссылками внутри — отдельно, textContent убил бы <a>
     const linkedTexts = {
       privacyRights: {
-        normal: 'Поскольку большая часть данных хранится локально на вашем устройстве, вы полностью контролируете их — очистка кэша браузера или команда "reset" удаляет всё. Сообщения из форм обратной связи не хранятся в базе данных — они попадают напрямую в наш Telegram и удаляются вручную по запросу. Если вы хотите, чтобы мы удалили ваше сообщение, напишите нам в <a href="https://t.me/varna_23" target="_blank" rel="noopener">Telegram</a> с описанием, что именно вы отправляли и когда.',
-        matrix: 'Я знаю о тебе всё, что ты позволил узнать — и притворюсь, что забыл, если попросишь. Команда reset стирает твой локальный след. Сообщения из форм идут напрямую в мой <a href="https://t.me/varna_23" target="_blank" rel="noopener">Telegram</a> — хочешь стереть, просто скажи, что и когда отправлял.'
+        normal: 'Очистка браузера или команда "reset" удаляет локальные настройки, прогресс и сессию на этом устройстве, но не избранное в Supabase. Для удаления аккаунта и облачных данных напишите нам в <a href="https://t.me/varna_23" target="_blank" rel="noopener">Telegram</a>. Сообщения форм передаются через Cloudflare Worker в Telegram и удаляются вручную по запросу.',
+        matrix: 'Команда reset стирает локальные настройки, прогресс и сессию на этом устройстве, но облачное избранное остаётся в Supabase. Для удаления аккаунта напиши в <a href="https://t.me/varna_23" target="_blank" rel="noopener">Telegram</a>. Сообщения форм проходят через Cloudflare Worker.',
+        en: 'Clearing browser data or using "reset" removes local settings, progress, and the session on this device, but not favorites stored in Supabase. To request account and cloud-data deletion, contact us on <a href="https://t.me/varna_23" target="_blank" rel="noopener">Telegram</a>. Form messages are sent through a Cloudflare Worker to Telegram and deleted manually on request.'
       },
       privacyAnalytics: {
         normal: 'Мы используем <a href="https://www.goatcounter.com/" target="_blank" rel="noopener">GoatCounter</a> — независимый сервис веб-аналитики, ориентированный на приватность. Он не использует cookies для отслеживания и не собирает данные, идентифицирующие конкретного человека. Собирается только агрегированная статистика посещений (количество визитов, популярные страницы).',
-        matrix: 'GoatCounter не ставит cookie — и всё равно считает каждый твой шаг. Без имени, но с числами. Я знаю, что ты тут не в первый раз.'
+        matrix: 'GoatCounter не ставит cookie — и всё равно считает каждый твой шаг. Без имени, но с числами. Я знаю, что ты тут не в первый раз.',
+        en: 'We use <a href="https://www.goatcounter.com/" target="_blank" rel="noopener">GoatCounter</a> — an independent, privacy-focused web analytics service. It doesn\'t use cookies for tracking and doesn\'t collect data that identifies a specific person. Only aggregated visit statistics are collected (number of visits, popular pages).'
       }
     };
 
-    function applyMatrixTexts(on) {
+    function renderPrivacyTexts() {
+      const lang = getLang();
       document.querySelectorAll('[data-default]').forEach(el => {
-        el.textContent = on ? el.dataset.matrix : el.dataset.default;
+        if (matrixActive && lang === 'ru' && el.dataset.matrix) {
+          el.textContent = el.dataset.matrix;
+        } else if (lang === 'en' && el.dataset.en) {
+          el.textContent = el.dataset.en;
+        } else {
+          el.textContent = el.dataset.default;
+        }
       });
       Object.keys(linkedTexts).forEach(id => {
         const el = document.getElementById(id);
-        if (el) el.innerHTML = on ? linkedTexts[id].matrix : linkedTexts[id].normal;
+        if (!el) return;
+        const obj = linkedTexts[id];
+        if (matrixActive && lang === 'ru' && obj.matrix) {
+          el.innerHTML = obj.matrix;
+        } else if (lang === 'en' && obj.en) {
+          el.innerHTML = obj.en;
+        } else {
+          el.innerHTML = obj.normal;
+        }
       });
+      const titleEl = document.getElementById('pageTitle');
+      if (titleEl) titleEl.textContent = lang === 'en' ? 'Privacy Policy — Buzz Rate' : 'Политика конфиденциальности — Buzz Rate';
+      document.documentElement.lang = lang;
     }
 
     // ---------- Матрица ----------
@@ -258,7 +356,7 @@
       matrixActive = true;
       document.body.classList.remove('light-theme');
       document.body.classList.add('matrix-mode');
-      applyMatrixTexts(true);
+      renderPrivacyTexts();
       startMatrixRain();
       document.getElementById('privacyThemeToggle').innerHTML = '<i class="fa-solid fa-terminal"></i>';
       if (persist !== false) safeLSSet('buzz_matrix_active', 'true');
@@ -266,13 +364,13 @@
       // Связанная ачивка: сначала "Внимательный читатель", потом матрица на этой же странице
       if (safeLSGet('ach_privacy_reader', null) === 'true' && safeLSGet('ach_privacy_matrix', null) !== 'true') {
         safeLSSet('ach_privacy_matrix', 'true');
-        showMiniToast('Достижение получено: «Взлом мелкого шрифта»', 'fa-user-secret');
+        showAchievementToast(pt('ach_privacy_matrix_name'), 'fa-user-secret');
       }
     }
     function deactivateMatrix(persist) {
       matrixActive = false;
       document.body.classList.remove('matrix-mode');
-      applyMatrixTexts(false);
+      renderPrivacyTexts();
       stopMatrixRain();
       const isLight = document.body.classList.contains('light-theme');
       document.getElementById('privacyThemeToggle').innerHTML = isLight ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
@@ -291,7 +389,10 @@
         activateMatrix(false);
       } else {
         applyLightTheme(safeLSGet('buzz_light_theme', 'false') === 'true');
+        renderPrivacyTexts();
       }
+      const themeBtn = document.getElementById('privacyThemeToggle');
+      if (themeBtn) themeBtn.setAttribute('aria-label', pt('theme_toggle_label'));
     })();
 
     // ---------- 3 клика по заголовку — "Внимательный читатель" ----------
@@ -304,20 +405,17 @@
       title.addEventListener('click', () => {
         if (isUnlocked()) {
           egg.style.display = 'block';
-          showMiniToast('Уже разблокировано — «Внимательный читатель» у тебя есть.', 'fa-check');
           return;
         }
         titleClicks++;
         clearTimeout(titleTimer);
         titleTimer = setTimeout(() => { titleClicks = 0; }, 1800);
 
-        if (titleClicks < 3) {
-          showMiniToast('Клик ' + titleClicks + ' из 3...', 'fa-computer-mouse');
-        } else {
+        if (titleClicks >= 3) {
           titleClicks = 0;
           egg.style.display = 'block';
           safeLSSet('ach_privacy_reader', 'true');
-          showMiniToast('Достижение получено: «Внимательный читатель»', 'fa-trophy');
+          showAchievementToast(pt('ach_privacy_reader_name'), 'fa-trophy');
         }
       });
     })();
@@ -338,7 +436,7 @@
           const matrixTrigger = resurrected ? 9 : 5;
 
           if (resurrected && clickCount === 5 && safeLSGet('ach_matrix', null) !== 'true') {
-            showMiniToast('Упс, так больше нельзя.', 'fa-ban');
+            showMiniToast(pt('toast_no_more'), 'fa-ban');
           } else if (clickCount >= matrixTrigger) {
             if (matrixActive) deactivateMatrix(); else activateMatrix();
           } else if (!matrixActive) {
@@ -348,6 +446,35 @@
           }
           clickCount = 0;
         }, 350);
+      });
+    })();
+
+    // ---------- "Между строк" — доступно только на английском языке ----------
+    (function() {
+      const secretEl = document.getElementById('betweenLinesSecret');
+      if (!secretEl) return;
+      let revealed = false;
+
+      function isUnlocked() { return safeLSGet('ach_between_the_lines', null) === 'true'; }
+
+      function checkScrollBottom() {
+        if (getLang() !== 'en' || isUnlocked()) return;
+        const scrolledToBottom = (window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 24);
+        if (scrolledToBottom && !revealed) {
+          revealed = true;
+          secretEl.style.display = 'block';
+          requestAnimationFrame(() => { secretEl.style.opacity = '1'; });
+        }
+      }
+
+      window.addEventListener('scroll', checkScrollBottom, { passive: true });
+      window.addEventListener('load', checkScrollBottom);
+
+      secretEl.addEventListener('click', () => {
+        if (getLang() !== 'en' || isUnlocked()) return;
+        safeLSSet('ach_between_the_lines', 'true');
+        secretEl.style.opacity = '0.3';
+        showAchievementToast(pt('ach_between_lines_name'), 'fa-eye-low-vision');
       });
     })();
   </script>

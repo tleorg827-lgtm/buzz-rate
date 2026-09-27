@@ -148,7 +148,7 @@
   <section class="about-section" id="aboutBlock">
     <div class="about-image"><img src="images/me-2.webp" alt="Обо мне" decoding="async" fetchpriority="high"></div>
     <div class="about-text-card">
-      <h2>Обо мне</h2>
+      <h2 data-i18n="nav_about">Обо мне</h2>
       <p><span id="about-typewriter" class="cursor-about"></span></p>
       <p id="coronationCongrats" class="coronation-congrats">
         <i class="fa-solid fa-crown"></i> Вы разблокировали 10+ достижений и получили королевский статус на Buzz Rate — таких немного. Спасибо, что копаетесь в сайте так глубоко.
@@ -161,7 +161,7 @@
 <!-- НАПИТОК ДНЯ -->
 <section class="daily-drink-section" id="dailyDrinkSection">
   <div class="daily-drink-card" id="dailyDrinkCard">
-    <div class="dd-tag"><i class="fa-solid fa-calendar-day"></i> Напиток дня</div>
+    <div class="dd-tag"><i class="fa-solid fa-calendar-day"></i> <span data-i18n="dd_tag_label">Напиток дня</span></div>
     <div class="dd-countdown" id="ddCountdown"><i class="fa-solid fa-clock"></i> <span id="ddCountdownText"></span></div>
     <div class="dd-content">
       <div class="dd-image-wrap"><img id="ddImage" src="" alt="Напиток дня" loading="lazy"></div>
@@ -172,7 +172,7 @@
           <span><i class="fa-solid fa-bolt"></i> <span id="ddCaffeine"></span></span>
           <span><i class="fa-solid fa-star"></i> <span id="ddRating"></span>/10</span>
         </div>
-        <button class="dd-btn" id="ddBtn"><i class="fa-solid fa-eye"></i> Подробнее</button>
+        <button class="dd-btn" id="ddBtn"><i class="fa-solid fa-eye"></i> <span data-i18n="dd_more">Подробнее</span></button>
       </div>
     </div>
   </div>
@@ -193,7 +193,7 @@
     <button class="filter-btn" data-filter="high" data-i18n="filter_high">8 — 10</button>
     <button class="filter-btn" data-filter="mid" data-i18n="filter_mid">6 — 7</button>
     <button class="filter-btn" data-filter="low" data-i18n="filter_low">Ниже 6</button>
-    <button class="filter-btn" data-filter="fav"><i class="fa-solid fa-heart" style="font-size:11px;margin-right:4px;"></i> <span data-i18n="filter_fav">Избранное</span></button>
+    <button class="filter-btn" data-filter="fav"><i class="fa-solid fa-heart" style="font-size:11px;margin-right:4px;"></i> <span data-i18n="filter_fav">Избранное</span><span id="favBadge" class="fav-badge"></span></button>
     <div class="brand-filter-wrap">
       <button class="filter-btn brand-toggle" id="volumeToggle"><span data-i18n="toggle_volume">Объём</span> <i class="fa-solid fa-chevron-down"></i></button>
       <div class="brand-dropdown" id="volumeDropdown"></div>
@@ -216,6 +216,7 @@
   <!-- ПОИСК -->
   <div class="search-wrap">
     <i class="fa-solid fa-magnifying-glass"></i>
+    <label class="visually-hidden" for="drinkSearch" data-i18n="search_placeholder">Поиск по названию...</label>
     <input type="text" id="drinkSearch" data-i18n="search_placeholder" data-i18n-attr="placeholder" placeholder="Поиск по названию..." autocomplete="off">
     <button id="clearSearch" class="clear-search" aria-label="Очистить"><i class="fa-solid fa-xmark"></i></button>
   </div>
@@ -248,8 +249,9 @@
     <h2 class="section-title" data-i18n="section_stats_title">Цифры по брендам</h2>
     <p class="section-subtitle" data-i18n="section_stats_sub">Средние рейтинги и характеристики</p>
   </header>
+  <div class="stats-summary" id="statsSummary"></div>
+  <div class="stats-metric-toggle" id="statsMetricToggle"></div>
   <div class="rating-distribution" id="ratingDistribution"></div>
-  <div class="stats-grid" id="statsGrid"></div>
 </section>
 
 <!-- МОДАЛКА ДЕТАЛЕЙ НАПИТКА -->
@@ -346,7 +348,7 @@
   </div>
   <div class="map-disclaimer">
     <i class="fa-solid fa-circle-info"></i>
-    <p>Мы брали энергетики в этих точках, но <strong>не отвечаем за их текущее наличие</strong> в магазине. Ассортимент может измениться.</p>
+    <p data-i18n="map_disclaimer_normal">Мы брали энергетики в этих точках, но <strong>не отвечаем за их текущее наличие</strong> в магазине. Ассортимент может измениться.</p>
   </div>
 </section>
 
@@ -365,6 +367,7 @@
     <a href="#mapSection" class="mobile-link-btn places-mob"><i class="fa-solid fa-location-dot"></i> <span data-i18n="nav_places">Места</span></a>
     <a href="#" class="mobile-link-btn key-mob" id="openKeyModal"><i class="fa-solid fa-key"></i> <span data-i18n="nav_key">Ключ</span></a>
     <a href="#" class="mobile-link-btn achievements-mob" id="openAchievementsModal"><i class="fa-solid fa-trophy"></i> <span data-i18n="nav_achievements">Достижения</span></a>
+    <a href="#" class="mobile-link-btn" id="authMenuLink"><i class="fa-solid fa-user"></i> <span id="authMenuLabel">Войти</span></a>
     <a href="#" class="mobile-link-btn lang-mob" id="langToggleMobile"><i class="fa-solid fa-language"></i> <span id="langToggleMobileLabel">English</span></a>
     <div class="menu-divider"></div>
     <a href="https://tiktok.com/@varna.23.live" target="_blank" rel="noopener" class="mobile-link-btn tiktok-mob"><i class="fa-brands fa-tiktok"></i> Мой TikTok</a>
@@ -391,6 +394,7 @@
     <div class="menu-divider"></div>
     <div class="footer-actions">
       <button class="btn-suggest" id="openSuggest"><i class="fa-solid fa-paper-plane"></i> <span data-i18n="btn_suggest">Предложить напиток</span></button>
+      <button class="btn-key-footer" id="authButton" type="button"><i class="fa-solid fa-user"></i> <span id="authButtonLabel">Войти</span></button>
       <button class="btn-key-footer" id="openKeyModalDesktop"><i class="fa-solid fa-key"></i> <span data-i18n="btn_key_footer">Ввести код</span></button>
       <a href="https://tiktok.com/@varna.23.live" target="_blank" rel="noopener" class="btn-tiktok" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
       <a href="https://t.me/varna_23" target="_blank" rel="noopener" class="btn-telegram" aria-label="Telegram"><i class="fa-brands fa-telegram"></i></a>
@@ -411,8 +415,10 @@
   <div class="suggest-modal">
     <h2 data-i18n="suggest_title">Предложить напиток</h2>
     <p data-i18n="suggest_prompt">Пришли название напитка, который хочешь увидеть в обзоре</p>
+    <label class="visually-hidden" for="drinkName" data-i18n="suggest_name_placeholder">Название энергетика...</label>
     <input type="text" class="suggest-input" id="drinkName" data-i18n="suggest_name_placeholder" data-i18n-attr="placeholder" placeholder="Название энергетика..." maxlength="80">
     <div class="suggest-counter" id="drinkNameCounter">0 / 80</div>
+    <label class="visually-hidden" for="drinkComment" data-i18n="suggest_comment_placeholder">Почему его стоит добавить?</label>
     <textarea class="suggest-input suggest-textarea" id="drinkComment" data-i18n="suggest_comment_placeholder" data-i18n-attr="placeholder" placeholder="Почему его стоит обзять? (необязательно)" maxlength="300"></textarea>
     <div class="suggest-counter" id="drinkCommentCounter">0 / 300</div>
     <input type="text" id="drinkWebsite" name="website" tabindex="-1" autocomplete="off" class="honeypot-field">
@@ -464,6 +470,7 @@
     <div class="key-modal-icon"><i class="fa-solid fa-key"></i></div>
     <h2 data-i18n="key_title">Секретный ключ</h2>
     <p data-i18n="key_prompt">Если ты нашёл код — введи его сюда</p>
+    <label class="visually-hidden" for="keyInput" data-i18n="key_placeholder">Введи код...</label>
     <input type="text" class="suggest-input" id="keyInput" data-i18n="key_placeholder" data-i18n-attr="placeholder" placeholder="Введи код..." autocomplete="off" spellcheck="false">
     <div id="keyError" class="key-error"></div>
     <div id="keySuccess" class="key-success" style="display:none;">
@@ -484,6 +491,7 @@
   <div class="suggest-modal">
     <h2 data-i18n="report_title">Сообщить об ошибке</h2>
     <p id="reportDrinkLabel" data-i18n="report_prompt">Что не так с этим напитком?</p>
+    <label class="visually-hidden" for="reportComment" data-i18n="report_placeholder">Опиши проблему</label>
     <textarea class="suggest-input suggest-textarea" id="reportComment" data-i18n="report_placeholder" data-i18n-attr="placeholder" placeholder="Опиши проблему: неверные данные, битое видео, опечатка..." maxlength="300"></textarea>
     <div class="suggest-counter" id="reportCommentCounter">0 / 300</div>
     <input type="text" id="reportWebsite" name="website" tabindex="-1" autocomplete="off" class="honeypot-field">
@@ -501,6 +509,7 @@
     <h2 class="modal-title-accent" data-i18n="calc_title">СИСТЕМНЫЙ МОНИТОР: КАФЕИН</h2>
     <div class="calc-search-row">
       <div class="calc-search-wrap">
+        <label class="visually-hidden" for="calcSearch" data-i18n="calc_search_placeholder">Введи название...</label>
         <input type="text" id="calcSearch" data-i18n="calc_search_placeholder" data-i18n-attr="placeholder" placeholder="Введи название..." autocomplete="off">
         <div id="calcDropdown" class="calc-dropdown"></div>
       </div>
@@ -556,7 +565,7 @@
 <div id="profileModal" class="custom-modal">
   <div class="custom-modal-inner profile-window">
     <button class="custom-modal-close" id="closeProfile"><i class="fa-solid fa-xmark"></i></button>
-    <div class="profile-stamp">СЕКРЕТНО</div>
+    <div class="profile-stamp" data-i18n="profile_stamp">СЕКРЕТНО</div>
     <h2 class="modal-title-accent profile-title" data-i18n="profile_title">ДОСЬЕ АГЕНТА</h2>
     <div class="auto-theme-row">
       <span><i class="fa-solid fa-clock-rotate-left"></i> <span data-i18n="profile_auto_theme">Авто-тема (день/ночь)</span></span>
@@ -606,10 +615,30 @@
   </div>
 </div>
 
+<!-- Аккаунт и синхронизация избранного -->
+<div id="authModal" class="custom-modal">
+  <div class="custom-modal-inner auth-modal-inner">
+    <button class="custom-modal-close" id="closeAuth" aria-label="Закрыть"><i class="fa-solid fa-xmark"></i></button>
+    <h2 class="modal-title-accent" data-i18n="auth_title">Аккаунт Buzz Rate</h2>
+    <p data-i18n="auth_prompt">Введи email, чтобы получить ссылку для входа.</p>
+    <div id="authSignedOut">
+      <label for="authEmail" data-i18n="auth_email">Электронная почта</label>
+      <input type="email" id="authEmail" class="suggest-input" autocomplete="email" required>
+      <button id="sendAuthLink" class="btn-send" type="button" data-i18n="auth_send_link">Отправить ссылку</button>
+    </div>
+    <div id="authSignedIn" hidden>
+      <p id="authUserEmail"></p>
+      <button id="signOutButton" class="btn-cancel" type="button" data-i18n="auth_sign_out">Выйти</button>
+    </div>
+    <p id="authMessage" class="auth-message" role="status" aria-live="polite"></p>
+  </div>
+</div>
+
 <!-- GoatCounter — аналитика посещений -->
 <script data-goatcounter="https://buzzrate.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
 <!-- script.js с defer — НЕ блокирует рендер -->
 <script src="script.js" defer></script>
 </body>
